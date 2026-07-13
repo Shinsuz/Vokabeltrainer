@@ -368,20 +368,6 @@ main {
   font-family: var(--font-main); font-weight: 600; font-size: 0.86rem; cursor: pointer;
   border: 1px solid; transition: all 0.2s ease;
 }
-.pronounce-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-.pronounce-btn {
-  background: rgba(229, 186, 115, 0.12);
-  border: 1px solid rgba(229, 186, 115, 0.35);
-  color: var(--accent-color);
-  font-family: var(--font-main);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.55rem 0.9rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.pronounce-btn:hover { background: rgba(229, 186, 115, 0.22); }
 .btn-again { background: rgba(217, 138, 115, 0.1); border-color: var(--wrong-color); color: var(--wrong-color); }
 .btn-again:hover { background: rgba(217, 138, 115, 0.2); }
 .btn-know { background: rgba(127, 214, 194, 0.12); border-color: #7fd6c2; color: #7fd6c2; }
@@ -565,7 +551,7 @@ kbd {
   </main>
 
   <footer>
-    <div class="made-by">made by <a href="https://boycott-buddy.com/home.html" target="_blank" rel="noopener">boycott-buddy.com</a></div>
+    <div class="made-by">made by <a href="https://boycott-buddy.com/" target="_blank" rel="noopener">boycott-buddy.com</a></div>
   </footer>
 
 <script>
@@ -712,50 +698,6 @@ function updateStats(){
   document.getElementById("progress-label").innerText = pct + " % bearbeitet";
 }
 
-function speakCurrentWord(){
-  if(!currentWord) return;
-
-  const rawText = stripHarakat(currentWord.arabic).trim();
-  const text = rawText.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, "").trim();
-  if(!text) return;
-
-  const playRemoteAudio = () => {
-    try {
-      const audio = new Audio();
-      const encoded = encodeURIComponent(text);
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${encoded}`;
-      audio.src = url;
-      audio.play().catch(() => {
-        try {
-          const fallbackAudio = new Audio(`https://translate.googleapis.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${encoded}`);
-          fallbackAudio.play().catch(() => {});
-        } catch (e) {}
-      });
-    } catch (e) {}
-  };
-
-  if(window.speechSynthesis){
-    const voices = window.speechSynthesis.getVoices();
-    if(voices.length > 0){
-      try {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "ar";
-        utterance.rate = 0.95;
-        utterance.pitch = 1;
-        utterance.volume = 1;
-        const arabicVoice = voices.find(v => /ar|arabic/i.test(v.lang) || /arabic/i.test(v.name))
-          || voices.find(v => v.lang.startsWith("ar"));
-        if(arabicVoice) utterance.voice = arabicVoice;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-        return;
-      } catch (e) {}
-    }
-  }
-
-  playRemoteAudio();
-}
-
 function scheduleNextCard(delay = 850){
   clearTimeout(window.__vocabAdvanceTimer);
   window.__vocabAdvanceTimer = window.setTimeout(() => nextCard(), delay);
@@ -857,10 +799,7 @@ function renderFlash(){
   const {front, back, frontIsArabic} = frontBack(currentWord);
   cardEl.innerHTML = `
     <div class="prompt-hint">Karteikarte — antippen zum Umdrehen</div>
-    <div class="pronounce-wrap">
-      <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
-      <button class="pronounce-btn" id="pronounce-btn" type="button">🔊 Aussprache</button>
-    </div>
+    <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
     <div class="tap-hint">Leertaste oder Klick zum Umdrehen</div>
     <div id="flash-actions" class="flash-actions" style="display:none;">
       <button class="btn-again" id="btn-again">✗ Nochmal</button>
@@ -869,8 +808,6 @@ function renderFlash(){
   `;
   const face = document.getElementById("flash-face");
   const actions = document.getElementById("flash-actions");
-  const pronounceBtn = document.getElementById("pronounce-btn");
-  if(pronounceBtn) pronounceBtn.onclick = (e) => { e.stopPropagation(); speakCurrentWord(); };
   function flip(){
     Sound.flip();
     face.innerText = back;
@@ -904,17 +841,12 @@ function renderMC(){
 
   cardEl.innerHTML = `
     <div class="prompt-hint">Was bedeutet</div>
-    <div class="pronounce-wrap">
-      <div class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}">${front}</div>
-      <button class="pronounce-btn" id="pronounce-btn" type="button">🔊 Aussprache</button>
-    </div>
+    <div class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}">${front}</div>
     <div class="feedback" id="feedback"></div>
     <div class="mc-grid" id="mc-grid"></div>
     <button class="next-btn" id="next-btn" style="display:none;">Nächste Vokabel ➔</button>
   `;
   const grid = document.getElementById("mc-grid");
-  const pronounceBtn = document.getElementById("pronounce-btn");
-  if(pronounceBtn) pronounceBtn.onclick = (e) => { e.stopPropagation(); speakCurrentWord(); };
   choices.forEach((choice) => {
     const btn = document.createElement("button");
     btn.className = "opt-btn";
@@ -950,10 +882,7 @@ function renderWrite(){
   const word = currentWord;
   cardEl.innerHTML = `
     <div class="prompt-hint">Übersetze ins Deutsche</div>
-    <div class="pronounce-wrap">
-      <div class="prompt-word">${displayArabic(word.arabic)}</div>
-      <button class="pronounce-btn" id="pronounce-btn" type="button">🔊 Aussprache</button>
-    </div>
+    <div class="prompt-word">${displayArabic(word.arabic)}</div>
     <div class="type-row">
       <input type="text" id="write-input" autocomplete="off" placeholder="Antwort eingeben…" />
       <button id="write-submit">Prüfen</button>
@@ -962,8 +891,6 @@ function renderWrite(){
     <button class="next-btn" id="next-btn" style="display:none;">Nächste Vokabel ➔</button>
   `;
   const input = document.getElementById("write-input");
-  const pronounceBtn = document.getElementById("pronounce-btn");
-  if(pronounceBtn) pronounceBtn.onclick = (e) => { e.stopPropagation(); speakCurrentWord(); };
   input.focus();
   function submit(){
     if(input.disabled) return;
