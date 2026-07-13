@@ -484,6 +484,28 @@ kbd {
   .stats-pill div { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
   .stats-pill div:last-child { border-bottom: none; }
 }
+/* =====================
+   END-SCREEN / OVERLAY
+   ===================== */
+.end-overlay {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.55); z-index: 10010; padding: 1rem; visibility: hidden; opacity: 0; transition: all 0.18s ease;
+}
+.end-overlay.show { visibility: visible; opacity: 1; }
+.end-modal {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: var(--text-light); padding: 1.4rem; border-radius: 14px; max-width: 520px; width: 100%; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.end-modal h2 { margin: 0 0 0.4rem; font-family: var(--font-heading); color: var(--accent-color); }
+.end-modal p { color: #9fb0d4; margin: 0 0 1rem; }
+.end-modal .end-actions { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap; }
+.end-modal .end-actions button { padding:0.7rem 1rem; border-radius:10px; font-weight:600; cursor:pointer; border:1px solid rgba(255,255,255,0.06); }
+.btn-replay { background: rgba(127,214,194,0.12); border-color: #7fd6c2; color:#7fd6c2; }
+.btn-back { background: rgba(255,255,255,0.03); color: var(--text-light); }
+.btn-close { background: rgba(217,138,115,0.12); border-color: var(--wrong-color); color: var(--wrong-color); }
 </style>
 <script src="vocab.js"></script>
 </head>
@@ -536,6 +558,17 @@ kbd {
       <svg class="corner bl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
       <svg class="corner br" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
       <div class="card" id="card"></div>
+      <div id="end-overlay" class="end-overlay" aria-hidden="true">
+        <div class="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
+          <h2 id="end-title">Alles gemeistert!</h2>
+          <p id="end-message">Du hast alle Vokabeln dieser Lektion erfolgreich gelernt.</p>
+          <div class="end-actions">
+            <button class="btn-replay" id="end-replay">Nochmal üben</button>
+            <button class="btn-back" id="end-back">Zurück zur Übersicht</button>
+            <button class="btn-close" id="end-close">Schließen</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="progress-row">
@@ -656,6 +689,10 @@ let direction = "ar-de"; // ar-de = Arabisch -> Deutsch, de-ar = Deutsch -> Arab
 let currentWord = null;
 let sessionCorrect = 0, sessionTotal = 0;
 let cardEl = document.getElementById("card");
+// Session review queue: track words answered wrong this session
+let sessionWrongKeys = new Set(); // store arabic keys
+let reviewQueue = [];
+let inReview = false;
 
 function loadProgress(){
   try{
@@ -680,9 +717,28 @@ function markResult(word, correct){
   const justMastered = !wasMastered && e.streak >= MASTER_THRESHOLD;
   saveProgress();
   sessionTotal++; if(correct) sessionCorrect++;
-  if(justMastered) Sound.mastered();
+
+  // Manage session wrong list / review queue
+  if(!correct){
+    sessionWrongKeys.add(word.arabic);
+    // if currently in review, ensure the word is queued
+    if(inReview && !reviewQueue.find(w => w.arabic === word.arabic)){
+      reviewQueue.push(word);
+    }
+  } else {
+    // on correct, remove from pending wrongs (if present)
+    if(sessionWrongKeys.has(word.arabic)){
+      sessionWrongKeys.delete(word.arabic);
+      // also remove from reviewQueue if present
+      reviewQueue = reviewQueue.filter(w => w.arabic !== word.arabic);
+    }
+  }
+
+  const hadJustMastered = justMastered;
+  if(hadJustMastered) Sound.mastered();
   else if(correct) Sound.correct();
   else Sound.wrong();
+
   updateStats();
 }
 
@@ -695,8 +751,66 @@ function updateStats(){
   const progressCount = deck.filter(word => getEntry(word).streak > 0).length;
   const pct = deck.length ? Math.round((progressCount / deck.length) * 100) : 0;
   document.getElementById("progress-fill").style.width = pct + "%";
-  document.getElementById("progress-label").innerText = pct + " % bearbeitet";
+  if(pct === 100 && deck.length > 0){
+    document.getElementById("progress-label").innerText = pct + " % — Alles gemeistert!";
+    // If there are wrong answers this session, start a focused review round first
+    if(sessionWrongKeys.size > 0 && !inReview){
+      startReviewRound();
+    } else {
+      if(!window.__endShownFor || window.__endShownFor !== selectedLesson){
+        window.__endShownFor = selectedLesson;
+        try{ showEndOverlay(deck); }catch(e){}
+        try{ Sound.mastered(); }catch(e){}
+      }
+    }
+  } else {
+    document.getElementById("progress-label").innerText = pct + " % bearbeitet";
+    try{ hideEndOverlay(); }catch(e){}
+  }
+  document.getElementById("stat-mastered").innerText = `${masteredCount}/${deck.length}`;
 }
+
+/* ---------- End-Screen / Overlay Logik ---------- */
+function showEndOverlay(deck){
+  const overlay = document.getElementById('end-overlay');
+  const msg = document.getElementById('end-message');
+  const title = document.getElementById('end-title');
+  const label = selectedLesson === 'alle' ? 'allen Lektionen' : ((typeof LESSON_LABELS !== 'undefined' && LESSON_LABELS[selectedLesson]) || `Lektion ${selectedLesson}`);
+  title.innerText = 'Alles gemeistert!';
+  msg.innerText = `Du hast alle Vokabeln in ${label} erfolgreich gelernt.`;
+  overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
+}
+
+function hideEndOverlay(){
+  const overlay = document.getElementById('end-overlay');
+  if(overlay){ overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); }
+}
+
+function replayLesson(){
+  const deck = currentDeck();
+  deck.forEach(w => { const e = getEntry(w); e.streak = 0; e.wrong = 0; });
+  saveProgress();
+  window.__endShownFor = null;
+  hideEndOverlay();
+  updateStats();
+  nextCard();
+}
+
+function backToAll(){
+  selectedLesson = 'alle';
+  buildLessonTabs();
+  window.__endShownFor = null;
+  hideEndOverlay();
+  updateStats();
+  nextCard();
+}
+
+// Overlay button listeners
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'end-replay') replayLesson();
+  if(e.target && e.target.id === 'end-back') backToAll();
+  if(e.target && e.target.id === 'end-close') hideEndOverlay();
+});
 
 function scheduleNextCard(delay = 850){
   clearTimeout(window.__vocabAdvanceTimer);
@@ -750,7 +864,7 @@ function buildLessonTabs(){
   wrap.innerHTML = "";
 
   const allBtn = document.createElement("button");
-  allBtn.className = "lesson-pill active";
+  allBtn.className = "lesson-pill" + (selectedLesson === "alle" ? " active" : "");
   allBtn.textContent = "Alle";
   allBtn.dataset.key = "alle";
   wrap.appendChild(allBtn);
@@ -758,7 +872,7 @@ function buildLessonTabs(){
   Object.keys(LESSONS).sort((a,b) => Number(a) - Number(b)).forEach(key => {
     const hasWords = LESSONS[key].length > 0;
     const btn = document.createElement("button");
-    btn.className = "lesson-pill" + (hasWords ? "" : " disabled");
+    btn.className = "lesson-pill" + (hasWords ? "" : " disabled") + (selectedLesson === key ? " active" : "");
     btn.textContent = (typeof LESSON_LABELS !== "undefined" && LESSON_LABELS[key]) || `Lektion ${key}`;
     btn.dataset.key = key;
     if(!hasWords) btn.title = "noch keine Vokabeln in dieser Lektion";
@@ -783,11 +897,46 @@ function nextCard(){
     cardEl.innerHTML = `<div class="empty-state"><div class="big">Noch keine ${label} hinterlegt.</div>Trage sie in <kbd>vocab.js</kbd> in der passenden Lektion ein.</div>`;
     return;
   }
-  currentWord = weightedPick(deck);
+  // If we're in a review round, pull from the reviewQueue
+  if(inReview){
+    if(reviewQueue.length === 0){
+      // review finished
+      inReview = false;
+      sessionWrongKeys.clear();
+      // show end overlay now
+      try{ showEndOverlay(deck); }catch(e){}
+      return;
+    }
+    // pop next review item
+    currentWord = reviewQueue.shift();
+  } else {
+    currentWord = weightedPick(deck);
+  }
   const roundMode = activeModeForRound();
   if(roundMode === "flash") renderFlash();
   else if(roundMode === "mc") renderMC();
   else renderWrite();
+}
+
+function startReviewRound(){
+  // build reviewQueue from sessionWrongKeys, keeping current deck order shuffled
+  const deck = currentDeck();
+  reviewQueue = [];
+  sessionWrongKeys.forEach(k => {
+    const w = deck.find(x => x.arabic === k) || Object.values(LESSONS).flat().find(x => x.arabic === k);
+    if(w) reviewQueue.push(w);
+  });
+  // fallback: if nothing found, clear
+  if(reviewQueue.length === 0){ sessionWrongKeys.clear(); inReview = false; return; }
+  // shuffle reviewQueue
+  reviewQueue = shuffle(reviewQueue);
+  inReview = true;
+  // notify user and start first review card
+  const overlay = document.getElementById('end-overlay');
+  hideEndOverlay();
+  // small toast via progress-label
+  document.getElementById('progress-label').innerText = `Wiederhole falsch beantwortete Vokabeln (${reviewQueue.length})`;
+  nextCard();
 }
 
 function frontBack(word){
@@ -880,6 +1029,42 @@ function selectMC(choice, btn, correctAnswer){
 
 function renderWrite(){
   const word = currentWord;
+  function normalizeText(t){
+    return (t||"").toLowerCase().replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-z0-9äöüß\s]/g,"")
+      .replace(/\s+/g," ").trim();
+  }
+
+  function parseVariants(s){
+    if(!s) return [];
+    const variants = [];
+    // main without parentheses
+    const withoutParens = s.replace(/\s*\([^)]*\)/g, ' ').trim();
+    if(withoutParens) variants.push(withoutParens);
+    // extract parentheses contents as alternatives
+    const parenMatches = [...s.matchAll(/\(([^)]+)\)/g)];
+    parenMatches.forEach(m => { if(m[1]) variants.push(m[1].trim()); });
+    // replace 'oder' with comma to split
+    const flat = variants.map(v => v.replace(/\boder\b/gi, ',')).join(',');
+    // split on common separators
+    const parts = flat.split(/[\/,;|\\]/).map(p => p.trim()).filter(Boolean);
+    return parts;
+  }
+
+  function buildAcceptedAnswers(correct){
+    const variants = parseVariants(correct);
+    const acc = new Set();
+    variants.forEach(v => {
+      let norm = normalizeText(v);
+      if(!norm) return;
+      acc.add(norm);
+      // allow omitting indefinite articles (ein/eine/einen)
+      const m = norm.match(/^(ein|eine|einen)\s+(.*)$/);
+      if(m && m[2]) acc.add(normalizeText(m[2]));
+      // also allow variants where parentheses content was the alternative: handled by parseVariants
+    });
+    return acc;
+  }
   cardEl.innerHTML = `
     <div class="prompt-hint">Übersetze ins Deutsche</div>
     <div class="prompt-word">${displayArabic(word.arabic)}</div>
@@ -894,9 +1079,14 @@ function renderWrite(){
   input.focus();
   function submit(){
     if(input.disabled) return;
-    const val = input.value.trim().toLowerCase();
-    const correctAnswer = word.german.trim().toLowerCase();
-    const correct = val === correctAnswer;
+    const userRaw = input.value || "";
+    const user = normalizeText(userRaw);
+    const correctRaw = word.german || "";
+    const accepted = buildAcceptedAnswers(correctRaw);
+
+    // If correct answer contains a definite article, require it (no alt without it was added).
+    const correct = accepted.has(user);
+
     markResult(word, correct);
     input.disabled = true;
     const feedback = document.getElementById("feedback");

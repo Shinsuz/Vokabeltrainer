@@ -42,7 +42,7 @@ const LESSONS = {
     { arabic: "رَجُلٌ", german: "ein Mann" },
     { arabic: "تَاجِرٌ", german: "ein Händler" },
     { arabic: "كَلْبٌ", german: "ein Hund" },
-    { arabic: "قِطٌّ", german: "eine Katze" },
+    { arabic: "قِطٌّ", german: "ein Kater" },
     { arabic: "حِمَارٌ", german: "ein Esel" },
     { arabic: "حِصَانٌ", german: "ein Pferd" },
     { arabic: "جَمَلٌ", german: "ein Kamel" },
