@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vokabeltrainer | NoBoyKott</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #e5ba73;
+  --secondary-color: #8e7b43;
+  --accent-color: #f4c26f;
+  --dark-color: #060911;
+  --light-color: #f8f9fa;
+  --text-color: #e7e7ea;
+  --text-light: #f8f9fa;
+  --wrong-color: #d98a73;
+  --font-main: 'Poppins', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-arabic: 'Noto Naskh Arabic', serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+/* ==========================================================================
+   HINTERGRUND — identisch zum Rest der Seite (main.css)
+   ========================================================================== */
+body {
+  font-family: var(--font-main);
+  margin: 0;
+  padding: 0 0 4rem;
+  background-color: var(--dark-color);
+  background-image:
+    radial-gradient(circle at 50% -10%, rgba(229, 186, 115, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 15%, rgba(15, 23, 42, 0.95) 0%, var(--dark-color) 75%);
+  background-attachment: fixed;
+  color: var(--text-light);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><g fill="none" stroke="%23e5ba73" stroke-width="0.3" stroke-opacity="0.12"><path d="M30 0 L60 30 L30 60 L0 30 Z M0 0 L60 60 M60 0 L0 60 M30 0 L30 60 M0 30 L60 30"/><circle cx="30" cy="30" r="12"/><path d="M30 12 L42 30 L30 48 L18 30 Z"/></g></svg>');
+  background-size: 120px 120px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--dark-color);
+  z-index: 9999;
+  animation: fadeOverlay 1.2s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes fadeOverlay { from { opacity: 1; } to { opacity: 0; } }
+
+
+/* ==========================================================================
+   HEADER: STERN MIT GLOW-ANIMATION (aus main.css übernommen)
+   ========================================================================== */
+header {
+  text-align: center;
+  padding: 4.5rem 1rem 1.25rem;
+  position: relative;
+  z-index: 10;
+}
+
+.header-star {
+  display: block;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 18px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><g fill='none' stroke='%23e5ba73'><circle cx='50' cy='50' r='39' stroke-width='0.5' stroke-dasharray='2 2'/><path d='M50 14 L56 44 L86 50 L56 56 L50 86 L44 56 L14 50 L44 44 Z' stroke-width='1.6' stroke-linejoin='round'/><circle cx='50' cy='50' r='24' stroke-width='0.8'/></g></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: starGlowPulse 4s ease-in-out infinite;
+}
+
+@keyframes starGlowPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(229, 186, 115, 0.45)); }
+  50% { transform: scale(1.04); filter: drop-shadow(0 0 35px rgba(244, 194, 111, 0.75)); }
+}
+
+h1 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 2.4rem;
+  letter-spacing: 0.5px;
+  margin: 0;
+  background: linear-gradient(to bottom, #ffffff 40%, #cdd7e5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+header .ar-sub {
+  display: block;
+  font-family: var(--font-arabic);
+  font-weight: 500;
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-top: 0.4rem;
+}
+
+header p.subtitle {
+  color: #52668d;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.8px;
+  margin-top: 0.6rem;
+}
+
+/* ==========================================================================
+   HAUPTBEREICH
+   ========================================================================== */
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Stats-Leiste */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.stats-pill {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 999px;
+  overflow: hidden;
+  font-size: 0.8rem;
+}
+.stats-pill div { padding: 0.6rem 1.1rem; border-right: 1px solid rgba(255, 255, 255, 0.08); white-space: nowrap; color: var(--text-color); }
+.stats-pill div:last-child { border-right: none; }
+.stats-pill b { color: var(--accent-color); font-family: var(--font-heading); font-size: 0.95rem; }
+.stats-pill .mastered b { color: #7fd6c2; }
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 999px;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.icon-btn:hover { border-color: rgba(229, 186, 115, 0.35); box-shadow: 0 0 15px rgba(229, 186, 115, 0.2); }
+
+/* Pill-Buttons: Modi / Lektionen / Richtung / Haraket */
+.pill-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.pill-group {
+  display: flex;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 0.3rem;
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.pill-btn {
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-color);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.pill-btn:hover { color: var(--accent-color); }
+.pill-btn.active {
+  background: rgba(229, 186, 115, 0.15);
+  color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px rgba(229, 186, 115, 0.4);
+}
+
+.lesson-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-color);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.lesson-pill:hover:not(.disabled) { border-color: rgba(229, 186, 115, 0.35); color: var(--accent-color); }
+.lesson-pill.active {
+  background: rgba(229, 186, 115, 0.15);
+  border-color: var(--primary-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(229, 186, 115, 0.2);
+}
+.lesson-pill.disabled { opacity: 0.3; cursor: not-allowed; }
+
+.toggle-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--text-color);
+  user-select: none;
+}
+.toggle-pill b { color: var(--accent-color); }
+
+.switch { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.switch .slider {
+  position: absolute; inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  transition: 0.25s;
+}
+.switch .slider::before {
+  content: "";
+  position: absolute;
+  width: 13px; height: 13px;
+  left: 3px; top: 50%;
+  transform: translateY(-50%);
+  background: var(--text-light);
+  border-radius: 50%;
+  transition: 0.25s;
+}
+.switch input:checked + .slider { background: rgba(229, 186, 115, 0.3); border-color: var(--primary-color); }
+.switch input:checked + .slider::before { transform: translate(17px, -50%); background: var(--accent-color); }
+
+/* Karteikarte, im Glow-Stil der Startseiten-Boxen */
+.card-outer { position: relative; margin: 1.5rem 0; }
+.corner { position: absolute; width: 24px; height: 24px; opacity: 0.55; }
+.corner.tl { top: -6px; left: -6px; }
+.corner.tr { top: -6px; right: -6px; transform: scaleX(-1); }
+.corner.bl { bottom: -6px; left: -6px; transform: scaleY(-1); }
+.corner.br { bottom: -6px; right: -6px; transform: scale(-1, -1); }
+
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  padding: 3rem 2rem;
+  min-height: 290px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:hover {
+  border-color: rgba(229, 186, 115, 0.3);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 25px rgba(229, 186, 115, 0.15);
+}
+
+.empty-state { color: #7d8bab; max-width: 420px; line-height: 1.6; }
+.empty-state .big { font-family: var(--font-heading); font-size: 1.2rem; color: var(--text-light); margin-bottom: 8px; }
+
+.prompt-word {
+  font-family: var(--font-arabic);
+  font-weight: 600;
+  font-size: 3.2rem;
+  line-height: 1.9;
+  word-spacing: 0.15em;
+  color: var(--text-light);
+  direction: rtl;
+}
+.prompt-word.is-german { font-family: var(--font-heading); font-size: 1.9rem; font-weight: 600; line-height: 1.4; color: var(--accent-color); }
+.prompt-hint { font-size: 0.75rem; color: #7d8bab; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; width: 100%; max-width: 480px; }
+@media (max-width: 480px) { .mc-grid { grid-template-columns: 1fr; } }
+.opt-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--text-light);
+  font-family: var(--font-main), var(--font-arabic);
+  font-size: 0.98rem; font-weight: 500;
+  line-height: 1.6;
+  padding: 0.9rem 0.75rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.opt-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.08); }
+.opt-btn:disabled { cursor: default; }
+.opt-btn.correct { background: rgba(127, 214, 194, 0.15); border-color: #7fd6c2; color: #7fd6c2; }
+.opt-btn.wrong { background: rgba(217, 138, 115, 0.15); border-color: var(--wrong-color); color: var(--wrong-color); }
+
+.type-row { display: flex; gap: 0.5rem; width: 100%; max-width: 420px; }
+.type-row input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  outline: none;
+}
+.type-row input:focus { border-color: var(--primary-color); }
+.type-row button {
+  background: rgba(229, 186, 115, 0.15);
+  border: 1px solid var(--primary-color);
+  color: var(--accent-color);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0 1.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.type-row button:hover { background: rgba(229, 186, 115, 0.25); }
+
+.feedback { font-size: 0.9rem; font-weight: 600; min-height: 20px; }
+.feedback.ok { color: #7fd6c2; }
+.feedback.bad { color: var(--wrong-color); }
+
+.flash-actions { display: flex; gap: 0.6rem; width: 100%; max-width: 420px; }
+.flash-actions button {
+  flex: 1; padding: 0.85rem; border-radius: 12px;
+  font-family: var(--font-main); font-weight: 600; font-size: 0.86rem; cursor: pointer;
+  border: 1px solid; transition: all 0.2s ease;
+}
+.pronounce-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.pronounce-btn {
+  background: rgba(229, 186, 115, 0.12);
+  border: 1px solid rgba(229, 186, 115, 0.35);
+  color: var(--accent-color);
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.pronounce-btn:hover { background: rgba(229, 186, 115, 0.22); }
+.btn-again { background: rgba(217, 138, 115, 0.1); border-color: var(--wrong-color); color: var(--wrong-color); }
+.btn-again:hover { background: rgba(217, 138, 115, 0.2); }
+.btn-know { background: rgba(127, 214, 194, 0.12); border-color: #7fd6c2; color: #7fd6c2; }
+.btn-know:hover { background: rgba(127, 214, 194, 0.22); }
+
+.tap-hint { font-size: 0.72rem; color: #5c6f96; }
+
+.next-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--dark-color);
+  font-family: var(--font-main);
+  font-weight: 700; font-size: 0.9rem;
+  padding: 0.9rem; border: none; border-radius: 12px; cursor: pointer;
+  transition: filter 0.2s ease;
+}
+.next-btn:hover { filter: brightness(1.1); }
+
+/* Fortschritt */
+.progress-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.75rem; }
+.progress-track { flex: 1; height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); border-radius: 99px; transition: width 0.35s ease; }
+.progress-label { font-size: 0.75rem; color: #5c6f96; white-space: nowrap; }
+.star-mark { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* untere Steuerung */
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.ghost-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #9fb0d4;
+  font-family: var(--font-main);
+  font-size: 0.78rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.ghost-btn:hover { border-color: var(--primary-color); color: var(--accent-color); }
+
+footer {
+  text-align: center;
+  padding: 2.5rem 1rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  color: #7d8bab;
+  line-height: 1.8;
+  position: relative;
+  z-index: 10;
+}
+footer .made-by { opacity: 0.85; }
+footer .made-by a { color: var(--accent-color); text-decoration: none; font-weight: 600; }
+footer .made-by a:hover { text-decoration: underline; }
+
+kbd {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.75em;
+  color: var(--text-color);
+}
+
+@media (max-width: 640px) {
+  body { padding-bottom: 3rem; }
+
+  .home {
+    top: 1rem; right: 1rem;
+    width: 42px; height: 42px;
+  }
+
+  header { padding: 3.5rem 1rem 1rem; }
+  .header-star { width: 62px; height: 62px; margin-bottom: 12px; }
+  h1 { font-size: 1.85rem; }
+  header .ar-sub { font-size: 1.05rem; }
+  header p.subtitle { font-size: 0.8rem; }
+
+  main { padding: 0 0.85rem; }
+
+  .stats-row { gap: 0.5rem; }
+  .stats-pill { font-size: 0.72rem; }
+  .stats-pill div { padding: 0.5rem 0.7rem; }
+  .icon-btn { width: 36px; height: 36px; font-size: 0.9rem; }
+
+  .pill-row { gap: 0.5rem; }
+  .pill-group { width: 100%; justify-content: center; flex-wrap: wrap; }
+  .pill-btn { flex: 1 1 auto; padding: 0.55rem 0.7rem; font-size: 0.75rem; }
+  .toggle-pill { width: 100%; justify-content: center; }
+  #lesson-tabs { width: 100%; justify-content: center; flex-wrap: wrap; }
+
+  .card { padding: 2.2rem 1.25rem; min-height: 250px; gap: 1.1rem; }
+  .prompt-word { font-size: 2.3rem; line-height: 1.7; }
+  .prompt-word.is-german { font-size: 1.5rem; }
+  .prompt-hint { font-size: 0.68rem; }
+
+  .mc-grid { max-width: 100%; }
+  .opt-btn { font-size: 0.88rem; padding: 0.8rem 0.6rem; }
+
+  .type-row { max-width: 100%; flex-direction: column; }
+  .type-row button { padding: 0.85rem; }
+
+  .flash-actions { max-width: 100%; }
+
+  .controls { flex-direction: column; }
+  .controls .ghost-btn { width: 100%; text-align: center; }
+
+  footer { padding: 2rem 1rem 1rem; font-size: 0.72rem; }
+}
+
+@media (max-width: 380px) {
+  h1 { font-size: 1.6rem; }
+  .prompt-word { font-size: 2rem; }
+  .stats-pill { flex-wrap: wrap; border-radius: 16px; }
+  .stats-pill div { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .stats-pill div:last-child { border-bottom: none; }
+}
+</style>
+<script src="vocab.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="header-star"></div>
+    <h1>Vokabeltrainer</h1>
+    <span class="ar-sub">المُفرَدات</span>
+    <p class="subtitle">عربي ⇄ Deutsch</p>
+  </header>
+
+  <main>
+    <div class="stats-row">
+      <div class="stats-pill">
+        <div>Gesamt <b id="stat-total">0</b></div>
+        <div class="mastered">Gemeistert <b id="stat-mastered">0</b></div>
+        <div>Sitzung <b id="stat-session">0/0</b></div>
+      </div>
+      <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
+    </div>
+
+    <div class="pill-row">
+      <div class="pill-group" id="tabs">
+        <button class="pill-btn" data-mode="flash">Karteikarten</button>
+        <button class="pill-btn" data-mode="mc">Multiple Choice</button>
+        <button class="pill-btn" data-mode="write">Schreiben</button>
+        <button class="pill-btn" data-mode="mix">Mix-Modus</button>
+      </div>
+      <button class="toggle-pill" id="dir-toggle" title="Abfragerichtung umschalten">
+        <span id="dir-label"><b>عربي</b> → Deutsch</span> ⇄
+      </button>
+    </div>
+
+    <div class="pill-row">
+      <div class="pill-group" id="lesson-tabs"></div>
+      <label class="toggle-pill" id="harakat-toggle-wrap">
+        <span>Haraket</span>
+        <span class="switch">
+          <input type="checkbox" id="harakat-checkbox" checked>
+          <span class="slider"></span>
+        </span>
+        <b id="harakat-state">an</b>
+      </label>
+    </div>
+
+    <div class="card-outer">
+      <svg class="corner tl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <svg class="corner tr" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <svg class="corner bl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <svg class="corner br" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <div class="card" id="card"></div>
+    </div>
+
+    <div class="progress-row">
+      <svg class="star-mark" viewBox="0 0 100 100"><polygon points="50,4 61,32 92,32 66,50 76,80 50,62 24,80 34,50 8,32 39,32" fill="var(--primary-color)"/></svg>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">0 % gemeistert</div>
+    </div>
+
+    <div class="controls">
+      <button class="ghost-btn" id="reset-progress-btn">Fortschritt zurücksetzen</button>
+      <button class="ghost-btn" id="shuffle-btn">🔀 Neu mischen</button>
+    </div>
+  </main>
+
+  <footer>
+    <div class="made-by">made by <a href="https://boycott-buddy.com/home.html" target="_blank" rel="noopener">boycott-buddy.com</a></div>
+  </footer>
+
+<script>
+/* Die Vokabelliste (LESSONS) wird aus vocab.js geladen — siehe <script src="vocab.js">
+   im <head>. Diese Datei hier enthält nur die Trainer-Logik. */
+const STORAGE_KEY = "vocab_progress_v1";
+const SOUND_KEY = "vocab_sound_muted";
+const MASTER_THRESHOLD = 3;
+
+/* ---------- Haraket ein-/ausblenden ---------- */
+const HARAKAT_REGEX = /[\u064B-\u0652\u0656-\u065F\u0670\u06D6-\u06ED]/g;
+function stripHarakat(text){ return text.replace(HARAKAT_REGEX, ""); }
+let showHarakat = true;
+function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
+
+/* ---------- Lektionen ---------- */
+let selectedLesson = "alle";
+function currentDeck(){
+  if(selectedLesson === "alle") return Object.values(LESSONS).flat();
+  return LESSONS[selectedLesson] || [];
+}
+
+/* ---------- Sound-Engine ----------
+   synthetisiert per Web Audio, keine Audiodateien nötig.
+   Combo-System: richtige Antworten in Folge klingen minimal höher/heller,
+   damit sich eine Serie auch akustisch wie ein kleiner Erfolg anfühlt. */
+const Sound = (() => {
+  let ctx = null;
+  let muted = localStorage.getItem(SOUND_KEY) === "1";
+  let combo = 0;
+
+  function ensureCtx(){
+    if(!ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      ctx = new AC();
+    }
+    if(ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+
+  function tone(freq, start, dur, type="sine", gainPeak=0.16, opts={}){
+    if(muted) return;
+    const c = ensureCtx();
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    const filter = c.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = opts.cutoff || 4200;
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, c.currentTime + start);
+    if(opts.slideTo){
+      osc.frequency.linearRampToValueAtTime(opts.slideTo, c.currentTime + start + dur);
+    }
+    gain.gain.setValueAtTime(0, c.currentTime + start);
+    gain.gain.linearRampToValueAtTime(gainPeak, c.currentTime + start + 0.014);
+    gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + start + dur);
+    osc.connect(filter).connect(gain).connect(c.destination);
+    osc.start(c.currentTime + start);
+    osc.stop(c.currentTime + start + dur + 0.03);
+  }
+
+  return {
+    click(){ tone(660, 0, 0.045, "triangle", 0.05, {cutoff: 3000}); },
+    flip(){ tone(520, 0, 0.05, "triangle", 0.07); tone(780, 0.05, 0.08, "sine", 0.06); },
+
+    correct(){
+      combo = Math.min(combo + 1, 7);
+      const step = Math.pow(2, combo / 12); // pro Combo-Stufe einen Halbton höher
+      tone(523.25 * step, 0,    0.11, "sine", 0.17);
+      tone(659.25 * step, 0.05, 0.13, "sine", 0.13);
+      tone(783.99 * step, 0.1,  0.18, "sine", 0.11);
+    },
+
+    wrong(){
+      combo = 0;
+      tone(233, 0,    0.16, "sine", 0.11, {slideTo: 180, cutoff: 1400});
+      tone(174, 0.03, 0.2,  "sine", 0.08, {cutoff: 1200});
+    },
+
+    mastered(){
+      combo = 0;
+      tone(523.25, 0,    0.12, "sine", 0.15);
+      tone(659.25, 0.08, 0.12, "sine", 0.15);
+      tone(783.99, 0.16, 0.14, "sine", 0.15);
+      tone(1046.5, 0.26, 0.32, "sine", 0.17);
+      tone(1318.5, 0.3,  0.28, "sine", 0.09);
+    },
+
+    isMuted(){ return muted; },
+    toggle(){
+      muted = !muted;
+      localStorage.setItem(SOUND_KEY, muted ? "1" : "0");
+      if(!muted) this.click();
+      return muted;
+    }
+  };
+})();
+
+let progress = loadProgress();
+let mode = "flash";
+let direction = "ar-de"; // ar-de = Arabisch -> Deutsch, de-ar = Deutsch -> Arabisch
+let currentWord = null;
+let sessionCorrect = 0, sessionTotal = 0;
+let cardEl = document.getElementById("card");
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveProgress(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+function getEntry(word){
+  if(!progress[word.arabic]) progress[word.arabic] = { streak: 0, wrong: 0 };
+  return progress[word.arabic];
+}
+function isMastered(word){
+  return getEntry(word).streak >= MASTER_THRESHOLD;
+}
+function markResult(word, correct){
+  const e = getEntry(word);
+  const wasMastered = e.streak >= MASTER_THRESHOLD;
+  if(correct){ e.streak += 1; } else { e.streak = 0; e.wrong += 1; }
+  const justMastered = !wasMastered && e.streak >= MASTER_THRESHOLD;
+  saveProgress();
+  sessionTotal++; if(correct) sessionCorrect++;
+  if(justMastered) Sound.mastered();
+  else if(correct) Sound.correct();
+  else Sound.wrong();
+  updateStats();
+}
+
+function updateStats(){
+  const deck = currentDeck();
+  document.getElementById("stat-total").innerText = deck.length;
+  const masteredCount = deck.filter(isMastered).length;
+  document.getElementById("stat-mastered").innerText = masteredCount;
+  document.getElementById("stat-session").innerText = `${sessionCorrect}/${sessionTotal}`;
+  const progressCount = deck.filter(word => getEntry(word).streak > 0).length;
+  const pct = deck.length ? Math.round((progressCount / deck.length) * 100) : 0;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("progress-label").innerText = pct + " % bearbeitet";
+}
+
+function speakCurrentWord(){
+  if(!currentWord) return;
+
+  const rawText = stripHarakat(currentWord.arabic).trim();
+  const text = rawText.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, "").trim();
+  if(!text) return;
+
+  const playRemoteAudio = () => {
+    try {
+      const audio = new Audio();
+      const encoded = encodeURIComponent(text);
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${encoded}`;
+      audio.src = url;
+      audio.play().catch(() => {
+        try {
+          const fallbackAudio = new Audio(`https://translate.googleapis.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${encoded}`);
+          fallbackAudio.play().catch(() => {});
+        } catch (e) {}
+      });
+    } catch (e) {}
+  };
+
+  if(window.speechSynthesis){
+    const voices = window.speechSynthesis.getVoices();
+    if(voices.length > 0){
+      try {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "ar";
+        utterance.rate = 0.95;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        const arabicVoice = voices.find(v => /ar|arabic/i.test(v.lang) || /arabic/i.test(v.name))
+          || voices.find(v => v.lang.startsWith("ar"));
+        if(arabicVoice) utterance.voice = arabicVoice;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+        return;
+      } catch (e) {}
+    }
+  }
+
+  playRemoteAudio();
+}
+
+function scheduleNextCard(delay = 850){
+  clearTimeout(window.__vocabAdvanceTimer);
+  window.__vocabAdvanceTimer = window.setTimeout(() => nextCard(), delay);
+}
+
+function weightedPick(list){
+  const weights = list.map(w => {
+    const e = getEntry(w);
+    return Math.max(1, (e.wrong + 1) * 3 - e.streak);
+  });
+  const total = weights.reduce((a,b) => a+b, 0);
+  let r = Math.random() * total;
+  for(let i=0;i<list.length;i++){
+    r -= weights[i];
+    if(r <= 0) return list[i];
+  }
+  return list[list.length-1];
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function setMode(m){
+  mode = m;
+  document.querySelectorAll("#tabs .pill-btn").forEach(t => t.classList.toggle("active", t.dataset.mode === m));
+  nextCard();
+}
+
+function toggleDirection(){
+  direction = direction === "ar-de" ? "de-ar" : "ar-de";
+  const label = document.getElementById("dir-label");
+  label.innerHTML = direction === "ar-de" ? "<b>عربي</b> → Deutsch" : "<b>Deutsch</b> → عربي";
+  nextCard();
+}
+
+function activeModeForRound(){
+  if(mode !== "mix") return mode;
+  const pool = ["flash","mc","write"];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+/* ---------- Lektionen-Auswahl ---------- */
+function buildLessonTabs(){
+  const wrap = document.getElementById("lesson-tabs");
+  wrap.innerHTML = "";
+
+  const allBtn = document.createElement("button");
+  allBtn.className = "lesson-pill active";
+  allBtn.textContent = "Alle";
+  allBtn.dataset.key = "alle";
+  wrap.appendChild(allBtn);
+
+  Object.keys(LESSONS).sort((a,b) => Number(a) - Number(b)).forEach(key => {
+    const hasWords = LESSONS[key].length > 0;
+    const btn = document.createElement("button");
+    btn.className = "lesson-pill" + (hasWords ? "" : " disabled");
+    btn.textContent = (typeof LESSON_LABELS !== "undefined" && LESSON_LABELS[key]) || `Lektion ${key}`;
+    btn.dataset.key = key;
+    if(!hasWords) btn.title = "noch keine Vokabeln in dieser Lektion";
+    wrap.appendChild(btn);
+  });
+
+  wrap.addEventListener("click", e => {
+    const btn = e.target.closest(".lesson-pill");
+    if(!btn || btn.classList.contains("disabled")) return;
+    Sound.click();
+    selectedLesson = btn.dataset.key;
+    [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
+    updateStats();
+    nextCard();
+  });
+}
+
+function nextCard(){
+  const deck = currentDeck();
+  if(deck.length === 0){
+    const label = selectedLesson === "alle" ? "Vokabeln" : `Lektion ${selectedLesson}`;
+    cardEl.innerHTML = `<div class="empty-state"><div class="big">Noch keine ${label} hinterlegt.</div>Trage sie in <kbd>vocab.js</kbd> in der passenden Lektion ein.</div>`;
+    return;
+  }
+  currentWord = weightedPick(deck);
+  const roundMode = activeModeForRound();
+  if(roundMode === "flash") renderFlash();
+  else if(roundMode === "mc") renderMC();
+  else renderWrite();
+}
+
+function frontBack(word){
+  if(direction === "ar-de") return { front: displayArabic(word.arabic), back: word.german, frontIsArabic: true };
+  return { front: word.german, back: displayArabic(word.arabic), frontIsArabic: false };
+}
+
+function renderFlash(){
+  const {front, back, frontIsArabic} = frontBack(currentWord);
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Karteikarte — antippen zum Umdrehen</div>
+    <div class="pronounce-wrap">
+      <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
+      <button class="pronounce-btn" id="pronounce-btn" type="button">🔊 Aussprache</button>
+    </div>
+    <div class="tap-hint">Leertaste oder Klick zum Umdrehen</div>
+    <div id="flash-actions" class="flash-actions" style="display:none;">
+      <button class="btn-again" id="btn-again">✗ Nochmal</button>
+      <button class="btn-know" id="btn-know">✓ Kenn ich</button>
+    </div>
+  `;
+  const face = document.getElementById("flash-face");
+  const actions = document.getElementById("flash-actions");
+  const pronounceBtn = document.getElementById("pronounce-btn");
+  if(pronounceBtn) pronounceBtn.onclick = (e) => { e.stopPropagation(); speakCurrentWord(); };
+  function flip(){
+    Sound.flip();
+    face.innerText = back;
+    face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
+    actions.style.display = "flex";
+    document.removeEventListener("keydown", flipHandler);
+  }
+  function flipHandler(e){ if(e.code === "Space"){ e.preventDefault(); flip(); } }
+  face.onclick = flip;
+  document.addEventListener("keydown", flipHandler);
+
+  setTimeout(() => {
+    const again = document.getElementById("btn-again");
+    const know = document.getElementById("btn-know");
+    if(again) again.onclick = () => { if(actions.style.display !== "none"){ markResult(currentWord, false); nextCard(); } };
+    if(know) know.onclick = () => { if(actions.style.display !== "none"){ markResult(currentWord, true); nextCard(); } };
+  }, 0);
+}
+
+function renderMC(){
+  const {front, back, frontIsArabic} = frontBack(currentWord);
+  const others = currentDeck().filter(w => w !== currentWord);
+  shuffle(others);
+  const pickBackOf = (w) => direction === "ar-de" ? w.german : displayArabic(w.arabic);
+  let choices = [back, ...others.slice(0,3).map(pickBackOf)];
+  choices = shuffle([...new Set(choices)]);
+  while(choices.length < 4 && others.length > 0){
+    const extra = pickBackOf(others[Math.floor(Math.random()*others.length)]);
+    if(!choices.includes(extra)) choices.push(extra);
+  }
+
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Was bedeutet</div>
+    <div class="pronounce-wrap">
+      <div class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}">${front}</div>
+      <button class="pronounce-btn" id="pronounce-btn" type="button">🔊 Aussprache</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="mc-grid" id="mc-grid"></div>
+    <button class="next-btn" id="next-btn" style="display:none;">Nächste Vokabel ➔</button>
+  `;
+  const grid = document.getElementById("mc-grid");
+  const pronounceBtn = document.getElementById("pronounce-btn");
+  if(pronounceBtn) pronounceBtn.onclick = (e) => { e.stopPropagation(); speakCurrentWord(); };
+  choices.forEach((choice) => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.innerText = choice;
+    btn.onclick = () => selectMC(choice, btn, back);
+    grid.appendChild(btn);
+  });
+  document.getElementById("next-btn").onclick = nextCard;
+}
+
+function selectMC(choice, btn, correctAnswer){
+  const buttons = document.querySelectorAll(".opt-btn");
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById("feedback");
+  const correct = choice === correctAnswer;
+  markResult(currentWord, correct);
+  if(correct){
+    btn.classList.add("correct");
+    feedback.innerText = "Richtig! 🎉";
+    feedback.className = "feedback ok";
+    document.getElementById("next-btn").style.display = "none";
+    scheduleNextCard();
+  } else {
+    btn.classList.add("wrong");
+    feedback.innerText = `Falsch — richtig wäre: ${correctAnswer}`;
+    feedback.className = "feedback bad";
+    buttons.forEach(b => { if(b.innerText === correctAnswer) b.classList.add("correct"); });
+    document.getElementById("next-btn").style.display = "block";
+  }
+}
+
+function renderWrite(){
+  const word = currentWord;
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Übersetze ins Deutsche</div>
+    <div class="pronounce-wrap">
+      <div class="prompt-word">${displayArabic(word.arabic)}</div>
+      <button class="pronounce-btn" id="pronounce-btn" type="button">🔊 Aussprache</button>
+    </div>
+    <div class="type-row">
+      <input type="text" id="write-input" autocomplete="off" placeholder="Antwort eingeben…" />
+      <button id="write-submit">Prüfen</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="next-btn" style="display:none;">Nächste Vokabel ➔</button>
+  `;
+  const input = document.getElementById("write-input");
+  const pronounceBtn = document.getElementById("pronounce-btn");
+  if(pronounceBtn) pronounceBtn.onclick = (e) => { e.stopPropagation(); speakCurrentWord(); };
+  input.focus();
+  function submit(){
+    if(input.disabled) return;
+    const val = input.value.trim().toLowerCase();
+    const correctAnswer = word.german.trim().toLowerCase();
+    const correct = val === correctAnswer;
+    markResult(word, correct);
+    input.disabled = true;
+    const feedback = document.getElementById("feedback");
+    if(correct){
+      feedback.innerText = "Richtig! 🎉";
+      feedback.className = "feedback ok";
+      document.getElementById("next-btn").style.display = "none";
+      scheduleNextCard();
+    } else {
+      feedback.innerText = `Falsch — richtig wäre: ${word.german}`;
+      feedback.className = "feedback bad";
+      document.getElementById("next-btn").style.display = "block";
+    }
+  }
+  document.getElementById("write-submit").onclick = submit;
+  input.addEventListener("keydown", e => { if(e.key === "Enter") submit(); });
+  document.getElementById("next-btn").onclick = nextCard;
+}
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const btn = e.target.closest(".pill-btn");
+  if(btn){ Sound.click(); setMode(btn.dataset.mode); }
+});
+document.getElementById("dir-toggle").addEventListener("click", () => { Sound.click(); toggleDirection(); });
+document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
+document.getElementById("reset-progress-btn").addEventListener("click", () => {
+  if(confirm("Gesamten Lernfortschritt (Gemeistert-Status) zurücksetzen?")){
+    progress = {};
+    saveProgress();
+    sessionCorrect = 0; sessionTotal = 0;
+    updateStats();
+    nextCard();
+  }
+});
+const soundBtn = document.getElementById("sound-toggle");
+function refreshSoundBtn(){ soundBtn.innerText = Sound.isMuted() ? "🔇" : "🔊"; }
+soundBtn.addEventListener("click", () => { Sound.toggle(); refreshSoundBtn(); });
+refreshSoundBtn();
+
+const harakatCheckbox = document.getElementById("harakat-checkbox");
+const harakatState = document.getElementById("harakat-state");
+harakatCheckbox.addEventListener("change", e => {
+  showHarakat = e.target.checked;
+  harakatState.innerText = showHarakat ? "an" : "aus";
+  Sound.click();
+  nextCard();
+});
+
+// Init
+buildLessonTabs();
+setMode("flash");
+updateStats();
+</script>
+</body>
+</html>
