@@ -127,12 +127,7 @@ const LESSONS = {
     { arabic: "الطَّبِيبُ", german: "der Arzt" },
     { arabic: "الْحَقِيبَةُ", german: "die Tasche, der Rucksack" },
   ],
-  
-  6: [
-    {
 
-    }
-  ]
 };
 
 // optionale Namen für die Lektions-Buttons — ohne Eintrag heißt der Button "Lektion N"
@@ -142,5 +137,4 @@ const LESSON_LABELS = {
   3: "Lektion 3",
   4: "Lektion 4",
   5: "Lektion 5",
-  6: "Lektion 6",
 };
