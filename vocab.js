@@ -126,8 +126,7 @@ const LESSONS = {
     { arabic: "الِاسْمُ", german: "der Name" },
     { arabic: "الطَّبِيبُ", german: "der Arzt" },
     { arabic: "الْحَقِيبَةُ", german: "die Tasche, der Rucksack" },
-  ],
-
+  ]
 };
 
 // optionale Namen für die Lektions-Buttons — ohne Eintrag heißt der Button "Lektion N"
