@@ -81,7 +81,7 @@ const LESSONS = {
     { arabic: "ثَقِيلٌ", german: "schwer" },
     { arabic: "الْوَرَقُ", german: "das Papier" },
     { arabic: "الْمَاءُ", german: "das Wasser" },
-    { arabic: "التُّفَاحُ", german: "der Apfel" },
+    { arabic: "التُّفَاحُ", german: "die Äpfel" },
     { arabic: "جَمِيلٌ", german: "schön" },
     { arabic: "الدُّكَّانُ", german: "das Geschäft" },
     { arabic: "حُلْوٌ", german: "süß" },
@@ -121,13 +121,18 @@ const LESSONS = {
     { arabic: "هُنَا", german: "hier" },
     { arabic: "الْخَالُ", german: "der Onkel (Bruder der Mutter)" },
     { arabic: "هُنَاكَ", german: "dort" },
-    { arabic: "مُعَلَّقٌ", german: "verschlossen, geschlossen" },
+    { arabic: "مُغْلَق", german: "verschlossen, geschlossen" },
     { arabic: "الْبِنْتُ", german: "die Tochter, das Mädchen" },
     { arabic: "الِاسْمُ", german: "der Name" },
     { arabic: "الطَّبِيبُ", german: "der Arzt" },
     { arabic: "الْحَقِيبَةُ", german: "die Tasche, der Rucksack" },
   ],
+  
+  6: [
+    {
 
+    }
+  ]
 };
 
 // optionale Namen für die Lektions-Buttons — ohne Eintrag heißt der Button "Lektion N"
@@ -137,4 +142,5 @@ const LESSON_LABELS = {
   3: "Lektion 3",
   4: "Lektion 4",
   5: "Lektion 5",
+  6: "Lektion 6",
 };
