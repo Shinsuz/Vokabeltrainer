@@ -128,9 +128,43 @@ const LESSONS = {
     { arabic: "الِاسْمُ", german: "der Name" },
     { arabic: "الطَّبِيبُ", german: "der Arzt" },
     { arabic: "الْحَقِيبَةُ", german: "die Tasche, der Rucksack" },
-  ]
-};
+  ],
 
+  6: [
+    { arabic: "يَدٌ", german: "Hand"},
+    { arabic: "رِجْلٌ", german: "Bein"},
+    { arabic: "عَيْنٌ", german: "Auge"},
+    { arabic: "أُذُنٌ", german: "Ohr"},
+    { arabic: "رَأْسٌ", german: "Kopf"},
+    { arabic: "أَنْفٌ", german: "Nase"},
+    { arabic: "فَمٌ", german: "Mund"},
+    { arabic: "وَجْهٌ", german: "Gesicht"},
+    { arabic: "الْمِكْوَاةُ", german: "das Bügeleisen" },
+    { arabic: "الْأَنْفُ", german: "die Nase" },
+    { arabic: "الْبَقَرَةُ", german: "die Kuh" },
+    { arabic: "الْفَمُ", german: "der Mund" },
+    { arabic: "الدَّرَّاجَةُ", german: "das Fahrrad" },
+    { arabic: "الْقِدْرُ", german: "der Kochtopf" },
+    { arabic: "الْمِلْعَقَةُ", german: "der Löffel" },
+    { arabic: "الْأُذُنُ", german: "das Ohr" },
+    { arabic: "الْفَلَّاحُ", german: "der Bauer" },
+    { arabic: "الْعَيْنُ", german: "das Auge" },
+    { arabic: "الْأُمُّ", german: "die Mutter" },
+    { arabic: "الْيَدُ", german: "die Hand" },
+    { arabic: "الْأَبُ", german: "der Vater" },
+    { arabic: "الرِّجْلُ", german: "das Bein" },
+    { arabic: "الثَّلَّاجَةُ", german: "der Kühlschrank" },
+    { arabic: "سَرِيعٌ", german: "schnell" },
+    { arabic: "الشَّايُ", german: "der Tee" },
+    { arabic: "النَّافِذَةُ", german: "das Fenster" },
+    { arabic: "الْمَغْرِبُ", german: "der Westen" },
+    { arabic: "الشَّرْقُ", german: "der Osten" },
+    { arabic: "الْقَهْوَةُ", german: "der Kaffee" },
+],
+    
+  
+};
+  
 // optionale Namen für die Lektions-Buttons — ohne Eintrag heißt der Button "Lektion N"
 const LESSON_LABELS = {
   1: "Lektion 1",
