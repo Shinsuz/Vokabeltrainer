@@ -108,6 +108,8 @@ const LESSONS = {
     { arabic: "الْهِنْدُ", german: "Indien" },
     { arabic: "الْجَامِعَةُ", german: "die Universität" },
     { arabic: "الْمُدِيرُ", german: "der Direktor" },
+    { arabic: "ذَهَبَ", german: "Er ist gegangen"},
+    { arabic: "خَرَجَ", german: "Er ist hinaus gegangen"}
   ],
 
   5: [
