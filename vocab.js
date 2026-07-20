@@ -183,6 +183,7 @@ const LESSONS = {
     { arabic: "حرف", german: "Partikel"},
     { arabic: "الخبر", german: "Satzaussage"},
     { arabic: "الحبترأ", german: "Satzgegenstand"} 
+    
   ]
   
 };
