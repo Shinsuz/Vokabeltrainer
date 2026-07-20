@@ -86,6 +86,11 @@ const LESSONS = {
     { arabic: "الدُّكَّانُ", german: "das Geschäft" },
     { arabic: "حُلْوٌ", german: "süß" },
     { arabic: "مَرِيضٌ", german: "krank" },
+    { arabic: "مكْسُوْرٌ", german: "kaputt, gebrochen"},
+    { arabic: "المهندس", german: "der Ingenieur"},
+    { arabic: "مُفْتاحٌ", german: "offen"},
+    { arabic: "لذيذٌ", german: "lecker"},
+  
   ],
 
   4: [
@@ -160,8 +165,25 @@ const LESSONS = {
     { arabic: "الْمَغْرِبُ", german: "der Westen" },
     { arabic: "الشَّرْقُ", german: "der Osten" },
     { arabic: "الْقَهْوَةُ", german: "der Kaffee" },
-],
-    
+    ],
+
+  Grammatik: [
+    { arabic: "تنوين", german: "Tanwin"},
+    { arabic: "نكَرِة", german: "unbestimmt"},
+    { arabic: "معرفة", german: "bestimmt"},
+    { arabic: "اسْمُ اِشارَة", german: "Demonstrativpronomen"},
+    { arabic: "معرفة", german: "bestimmt"},
+    { arabic: "لام التعريف", german: "die bestimmten Artikel"},
+    { arabic: "جملة اسمية" , german: "Nominalsatz"},
+    { arabic: "حروف الجر", german: "Präpositionen"},
+    { arabic: "مرفوع", german: "Nominativ"},
+    { arabic: "مجرور", german: "Genetiv"},
+    { arabic: "اسْم", german: "Nomen"},
+    { arabic: "فعْل", german: "Verben"},
+    { arabic: "حرف", german: "Partikel"},
+    { arabic: "الخبر", german: "Satzaussage"},
+    { arabic: "الحبترأ", german: "Satzgegenstand"} 
+  ]
   
 };
   
@@ -172,4 +194,5 @@ const LESSON_LABELS = {
   3: "Lektion 3",
   4: "Lektion 4",
   5: "Lektion 5",
+  6: "Lektion 6"
 };
