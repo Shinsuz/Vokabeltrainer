@@ -165,6 +165,10 @@ const LESSONS = {
     { arabic: "الْمَغْرِبُ", german: "der Westen" },
     { arabic: "الشَّرْقُ", german: "der Osten" },
     { arabic: "الْقَهْوَةُ", german: "der Kaffee" },
+    { arabic: "أَيْضاً", german: "auch"},
+    { arabic: "جِدّاً", german: "sehr"},
+    { arabic: "لِمَنْ", german: "wessen oder wem gehört"},
+    { arabic: "لِـ", german: "gehören, besitzen, für"}
     ],
 
   Grammatik: [
