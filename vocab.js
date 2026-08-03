@@ -171,6 +171,16 @@ const LESSONS = {
     { arabic: "لِـ", german: "gehören, besitzen, für"}
     ],
 
+    7:[
+      { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)"},
+      { arabic: "النَّاقَةُ", german: "die Kamelstute" },
+      { arabic: "الْبَيْضَةُ", german: "das Ei" },
+      { arabic: "الْبَطَّةُ", german: "die Ente" },
+      { arabic: "الْمُؤَذِّنُ", german: "der Muezzin" },
+      { arabic: "الْمُمَرِّضَةُ", german: "die Krankenschwester" },
+      { arabic: "الدَّجَاجَةُ", german: "die Henne" },
+    ],
+
   Grammatik: [
     { arabic: "تنوين", german: "Tanwin"},
     { arabic: "نكَرِة", german: "unbestimmt"},
@@ -186,7 +196,8 @@ const LESSONS = {
     { arabic: "فعْل", german: "Verben"},
     { arabic: "حرف", german: "Partikel"},
     { arabic: "الخبر", german: "Satzaussage"},
-    { arabic: "الحبترأ", german: "Satzgegenstand"} 
+    { arabic: "الحبترأ", german: "Satzgegenstand"},
+    { arabic: "تاء مربوطة", german: "ة-Endung für Weibliche Substantive und Adjektive"} 
     
   ]
   
@@ -199,5 +210,6 @@ const LESSON_LABELS = {
   3: "Lektion 3",
   4: "Lektion 4",
   5: "Lektion 5",
-  6: "Lektion 6"
+  6: "Lektion 6",
+  7: "Lektion 7"
 };
