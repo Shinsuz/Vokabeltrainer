@@ -90,6 +90,9 @@ const LESSONS = {
     { arabic: "المهندس", german: "der Ingenieur"},
     { arabic: "مُفْتاحٌ", german: "offen"},
     { arabic: "لذيذٌ", german: "lecker"},
+    { arabic: "سَاعَةٌ ", german: "Uhr"},
+    { arabic: "تُفَّاحَةٌ ", german: "Apfel"},
+    { arabic: "التُّفَّاحَةُ ", german: "der Apfel"},
   
   ],
 
@@ -168,7 +171,9 @@ const LESSONS = {
     { arabic: "أَيْضاً", german: "auch"},
     { arabic: "جِدّاً", german: "sehr"},
     { arabic: "لِمَنْ", german: "wessen oder wem gehört"},
-    { arabic: "لِـ", german: "gehören, besitzen, für"}
+    { arabic: "لِـ", german: "gehören, besitzen, für"},
+    { arabic: "شَمْسٌ ", german: "Sonne"},
+    { arabic: "مُسْلِمٌ ", german: "Muslim"}
     ],
 
     7:[
@@ -182,22 +187,22 @@ const LESSONS = {
     ],
 
   Grammatik: [
-    { arabic: "تنوين", german: "Tanwin"},
-    { arabic: "نكَرِة", german: "unbestimmt"},
-    { arabic: "معرفة", german: "bestimmt"},
-    { arabic: "اسْمُ اِشارَة", german: "Demonstrativpronomen"},
-    { arabic: "معرفة", german: "bestimmt"},
-    { arabic: "لام التعريف", german: "die bestimmten Artikel"},
-    { arabic: "جملة اسمية" , german: "Nominalsatz"},
-    { arabic: "حروف الجر", german: "Präpositionen"},
-    { arabic: "مرفوع", german: "Nominativ"},
-    { arabic: "مجرور", german: "Genetiv"},
+    { arabic: "تَنْوِين", german: "Tanwin"},
+    { arabic: "نَكِرَة", german: "unbestimmt"},
+    { arabic: "مَعْرِفَة", german: "bestimmt"},
+    { arabic: "اسْمُ إِشَارَة", german: "Demonstrativpronomen"},
+    { arabic: "مَعْرِفَة", german: "bestimmt"},
+    { arabic: "لَامُ التَّعْرِيف", german: "die bestimmten Artikel"},
+    { arabic: "جُمْلَة اسْمِيَّة" , german: "Nominalsatz"},
+    { arabic: "حُرُوفُ الْجَر", german: "Präpositionen"},
+    { arabic: "مَرْفُوع", german: "Nominativ"},
+    { arabic: "مَجْرُور", german: "Genetiv"},
     { arabic: "اسْم", german: "Nomen"},
-    { arabic: "فعْل", german: "Verben"},
-    { arabic: "حرف", german: "Partikel"},
-    { arabic: "الخبر", german: "Satzaussage"},
-    { arabic: "الحبترأ", german: "Satzgegenstand"},
-    { arabic: "تاء مربوطة", german: "ة-Endung für Weibliche Substantive und Adjektive"} 
+    { arabic: "فِعْل", german: "Verben"},
+    { arabic: "حَرْف", german: "Partikel"},
+    { arabic: "الْخَبَر", german: "Satzaussage"},
+    { arabic: "الْمُبْتَدَأ", german: "Satzgegenstand"},
+    { arabic: "تَـاُء مَرْبُـوطَـةٌ", german: "ة-Endung für Weibliche Substantive und Adjektive"} 
     
   ]
   
