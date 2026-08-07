@@ -217,4 +217,5 @@ const LESSON_LABELS = {
   5: "Lektion 5",
   6: "Lektion 6",
   7: "Lektion 7"
+
 };
