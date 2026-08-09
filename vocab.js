@@ -28,7 +28,7 @@ const LESSONS = {
     { arabic: "كِتَابٌ", german: "ein Buch" },
     { arabic: "قَلَمٌ", german: "ein Stift" },
     { arabic: "مِفْتَاحٌ", german: "ein Schlüssel" },
-    { arabic: "مَكْتَبٌ", german: "ein Schreibtisch" },
+    { arabic: "مَكْتَبٌ", german: "ein Schreibtisch, ein Burö (nach Lektion 7)" },
     { arabic: "سَرِيرٌ", german: "ein Bett" },
     { arabic: "كُرْسِيٌّ", german: "ein Stuhl" },
     { arabic: "نَجْمٌ", german: "ein Stern" },
@@ -176,19 +176,53 @@ const LESSONS = {
     { arabic: "مُسْلِمٌ ", german: "Muslim"}
     ],
 
-    7:[
-      { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)"},
-      { arabic: "النَّاقَةُ", german: "die Kamelstute" },
-      { arabic: "الْبَيْضَةُ", german: "das Ei" },
-      { arabic: "الْبَطَّةُ", german: "die Ente" },
-      { arabic: "الْمُؤَذِّنُ", german: "der Muezzin" },
-      { arabic: "الْمُمَرِّضَةُ", german: "die Krankenschwester" },
-      { arabic: "الدَّجَاجَةُ", german: "die Henne" },
+  7:[
+    { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)"},
+    { arabic: "النَّاقَةُ", german: "die Kamelstute" },
+    { arabic: "الْبَيْضَةُ", german: "das Ei" },
+    { arabic: "الْبَطَّةُ", german: "die Ente" },
+    { arabic: "الْمُؤَذِّنُ", german: "der Muezzin" },
+    { arabic: "الْمُمَرِّضَةُ", german: "die Krankenschwester" },
+    { arabic: "الدَّجَاجَةُ", german: "die Henne" }
     ],
 
+  8: [
+    { arabic: "أَمْرِيكَا", german: "Amerika"},
+    { arabic: "السِّكِّينُ", german: "das Messer"},
+    { arabic: "مُغْلَقٌ", german: "geschlossen, verschlossen"},
+    { arabic: "أَلْمَانِيَا", german: "Deutschland"},
+    { arabic: "العِرَاقُ", german: "der Irak"},
+    { arabic: "إِنْكِلْتِرَا", german: "England"},
+    { arabic: "سُويسْرَا", german: "Schweiz"},
+    { arabic: "المُسْتَشْفَى", german: "das Krankenhaus"},
+    { arabic: "خَلْفَ", german: "hinter"},
+    { arabic: "أَمَامَ", german: "vor"},
+    { arabic: "جَلَسَ", german: "er saß"}
+    ],
+
+  9: [
+    { arabic: "الفَاكِهَةُ", german: "das Obst"},
+    { arabic: "الإِنْكِلِيزِيَّةُ", german: "Englisch (die englische Sprache)"},
+    { arabic: "العُصْفُورُ", german: "der Spatz (kleiner Vogel)"},
+    { arabic: "صَعْبٌ", german: "schwierig"},
+    { arabic: "الطَّائِرُ", german: "der Vogel (allgemein)"},
+    { arabic: "المَدِينَةُ", german: "die Stadt"},
+    { arabic: "العَرَبِيَّةُ", german: "Arabisch (die arabische Sprache)"},
+    { arabic: "القَاهِرَةُ", german: "Kairo"},
+    { arabic: "اللُّغَةُ", german: "die Sprache"},
+    { arabic: "اليَوْمَ", german: "heute"},
+    { arabic: "سَهْلٌ", german: "leicht"},
+    { arabic: "لِمَاذَا", german: "warum"},
+    { arabic: "مُجْتَهِدٌ", german: "fleißig"},
+    { arabic: "الكُوبُ", german: "die Tasse, der Becher"},
+    { arabic: "شَهِيرٌ", german: "berühmt"}
+
+    ],
+
+
   Grammatik: [
-    { arabic: "تَنْوِين", german: "Tanwin"},
-    { arabic: "نَكِرَة", german: "unbestimmt"},
+    { arabic: "تَنْوِين", german: "die Unbestimmtheit (hinsichtlich der Wortform)"},
+    { arabic: "نَكِرَة", german: "unbestimmt (hinsichtlich der Grammatik)"},
     { arabic: "مَعْرِفَة", german: "bestimmt"},
     { arabic: "اسْمُ إِشَارَة", german: "Demonstrativpronomen"},
     { arabic: "مَعْرِفَة", german: "bestimmt"},
@@ -202,8 +236,10 @@ const LESSONS = {
     { arabic: "حَرْف", german: "Partikel"},
     { arabic: "الْخَبَر", german: "Satzaussage"},
     { arabic: "الْمُبْتَدَأ", german: "Satzgegenstand"},
-    { arabic: "تَـاُء مَرْبُـوطَـةٌ", german: "ة-Endung für Weibliche Substantive und Adjektive"} 
-    
+    { arabic: "تَـاُء مَرْبُـوطَـةٌ", german: "ة-Endung für Weibliche Substantive und Adjektive"},
+    { arabic: "(أَلِف مَقْصُورَة (ى ", german: "Alif maqsūra"},
+    { arabic: "نَعْتٌ", german: "Adjektiv"},
+    { arabic: "مَنْعُوتٌ", german: "Substantiv"}
   ]
   
 };
@@ -216,6 +252,7 @@ const LESSON_LABELS = {
   4: "Lektion 4",
   5: "Lektion 5",
   6: "Lektion 6",
-  7: "Lektion 7"
-
+  7: "Lektion 7",
+  8: "Lektion 8",
+  9: "Lektion 9 (erst mal nur Teil A)"
 };
