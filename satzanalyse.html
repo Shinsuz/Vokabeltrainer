@@ -116,8 +116,9 @@ header p.subtitle {
   margin-top: 0.6rem;
 }
 
-header .nav-links { margin-top: 0.9rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 header .nav-link {
+  display: inline-block;
+  margin-top: 0.9rem;
   font-size: 0.78rem;
   color: #7d8bab;
   text-decoration: none;
@@ -192,6 +193,26 @@ main {
   -webkit-backdrop-filter: blur(10px);
 }
 
+.pill-btn {
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-color);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.pill-btn:hover { color: var(--accent-color); }
+.pill-btn.active {
+  background: rgba(229, 186, 115, 0.15);
+  color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px rgba(229, 186, 115, 0.4);
+}
+
 .lesson-pill {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -212,6 +233,21 @@ main {
 }
 .lesson-pill.disabled { opacity: 0.3; cursor: not-allowed; }
 
+.toggle-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--text-color);
+  user-select: none;
+}
+.toggle-pill b { color: var(--accent-color); }
+
 .card-outer { position: relative; margin: 1.5rem 0; }
 .corner { position: absolute; width: 24px; height: 24px; opacity: 0.55; }
 .corner.tl { top: -6px; left: -6px; }
@@ -226,8 +262,8 @@ main {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-  padding: 2.5rem 1.75rem;
-  min-height: 340px;
+  padding: 3rem 2rem;
+  min-height: 290px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -242,52 +278,69 @@ main {
 
 .prompt-hint { font-size: 0.75rem; color: #7d8bab; letter-spacing: 0.06em; text-transform: uppercase; }
 
-.word-row {
-  display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center;
-  direction: rtl; width: 100%;
-}
-.word-unit { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
-.word-btn {
-  font-family: var(--font-arabic);
-  font-size: 1.55rem;
+.concept-term { font-family: var(--font-heading); font-size: 1.55rem; font-weight: 600; color: var(--text-light); line-height: 1.4; }
+.concept-explanation { font-size: 1rem; line-height: 1.8; color: var(--text-color); max-width: 520px; text-align: left; }
+
+.grammar-question { font-size: 1.12rem; line-height: 1.9; color: var(--text-light); max-width: 520px; }
+.grammar-question .ar { font-family: var(--font-arabic); font-size: 1.3rem; }
+
+.mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; width: 100%; max-width: 480px; }
+@media (max-width: 480px) { .mc-grid { grid-template-columns: 1fr; } }
+.opt-btn {
   background: rgba(255, 255, 255, 0.03);
-  border: 1.5px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   color: var(--text-light);
-  padding: 0.55rem 1rem;
+  font-family: var(--font-main), var(--font-arabic);
+  font-size: 0.98rem; font-weight: 500;
+  line-height: 1.6;
+  padding: 0.9rem 0.75rem;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.word-btn:hover:not(:disabled) { border-color: rgba(229, 186, 115, 0.4); }
-.word-btn.selected { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(229, 186, 115, 0.2); }
-.word-btn.correct { border-color: #7fd6c2 !important; }
-.word-btn.wrong { border-color: var(--wrong-color) !important; }
-.word-btn:disabled { cursor: default; }
-.word-role-label { font-size: 0.68rem; color: #9fb0d4; min-height: 14px; font-weight: 500; }
-.word-role-label.bad { color: var(--wrong-color); }
+.opt-btn.ar { font-family: var(--font-arabic); font-size: 1.1rem; }
+.opt-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.08); }
+.opt-btn:disabled { cursor: default; }
+.opt-btn.correct { background: rgba(127, 214, 194, 0.15); border-color: #7fd6c2; color: #7fd6c2; }
+.opt-btn.wrong { background: rgba(217, 138, 115, 0.15); border-color: var(--wrong-color); color: var(--wrong-color); }
 
-.tag-palette { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; width: 100%; max-width: 520px; }
-.tag-chip {
-  font-family: var(--font-main);
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.65rem 1.05rem;
-  border-radius: 999px;
-  cursor: pointer;
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
+.tf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; width: 100%; max-width: 340px; }
+.tf-btn {
   background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   color: var(--text-light);
-  transition: all 0.2s ease;
+  font-family: var(--font-main);
+  font-size: 1rem; font-weight: 600;
+  padding: 1rem 0.75rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
-.tag-chip:hover:not(:disabled) { filter: brightness(1.15); }
-.tag-chip:disabled { cursor: default; opacity: 0.45; }
+.tf-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.08); }
+.tf-btn:disabled { cursor: default; }
+.tf-btn.correct { background: rgba(127, 214, 194, 0.15); border-color: #7fd6c2; color: #7fd6c2; }
+.tf-btn.wrong { background: rgba(217, 138, 115, 0.15); border-color: var(--wrong-color); color: var(--wrong-color); }
 
 .feedback { font-size: 0.9rem; font-weight: 600; min-height: 20px; }
 .feedback.ok { color: #7fd6c2; }
 .feedback.bad { color: var(--wrong-color); }
+.explain-text { font-size: 0.85rem; color: #9fb0d4; max-width: 480px; line-height: 1.6; font-style: italic; }
+
+.flash-actions { display: flex; gap: 0.6rem; width: 100%; max-width: 420px; }
+.flash-actions button {
+  flex: 1; padding: 0.85rem; border-radius: 12px;
+  font-family: var(--font-main); font-weight: 600; font-size: 0.86rem; cursor: pointer;
+  border: 1px solid; transition: all 0.2s ease;
+}
+.btn-again { background: rgba(217, 138, 115, 0.1); border-color: var(--wrong-color); color: var(--wrong-color); }
+.btn-again:hover { background: rgba(217, 138, 115, 0.2); }
+.btn-know { background: rgba(127, 214, 194, 0.12); border-color: #7fd6c2; color: #7fd6c2; }
+.btn-know:hover { background: rgba(127, 214, 194, 0.22); }
+
+.tap-hint { font-size: 0.72rem; color: #5c6f96; }
 
 .next-btn {
-  width: 100%; max-width: 420px;
+  width: 100%;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--dark-color);
   font-family: var(--font-main);
@@ -296,19 +349,6 @@ main {
   transition: filter 0.2s ease;
 }
 .next-btn:hover { filter: brightness(1.1); }
-
-.check-btn {
-  width: 100%; max-width: 420px;
-  background: rgba(127, 214, 194, 0.14);
-  border: 1.5px solid #7fd6c2;
-  color: #7fd6c2;
-  font-family: var(--font-main);
-  font-weight: 700; font-size: 0.9rem;
-  padding: 0.9rem; border-radius: 12px; cursor: pointer;
-  transition: all 0.2s ease;
-}
-.check-btn:hover:not(:disabled) { background: rgba(127, 214, 194, 0.24); }
-.check-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .progress-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.75rem; }
 .progress-track { flex: 1; height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); }
@@ -344,6 +384,49 @@ footer .made-by { opacity: 0.85; }
 footer .made-by a { color: var(--accent-color); text-decoration: none; font-weight: 600; }
 footer .made-by a:hover { text-decoration: underline; }
 
+kbd {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.75em;
+  color: var(--text-color);
+}
+
+@media (max-width: 640px) {
+  body { padding-bottom: 3rem; }
+  header { padding: 3.5rem 1rem 1rem; }
+  .header-star { width: 62px; height: 62px; margin-bottom: 12px; }
+  h1 { font-size: 1.85rem; }
+  header .ar-sub { font-size: 1.05rem; }
+  header p.subtitle { font-size: 0.8rem; }
+  main { padding: 0 0.85rem; }
+  .stats-row { gap: 0.5rem; }
+  .stats-pill { font-size: 0.72rem; }
+  .stats-pill div { padding: 0.5rem 0.7rem; }
+  .icon-btn { width: 36px; height: 36px; font-size: 0.9rem; }
+  .pill-row { gap: 0.5rem; }
+  .pill-group { width: 100%; justify-content: center; flex-wrap: wrap; }
+  .pill-btn { flex: 1 1 auto; padding: 0.55rem 0.7rem; font-size: 0.75rem; }
+  #lesson-tabs { width: 100%; justify-content: center; flex-wrap: wrap; }
+  .card { padding: 2.2rem 1.25rem; min-height: 250px; gap: 1.1rem; }
+  .concept-term { font-size: 1.25rem; }
+  .grammar-question { font-size: 1rem; }
+  .mc-grid, .tf-grid { max-width: 100%; }
+  .opt-btn { font-size: 0.88rem; padding: 0.8rem 0.6rem; }
+  .flash-actions { max-width: 100%; }
+  .controls { flex-direction: column; }
+  .controls .ghost-btn { width: 100%; text-align: center; }
+  footer { padding: 2rem 1rem 1rem; font-size: 0.72rem; }
+}
+
+@media (max-width: 380px) {
+  h1 { font-size: 1.6rem; }
+  .stats-pill { flex-wrap: wrap; border-radius: 16px; }
+  .stats-pill div { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .stats-pill div:last-child { border-bottom: none; }
+}
+
 .end-overlay {
   position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,0.55); z-index: 10010; padding: 1rem; visibility: hidden; opacity: 0; transition: all 0.18s ease;
@@ -363,34 +446,6 @@ footer .made-by a:hover { text-decoration: underline; }
 .btn-replay { background: rgba(127,214,194,0.12); border-color: #7fd6c2; color:#7fd6c2; }
 .btn-back { background: rgba(255,255,255,0.03); color: var(--text-light); }
 .btn-close { background: rgba(217,138,115,0.12); border-color: var(--wrong-color); color: var(--wrong-color); }
-
-@media (max-width: 640px) {
-  body { padding-bottom: 3rem; }
-  header { padding: 3.5rem 1rem 1rem; }
-  .header-star { width: 62px; height: 62px; margin-bottom: 12px; }
-  h1 { font-size: 1.85rem; }
-  header .ar-sub { font-size: 1.05rem; }
-  header p.subtitle { font-size: 0.8rem; }
-  main { padding: 0 0.85rem; }
-  .stats-row { gap: 0.5rem; }
-  .stats-pill { font-size: 0.72rem; }
-  .stats-pill div { padding: 0.5rem 0.7rem; }
-  .icon-btn { width: 36px; height: 36px; font-size: 0.9rem; }
-  #lesson-tabs { width: 100%; justify-content: center; flex-wrap: wrap; }
-  .card { padding: 2rem 1.1rem; min-height: 300px; gap: 1.1rem; }
-  .word-btn { font-size: 1.3rem; padding: 0.5rem 0.8rem; }
-  .tag-chip { font-size: 0.76rem; padding: 0.55rem 0.85rem; }
-  .controls { flex-direction: column; }
-  .controls .ghost-btn { width: 100%; text-align: center; }
-  footer { padding: 2rem 1rem 1rem; font-size: 0.72rem; }
-}
-
-@media (max-width: 380px) {
-  h1 { font-size: 1.6rem; }
-  .stats-pill { flex-wrap: wrap; border-radius: 16px; }
-  .stats-pill div { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .stats-pill div:last-child { border-bottom: none; }
-}
 </style>
 <script src="main.js"></script>
 </head>
@@ -400,10 +455,8 @@ footer .made-by a:hover { text-decoration: underline; }
     <div class="header-star"></div>
     <h1>Satzanalyse</h1>
     <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
-    <p class="subtitle">Wörtern ihre Rolle im Satz zuordnen</p>
-    <div class="nav-links">
-      <a class="nav-link" href="index.html">← Zum Vokabeltrainer</a>
-    </div>
+    <p class="subtitle">Regeln lernen &amp; abfragen</p>
+    <a class="nav-link" href="index.html">← Zum Vokabeltrainer</a>
   </header>
 
   <main>
@@ -414,6 +467,15 @@ footer .made-by a:hover { text-decoration: underline; }
         <div>Sitzung <b id="stat-session">0/0</b></div>
       </div>
       <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
+    </div>
+
+    <div class="pill-row">
+      <div class="pill-group" id="tabs">
+        <button class="pill-btn" data-mode="concept">Konzepte</button>
+        <button class="pill-btn" data-mode="mc">Multiple Choice</button>
+        <button class="pill-btn" data-mode="truefalse">Richtig/Falsch</button>
+        <button class="pill-btn" data-mode="mix">Mix-Modus</button>
+      </div>
     </div>
 
     <div class="pill-row">
@@ -447,7 +509,7 @@ footer .made-by a:hover { text-decoration: underline; }
 
     <div class="controls">
       <button class="ghost-btn" id="reset-progress-btn">Fortschritt zurücksetzen</button>
-      <button class="ghost-btn" id="shuffle-btn">🔀 Neuer Satz</button>
+      <button class="ghost-btn" id="shuffle-btn">🔀 Neu mischen</button>
     </div>
   </main>
 
@@ -456,38 +518,28 @@ footer .made-by a:hover { text-decoration: underline; }
   </footer>
 
 <script>
-/* Die Sätze (SATZANALYSE) und Rollen (TAGS_PER_LESSON) kommen aus
-   satzanalyse.js — siehe <script src="satzanalyse.js"> im <head>. */
+/* Die Inhalte (SATZANALYSE, SATZANALYSE_LABELS) kommen aus main.js —
+   siehe <script src="main.js"> im <head>. */
 const STORAGE_KEY = "satzanalyse_progress_v1";
 const SOUND_KEY = "satzanalyse_sound_muted";
 const MASTER_THRESHOLD = 3;
-const TAG_COLORS = ["#e5ba73", "#7fd6c2", "#d98a73", "#7fa8d6", "#b39ddb", "#e0a3c9"];
+
+const ARABIC_REGEX = /[\u0600-\u06FF]/;
+function isArabicText(t){ return ARABIC_REGEX.test(t || ""); }
 
 /* ---------- Lektionen ---------- */
 let selectedLesson = "alle";
-function lessonKeys(){ return Object.keys(SATZANALYSE); }
 function lessonList(){
-  return selectedLesson === "alle"
-    ? lessonKeys().map(k => ({ key: k, ...SATZANALYSE[k] }))
-    : (SATZANALYSE[selectedLesson] ? [{ key: selectedLesson, ...SATZANALYSE[selectedLesson] }] : []);
+  return selectedLesson === "alle" ? Object.values(SATZANALYSE) : [SATZANALYSE[selectedLesson]].filter(Boolean);
 }
 function currentDeck(){
   const items = [];
   lessonList().forEach(l => {
-    (l.sentences || []).forEach(s => {
-      items.push({ key: "s:" + s.text, lesson: l.key, text: s.text, words: s.words });
-    });
+    (l.concepts || []).forEach(c => items.push({ kind: "concept", key: "c:" + c.term, term: c.term, explanation: c.explanation }));
+    (l.questions || []).forEach(q => items.push({ kind: q.type, key: (q.type === "mc" ? "q:" + q.question : "t:" + q.statement), ...q }));
   });
-  return items;
-}
-function tagsFor(lessonKey){ return TAGS_PER_LESSON[lessonKey] || []; }
-function colorForTag(tagId, tags){
-  const idx = tags.findIndex(t => t.id === tagId);
-  return TAG_COLORS[idx % TAG_COLORS.length];
-}
-function labelForTag(tagId, tags){
-  const t = tags.find(t => t.id === tagId);
-  return t ? t.label : tagId;
+  if(mode === "mix") return items;
+  return items.filter(i => i.kind === mode);
 }
 
 /* ---------- Sound-Engine ---------- */
@@ -528,6 +580,7 @@ const Sound = (() => {
 
   return {
     click(){ tone(660, 0, 0.045, "triangle", 0.05, {cutoff: 3000}); },
+    flip(){ tone(520, 0, 0.05, "triangle", 0.07); tone(780, 0.05, 0.08, "sine", 0.06); },
     correct(){
       combo = Math.min(combo + 1, 7);
       const step = Math.pow(2, combo / 12);
@@ -559,10 +612,8 @@ const Sound = (() => {
 })();
 
 let progress = loadProgress();
+let mode = "concept";
 let currentItem = null;
-let assignments = {};
-let selectedWordIdx = null;
-let checked = false;
 let sessionCorrect = 0, sessionTotal = 0;
 let cardEl = document.getElementById("card");
 let sessionWrongKeys = new Set();
@@ -575,13 +626,16 @@ function loadProgress(){
     return raw ? JSON.parse(raw) : {};
   }catch(e){ return {}; }
 }
-function saveProgress(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+function saveProgress(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
 function getEntry(item){
   if(!progress[item.key]) progress[item.key] = { streak: 0, wrong: 0 };
   return progress[item.key];
 }
-function isMastered(item){ return getEntry(item).streak >= MASTER_THRESHOLD; }
-
+function isMastered(item){
+  return getEntry(item).streak >= MASTER_THRESHOLD;
+}
 function markResult(item, correct){
   const e = getEntry(item);
   const wasMastered = e.streak >= MASTER_THRESHOLD;
@@ -617,8 +671,8 @@ function updateStats(){
     document.getElementById("progress-label").innerText = pct + " % — Alles gemeistert!";
     if(sessionWrongKeys.size > 0 && !inReview){
       startReviewRound();
-    } else if(!window.__endShownFor || window.__endShownFor !== (selectedLesson)){
-      window.__endShownFor = selectedLesson;
+    } else if(!window.__endShownFor || window.__endShownFor !== (selectedLesson + mode)){
+      window.__endShownFor = selectedLesson + mode;
       try{ showEndOverlay(); }catch(e){}
     }
   } else {
@@ -682,6 +736,14 @@ function shuffle(arr){
   return arr;
 }
 
+function setMode(m){
+  mode = m;
+  document.querySelectorAll("#tabs .pill-btn").forEach(t => t.classList.toggle("active", t.dataset.mode === m));
+  window.__endShownFor = null;
+  updateStats();
+  nextCard();
+}
+
 /* ---------- Lektionen-Auswahl ---------- */
 function buildLessonTabs(){
   const wrap = document.getElementById("lesson-tabs");
@@ -692,14 +754,14 @@ function buildLessonTabs(){
   allBtn.dataset.key = "alle";
   wrap.appendChild(allBtn);
 
-  lessonKeys().sort((a,b) => Number(a) - Number(b)).forEach(key => {
+  Object.keys(SATZANALYSE).sort((a,b) => Number(a) - Number(b)).forEach(key => {
     const l = SATZANALYSE[key];
-    const hasContent = l && l.sentences && l.sentences.length;
+    const hasContent = (l.concepts && l.concepts.length) || (l.questions && l.questions.length);
     const btn = document.createElement("button");
     btn.className = "lesson-pill" + (hasContent ? "" : " disabled") + (selectedLesson === key ? " active" : "");
     btn.textContent = (typeof SATZANALYSE_LABELS !== "undefined" && SATZANALYSE_LABELS[key]) || `Lektion ${key}`;
     btn.dataset.key = key;
-    if(!hasContent) btn.title = "noch keine Sätze in dieser Lektion";
+    if(!hasContent) btn.title = "noch keine Inhalte in dieser Lektion";
     wrap.appendChild(btn);
   });
 
@@ -718,8 +780,8 @@ function buildLessonTabs(){
 function nextCard(){
   const deck = currentDeck();
   if(deck.length === 0){
-    const label = selectedLesson === "alle" ? "Sätze" : `Lektion ${selectedLesson}`;
-    cardEl.innerHTML = `<div class="empty-state"><div class="big">Noch keine ${label} hinterlegt.</div>Trage Sätze in <kbd>satzanalyse.js</kbd> in der passenden Lektion ein.</div>`;
+    const label = selectedLesson === "alle" ? "Inhalte" : `Lektion ${selectedLesson}`;
+    cardEl.innerHTML = `<div class="empty-state"><div class="big">Noch keine ${label} hinterlegt.</div>Trage Konzepte/Fragen in <kbd>main.js</kbd> in der passenden Lektion ein.</div>`;
     return;
   }
   if(inReview){
@@ -733,10 +795,9 @@ function nextCard(){
   } else {
     currentItem = weightedPick(deck);
   }
-  assignments = {};
-  selectedWordIdx = null;
-  checked = false;
-  renderSentence();
+  if(currentItem.kind === "concept") renderConcept();
+  else if(currentItem.kind === "mc") renderMC();
+  else renderTrueFalse();
 }
 
 function startReviewRound(){
@@ -750,132 +811,131 @@ function startReviewRound(){
   reviewQueue = shuffle(reviewQueue);
   inReview = true;
   hideEndOverlay();
-  document.getElementById("progress-label").innerText = `Wiederhole falsch analysierte Sätze (${reviewQueue.length})`;
+  document.getElementById("progress-label").innerText = `Wiederhole falsch beantwortete Punkte (${reviewQueue.length})`;
   nextCard();
 }
 
-function renderSentence(){
+function renderConcept(){
   const item = currentItem;
-  const tags = tagsFor(item.lesson);
-
   cardEl.innerHTML = `
-    <div class="prompt-hint">Wort antippen, dann Rolle wählen</div>
-    <div class="word-row" id="word-row"></div>
-    <div class="feedback" id="feedback"></div>
-    <div class="tag-palette" id="tag-palette"></div>
-    <button class="check-btn" id="check-btn">Prüfen</button>
-    <button class="next-btn" id="next-btn" style="display:none;">Nächster Satz ➔</button>
+    <div class="prompt-hint">Begriff — antippen zum Umdrehen</div>
+    <div id="concept-face" class="concept-term" style="cursor:pointer;">${item.term}</div>
+    <div class="tap-hint">Leertaste oder Klick zum Umdrehen</div>
+    <div id="flash-actions" class="flash-actions" style="display:none;">
+      <button class="btn-again" id="btn-again">✗ Nochmal</button>
+      <button class="btn-know" id="btn-know">✓ Kenn ich</button>
+    </div>
   `;
+  const face = document.getElementById("concept-face");
+  const actions = document.getElementById("flash-actions");
+  function flip(){
+    Sound.flip();
+    face.innerText = item.explanation;
+    face.className = "concept-explanation";
+    actions.style.display = "flex";
+    document.removeEventListener("keydown", flipHandler);
+  }
+  function flipHandler(e){ if(e.code === "Space"){ e.preventDefault(); flip(); } }
+  face.onclick = flip;
+  document.addEventListener("keydown", flipHandler);
 
-  const wordRow = document.getElementById("word-row");
-  item.words.forEach((w, i) => {
-    const unit = document.createElement("div");
-    unit.className = "word-unit";
+  setTimeout(() => {
+    const again = document.getElementById("btn-again");
+    const know = document.getElementById("btn-know");
+    if(again) again.onclick = () => { if(actions.style.display !== "none"){ markResult(currentItem, false); nextCard(); } };
+    if(know) know.onclick = () => { if(actions.style.display !== "none"){ markResult(currentItem, true); nextCard(); } };
+  }, 0);
+}
+
+function renderMC(){
+  const item = currentItem;
+  const questionHtml = item.question;
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Multiple Choice</div>
+    <div class="grammar-question">${questionHtml}</div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explain-text" id="explain" style="display:none;"></div>
+    <div class="mc-grid" id="mc-grid"></div>
+    <button class="next-btn" id="next-btn" style="display:none;">Nächste Frage ➔</button>
+  `;
+  const grid = document.getElementById("mc-grid");
+  item.choices.forEach(choice => {
     const btn = document.createElement("button");
-    btn.className = "word-btn";
-    btn.innerText = w.ar;
-    btn.onclick = () => {
-      if(checked) return;
-      selectedWordIdx = i;
-      renderWordStates();
-    };
-    const label = document.createElement("div");
-    label.className = "word-role-label";
-    label.id = "label-" + i;
-    unit.appendChild(btn);
-    unit.appendChild(label);
-    wordRow.appendChild(unit);
+    btn.className = "opt-btn" + (isArabicText(choice) ? " ar" : "");
+    btn.innerText = choice;
+    btn.onclick = () => selectMC(choice, btn, item.correct, item.explanation);
+    grid.appendChild(btn);
   });
-
-  const palette = document.getElementById("tag-palette");
-  tags.forEach(t => {
-    const chip = document.createElement("button");
-    chip.className = "tag-chip";
-    chip.innerText = t.label;
-    chip.style.borderColor = colorForTag(t.id, tags);
-    chip.style.color = colorForTag(t.id, tags);
-    chip.onclick = () => {
-      if(checked || selectedWordIdx === null) return;
-      Sound.click();
-      assignments[selectedWordIdx] = t.id;
-      const nextUnassigned = item.words.findIndex((w, i) => assignments[i] === undefined);
-      selectedWordIdx = nextUnassigned !== -1 ? nextUnassigned : null;
-      renderWordStates();
-    };
-    palette.appendChild(chip);
-  });
-
-  document.getElementById("check-btn").onclick = checkSentence;
   document.getElementById("next-btn").onclick = nextCard;
-  renderWordStates();
 }
 
-function renderWordStates(){
-  const item = currentItem;
-  const tags = tagsFor(item.lesson);
-  const buttons = document.querySelectorAll(".word-btn");
-  buttons.forEach((btn, i) => {
-    btn.classList.toggle("selected", i === selectedWordIdx && !checked);
-    const tagId = assignments[i];
-    if(tagId){
-      const color = colorForTag(tagId, tags);
-      btn.style.background = color + "26";
-      btn.style.borderColor = color;
-    } else {
-      btn.style.background = "";
-      if(!checked) btn.style.borderColor = "";
-    }
-    const label = document.getElementById("label-" + i);
-    if(label) label.innerText = tagId ? labelForTag(tagId, tags) : "";
-  });
-  const allAssigned = item.words.every((w, i) => assignments[i] !== undefined);
-  const checkBtn = document.getElementById("check-btn");
-  if(checkBtn) checkBtn.disabled = !allAssigned;
-}
-
-function checkSentence(){
-  const item = currentItem;
-  const tags = tagsFor(item.lesson);
-  checked = true;
-  let allCorrect = true;
-
-  item.words.forEach((w, i) => {
-    const btn = document.querySelectorAll(".word-btn")[i];
-    const label = document.getElementById("label-" + i);
-    const correct = assignments[i] === w.role;
-    btn.disabled = true;
-    btn.classList.remove("selected");
-    if(correct){
-      btn.classList.add("correct");
-    } else {
-      allCorrect = false;
-      btn.classList.add("wrong");
-      if(label){
-        label.innerText = `${labelForTag(assignments[i], tags)} — richtig: ${labelForTag(w.role, tags)}`;
-        label.classList.add("bad");
-      }
-    }
-  });
-
-  document.querySelectorAll(".tag-chip").forEach(c => c.disabled = true);
-  document.getElementById("check-btn").style.display = "none";
-  document.getElementById("next-btn").style.display = "block";
-
+function selectMC(choice, btn, correctAnswer, explanation){
+  const buttons = document.querySelectorAll(".opt-btn");
+  buttons.forEach(b => b.disabled = true);
   const feedback = document.getElementById("feedback");
-  if(allCorrect){
+  const explainEl = document.getElementById("explain");
+  const correct = choice === correctAnswer;
+  markResult(currentItem, correct);
+  if(correct){
+    btn.classList.add("correct");
     feedback.innerText = "Richtig! 🎉";
     feedback.className = "feedback ok";
   } else {
-    feedback.innerText = "Nicht ganz — schau dir die Korrektur unter den Wörtern an.";
+    btn.classList.add("wrong");
+    feedback.innerText = `Falsch — richtig wäre: ${correctAnswer}`;
     feedback.className = "feedback bad";
+    buttons.forEach(b => { if(b.innerText === correctAnswer) b.classList.add("correct"); });
   }
-
-  markResult(item, allCorrect);
+  if(explanation){ explainEl.innerText = explanation; explainEl.style.display = "block"; }
+  document.getElementById("next-btn").style.display = "block";
 }
 
+function renderTrueFalse(){
+  const item = currentItem;
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Richtig oder Falsch?</div>
+    <div class="grammar-question">${item.statement}</div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explain-text" id="explain" style="display:none;"></div>
+    <div class="tf-grid" id="tf-grid">
+      <button class="tf-btn" id="tf-true">Wahr</button>
+      <button class="tf-btn" id="tf-false">Falsch</button>
+    </div>
+    <button class="next-btn" id="next-btn" style="display:none;">Nächste Frage ➔</button>
+  `;
+  document.getElementById("tf-true").onclick = (e) => selectTF(true, e.target, item.correct, item.explanation);
+  document.getElementById("tf-false").onclick = (e) => selectTF(false, e.target, item.correct, item.explanation);
+  document.getElementById("next-btn").onclick = nextCard;
+}
+
+function selectTF(choice, btn, correctAnswer, explanation){
+  const buttons = document.querySelectorAll(".tf-btn");
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById("feedback");
+  const explainEl = document.getElementById("explain");
+  const correct = choice === correctAnswer;
+  markResult(currentItem, correct);
+  if(correct){
+    btn.classList.add("correct");
+    feedback.innerText = "Richtig! 🎉";
+    feedback.className = "feedback ok";
+  } else {
+    btn.classList.add("wrong");
+    feedback.innerText = `Falsch — richtig wäre: ${correctAnswer ? "Wahr" : "Falsch"}`;
+    feedback.className = "feedback bad";
+    document.getElementById(correctAnswer ? "tf-true" : "tf-false").classList.add("correct");
+  }
+  if(explanation){ explainEl.innerText = explanation; explainEl.style.display = "block"; }
+  document.getElementById("next-btn").style.display = "block";
+}
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const btn = e.target.closest(".pill-btn");
+  if(btn){ Sound.click(); setMode(btn.dataset.mode); }
+});
 document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
 document.getElementById("reset-progress-btn").addEventListener("click", () => {
-  if(confirm("Gesamten Satzanalyse-Fortschritt zurücksetzen?")){
+  if(confirm("Gesamten Fortschritt zurücksetzen?")){
     progress = {};
     saveProgress();
     sessionCorrect = 0; sessionTotal = 0;
@@ -889,9 +949,13 @@ soundBtn.addEventListener("click", () => { Sound.toggle(); refreshSoundBtn(); })
 refreshSoundBtn();
 
 // Init
-buildLessonTabs();
-updateStats();
-nextCard();
+if (typeof SATZANALYSE === "undefined") {
+  cardEl.innerHTML = `<div class="empty-state"><div class="big">main.js wurde nicht geladen.</div>Prüfe, ob <kbd>main.js</kbd> im selben Ordner liegt und <kbd>const SATZANALYSE = {...}</kbd> enthält.</div>`;
+} else {
+  buildLessonTabs();
+  setMode("concept");
+  updateStats();
+}
 </script>
 </body>
 </html>

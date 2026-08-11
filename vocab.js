@@ -193,7 +193,7 @@ const LESSONS = {
     { arabic: "أَلْمَانِيَا", german: "Deutschland"},
     { arabic: "العِرَاقُ", german: "der Irak"},
     { arabic: "إِنْكِلْتِرَا", german: "England"},
-    { arabic: "سُويسْرَا", german: "Schweiz"},
+    { arabic: "سُوِيسرَا", german: "Schweiz"},
     { arabic: "المُسْتَشْفَى", german: "das Krankenhaus"},
     { arabic: "خَلْفَ", german: "hinter"},
     { arabic: "أَمَامَ", german: "vor"},

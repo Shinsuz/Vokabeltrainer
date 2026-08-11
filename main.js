@@ -9,7 +9,7 @@
                 [{ type: "truefalse", statement, correct, explanation }]
    ========================================================================== */
 
-const GRAMMAR_LABELS = {
+const SATZANALYSE_LABELS= {
   1: "Lektion 1",
   2: "Lektion 2",
   3: "Lektion 3",
@@ -21,7 +21,7 @@ const GRAMMAR_LABELS = {
   9: "Lektion 9"
 };
 
-const GRAMMAR_LESSONS = {
+const SATZANALYSE= {
 
   /* ===================== LEKTION 1 ===================== */
   1: {
@@ -182,4 +182,4 @@ const GRAMMAR_LESSONS = {
     ]
   }
 
-};
+};  
