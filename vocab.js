@@ -1,24 +1,3 @@
-/* ============================================================
-   DEINE VOKABELN
-   ------------------------------------------------------------
-   Vokabeln sind in Lektionen aufgeteilt. Jede Lektion ist ein
-   eigenes Array, ein Eintrag pro Vokabel, nach diesem Muster:
-
-     { arabic: "كِتَابٌ", german: "ein Buch" },
-
-   Diakritika (Fatha/Kasra/etc.) sind optional beim Eintragen,
-   machen die Karten aber leichter lesbar — im Trainer kannst du
-   sie per Schalter sowieso ein-/ausblenden.
-
-   Neue Lektion hinzufügen: einfach LESSONS[6] = [ ... ] ergänzen
-   und optional in LESSON_LABELS einen Namen vergeben. Der Button
-   dafür erscheint dann automatisch oben im Trainer.
-
-   PNG-Workflow: schick mir ein Foto/Screenshot einer Vokabel-
-   liste, ich lese die Wörter aus und liefere dir den fertigen
-   Array-Block zum Reinkopieren — du musst nichts abtippen.
-   ============================================================ */
-
 const LESSONS = {
 
   1: [
@@ -215,8 +194,24 @@ const LESSONS = {
     { arabic: "لِمَاذَا", german: "warum"},
     { arabic: "مُجْتَهِدٌ", german: "fleißig"},
     { arabic: "الكُوبُ", german: "die Tasse, der Becher"},
-    { arabic: "شَهِيرٌ", german: "berühmt"}
-
+    { arabic: "شَهِيرٌ", german: "berühmt"},
+    { arabic: "الْمَكْتَبَةُ", german: "die Bücherei, der Buchladen"},
+    { arabic: "الثَّانَوِيَّةُ", german: "Oberstufe, Oberschule"},
+    { arabic: "الآنَ", german: "jetzt"},
+    { arabic: "الْوَزِيرُ", german: "der Minister"},
+    { arabic: "هُنَاكَ", german: "dort (hinten)"},
+    { arabic: "حَادٌّ", german: "scharf (bei Klingen u. ä.)"},
+    { arabic: "الْمُسْتَوْصَفُ", german: "die Klinik, das kleine Krankenhaus"},
+    { arabic: "السُّوقُ", german: "der Markt"},
+    { arabic: "الْمِرْوَحَةُ", german: "der Ventilator"},
+    { arabic: "إِنْدُونِيسِيَا", german: "Indonesien"},
+    { arabic: "الْكُوَيْتُ", german: "Kuwait"},
+    { arabic: "الشَّارِعُ", german: "die Straße"},
+    { arabic: "عِنْدَ", german: "mit, bei"},
+    { arabic: "الَّذِي", german: "der, welcher"},
+    { arabic: "فَرَنْسَا", german: "Frankreich"},
+    { arabic: "السَّبُّورَةُ", german: "die Tafel"},
+    { arabic: "الْمِحْرَابُ", german: "die Mihrab (Gebetsnische)"}
     ],
 
 
@@ -226,8 +221,8 @@ const LESSONS = {
     { arabic: "مَعْرِفَة", german: "bestimmt"},
     { arabic: "اسْمُ إِشَارَة", german: "Demonstrativpronomen"},
     { arabic: "مَعْرِفَة", german: "bestimmt"},
-    { arabic: "لَامُ التَّعْرِيف", german: "die bestimmten Artikel"},
-    { arabic: "جُمْلَة اسْمِيَّة" , german: "Nominalsatz"},
+    { arabic: "لَامُ التَّعْرِيف", german: "die bestimmten Artikel"},
+    { arabic: "جُمْلَة اسْمِيَّة" , german: "Nominalsatz"},
     { arabic: "حُرُوفُ الْجَر", german: "Präpositionen"},
     { arabic: "مَرْفُوع", german: "Nominativ"},
     { arabic: "مَجْرُور", german: "Genetiv"},
@@ -244,7 +239,6 @@ const LESSONS = {
   
 };
   
-// optionale Namen für die Lektions-Buttons — ohne Eintrag heißt der Button "Lektion N"
 const LESSON_LABELS = {
   1: "Lektion 1",
   2: "Lektion 2",
@@ -254,5 +248,5 @@ const LESSON_LABELS = {
   6: "Lektion 6",
   7: "Lektion 7",
   8: "Lektion 8",
-  9: "Lektion 9 (erst mal nur Teil A)"
+  9: "Lektion 9"
 };

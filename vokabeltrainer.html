@@ -323,6 +323,29 @@ main {
 .prompt-word.is-german { font-family: var(--font-heading); font-size: 1.9rem; font-weight: 600; line-height: 1.4; color: var(--accent-color); }
 .prompt-hint { font-size: 0.75rem; color: #7d8bab; letter-spacing: 0.06em; text-transform: uppercase; }
 
+/* ---- Text-to-Speech: Lautsprecher-Buttons ---- */
+.prompt-row-flex { display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
+.speak-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--accent-color);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+.speak-btn:hover { background: rgba(229, 186, 115, 0.18); border-color: var(--primary-color); }
+.speak-btn:active { transform: scale(0.94); }
+.speak-btn.small { width: 26px; height: 26px; font-size: 0.7rem; }
+.opt-btn-wrap { position: relative; }
+.opt-btn-wrap .opt-btn { width: 100%; padding-right: 2.2rem; }
+.opt-btn-wrap .speak-btn.small { position: absolute; top: 6px; right: 6px; }
+html.no-tts .speak-btn { display: none; }
+
 .mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; width: 100%; max-width: 480px; }
 @media (max-width: 480px) { .mc-grid { grid-template-columns: 1fr; } }
 .opt-btn {
@@ -518,6 +541,7 @@ kbd {
 .btn-close { background: rgba(217,138,115,0.12); border-color: var(--wrong-color); color: var(--wrong-color); }
 </style>
 <script src="vocab.js"></script>
+<script src="audio-map.js"></script>
 </head>
 <body>
 
@@ -561,6 +585,14 @@ kbd {
         </span>
         <b id="harakat-state">an</b>
       </label>
+      <label class="toggle-pill" id="autoplay-toggle-wrap" title="Vokabel automatisch vorlesen, sobald sie erscheint">
+        <span>Auto 🔊</span>
+        <span class="switch">
+          <input type="checkbox" id="autoplay-checkbox">
+          <span class="slider"></span>
+        </span>
+        <b id="autoplay-state">aus</b>
+      </label>
     </div>
 
     <div class="card-outer">
@@ -603,6 +635,7 @@ kbd {
    im <head>. Diese Datei hier enthält nur die Trainer-Logik. */
 const STORAGE_KEY = "vocab_progress_v1";
 const SOUND_KEY = "vocab_sound_muted";
+const AUTOPLAY_KEY = "vocab_autoplay_tts";
 const MASTER_THRESHOLD = 3;
 
 /* ---------- Haraket ein-/ausblenden ---------- */
@@ -610,6 +643,36 @@ const HARAKAT_REGEX = /[\u064B-\u0652\u0656-\u065F\u0670\u06D6-\u06ED]/g;
 function stripHarakat(text){ return text.replace(HARAKAT_REGEX, ""); }
 let showHarakat = true;
 function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
+
+/* ---------- Aussprache (lokale Audiodateien) ----------
+   Statt Browser-Sprachausgabe (unzuverlässig ohne installierte arabische
+   Systemstimme) werden hier fertige, vorgenerierte mp3-Dateien abgespielt.
+   Die Zuordnung Wort -> Datei kommt aus audio-map.js (siehe <script> im
+   <head>). Funktioniert bei jedem Besucher gleich, ganz ohne Internet-
+   Abhängigkeit zur Laufzeit oder installierte System-Stimmen. */
+let currentAudio = null;
+function speakArabic(text){
+  if(!text) return;
+  const path = (typeof AUDIO_MAP !== "undefined") ? AUDIO_MAP[text] : null;
+  if(!path){
+    console.warn("[Audio] Keine Audiodatei hinterlegt für:", text);
+    return;
+  }
+  try{
+    if(currentAudio){ currentAudio.pause(); currentAudio.currentTime = 0; }
+    currentAudio = new Audio(path);
+    currentAudio.onerror = () => console.error("[Audio] Datei konnte nicht geladen werden:", path);
+    currentAudio.play().catch(err => console.error("[Audio] play() fehlgeschlagen:", err));
+  }catch(err){
+    console.error("[Audio] Allgemeiner Fehler:", err);
+  }
+}
+
+function speakBtnHTML(id, extraClass){
+  return `<button type="button" class="speak-btn${extraClass ? " " + extraClass : ""}" id="${id}" title="Aussprache anhören">🔊</button>`;
+}
+
+function isArabicText(t){ return /[\u0600-\u06FF]/.test(t || ""); }
 
 /* ---------- Lektionen ---------- */
 let selectedLesson = "alle";
@@ -959,7 +1022,10 @@ function renderFlash(){
   const {front, back, frontIsArabic} = frontBack(currentWord);
   cardEl.innerHTML = `
     <div class="prompt-hint">Karteikarte — antippen zum Umdrehen</div>
-    <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
+    <div class="prompt-row-flex">
+      <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
+      ${frontIsArabic ? speakBtnHTML('flash-speak') : ''}
+    </div>
     <div class="tap-hint">Leertaste oder Klick zum Umdrehen</div>
     <div id="flash-actions" class="flash-actions" style="display:none;">
       <button class="btn-again" id="btn-again">✗ Nochmal</button>
@@ -968,12 +1034,41 @@ function renderFlash(){
   `;
   const face = document.getElementById("flash-face");
   const actions = document.getElementById("flash-actions");
+
+  function wireSpeakBtn(){
+    const b = document.getElementById("flash-speak");
+    if(b) b.onclick = (e) => { e.stopPropagation(); speakArabic(currentWord.arabic); };
+  }
+  wireSpeakBtn();
+  if(frontIsArabic && autoPlayTTS) speakArabic(currentWord.arabic);
+
   function flip(){
     Sound.flip();
+    const wasArabicFront = frontIsArabic;
     face.innerText = back;
     face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
     actions.style.display = "flex";
     document.removeEventListener("keydown", flipHandler);
+
+    // Nach dem Umdrehen: Lautsprecher-Button passend zum jetzt sichtbaren
+    // arabischen Wort ein-/ausblenden
+    const existingBtn = document.getElementById("flash-speak");
+    if(!wasArabicFront){
+      if(!existingBtn){
+        const wrap = face.parentElement;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "speak-btn";
+        btn.id = "flash-speak";
+        btn.title = "Aussprache anhören";
+        btn.innerText = "🔊";
+        btn.onclick = (e) => { e.stopPropagation(); speakArabic(currentWord.arabic); };
+        wrap.appendChild(btn);
+      }
+      if(autoPlayTTS) speakArabic(currentWord.arabic);
+    } else {
+      if(existingBtn) existingBtn.remove();
+    }
   }
   function flipHandler(e){ if(e.code === "Space"){ e.preventDefault(); flip(); } }
   face.onclick = flip;
@@ -1001,18 +1096,38 @@ function renderMC(){
 
   cardEl.innerHTML = `
     <div class="prompt-hint">Was bedeutet</div>
-    <div class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}">${front}</div>
+    <div class="prompt-row-flex">
+      <div class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}">${front}</div>
+      ${frontIsArabic ? speakBtnHTML('mc-prompt-speak') : ''}
+    </div>
     <div class="feedback" id="feedback"></div>
     <div class="mc-grid" id="mc-grid"></div>
     <button class="next-btn" id="next-btn" style="display:none;">Nächste Vokabel ➔</button>
   `;
+
+  const promptSpeak = document.getElementById("mc-prompt-speak");
+  if(promptSpeak) promptSpeak.onclick = () => speakArabic(currentWord.arabic);
+  if(frontIsArabic && autoPlayTTS) speakArabic(currentWord.arabic);
+
   const grid = document.getElementById("mc-grid");
   choices.forEach((choice) => {
+    const wrap = document.createElement("div");
+    wrap.className = "opt-btn-wrap";
     const btn = document.createElement("button");
     btn.className = "opt-btn";
     btn.innerText = choice;
     btn.onclick = () => selectMC(choice, btn, back);
-    grid.appendChild(btn);
+    wrap.appendChild(btn);
+    if(isArabicText(choice)){
+      const sp = document.createElement("button");
+      sp.type = "button";
+      sp.className = "speak-btn small";
+      sp.title = "Aussprache anhören";
+      sp.innerText = "🔊";
+      sp.onclick = (e) => { e.stopPropagation(); speakArabic(choice); };
+      wrap.appendChild(sp);
+    }
+    grid.appendChild(wrap);
   });
   document.getElementById("next-btn").onclick = nextCard;
 }
@@ -1078,7 +1193,10 @@ function renderWrite(){
   }
   cardEl.innerHTML = `
     <div class="prompt-hint">Übersetze ins Deutsche</div>
-    <div class="prompt-word">${displayArabic(word.arabic)}</div>
+    <div class="prompt-row-flex">
+      <div class="prompt-word">${displayArabic(word.arabic)}</div>
+      ${speakBtnHTML('write-speak')}
+    </div>
     <div class="type-row">
       <input type="text" id="write-input" autocomplete="off" placeholder="Antwort eingeben…" />
       <button id="write-submit">Prüfen</button>
@@ -1086,6 +1204,11 @@ function renderWrite(){
     <div class="feedback" id="feedback"></div>
     <button class="next-btn" id="next-btn" style="display:none;">Nächste Vokabel ➔</button>
   `;
+
+  const speakBtn = document.getElementById("write-speak");
+  if(speakBtn) speakBtn.onclick = () => speakArabic(word.arabic);
+  if(autoPlayTTS) speakArabic(word.arabic);
+
   const input = document.getElementById("write-input");
   input.focus();
   function submit(){
@@ -1144,6 +1267,17 @@ harakatCheckbox.addEventListener("change", e => {
   harakatState.innerText = showHarakat ? "an" : "aus";
   Sound.click();
   nextCard();
+});
+
+const autoplayCheckbox = document.getElementById("autoplay-checkbox");
+const autoplayState = document.getElementById("autoplay-state");
+autoplayCheckbox.checked = autoPlayTTS;
+autoplayState.innerText = autoPlayTTS ? "an" : "aus";
+autoplayCheckbox.addEventListener("change", e => {
+  autoPlayTTS = e.target.checked;
+  localStorage.setItem(AUTOPLAY_KEY, autoPlayTTS ? "1" : "0");
+  autoplayState.innerText = autoPlayTTS ? "an" : "aus";
+  Sound.click();
 });
 
 // Init
