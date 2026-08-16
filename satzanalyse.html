@@ -456,7 +456,7 @@ kbd {
     <h1>Satzanalyse</h1>
     <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
     <p class="subtitle">Regeln lernen &amp; abfragen</p>
-    <a class="nav-link" href="vokabeltrainer.html">← Zum Vokabeltrainer</a>
+    <a class="nav-link" href="index.html">← Zum Vokabeltrainer</a>
   </header>
 
   <main>
@@ -745,6 +745,16 @@ function setMode(m){
 }
 
 /* ---------- Lektionen-Auswahl ---------- */
+/* Natürliche Sortierung: unterstützt reine Zahlen ("1", "12") ebenso wie
+   Zahl+Buchstabe-Kombinationen ("9a", "14b") für Lektionsteile wie 9A/9B. */
+function lessonKeySort(a, b){
+  const pa = a.match(/^(\d+)(.*)$/) || [null, "0", a];
+  const pb = b.match(/^(\d+)(.*)$/) || [null, "0", b];
+  const na = Number(pa[1]), nb = Number(pb[1]);
+  if(na !== nb) return na - nb;
+  return String(pa[2]).localeCompare(String(pb[2]));
+}
+
 function buildLessonTabs(){
   const wrap = document.getElementById("lesson-tabs");
   wrap.innerHTML = "";
@@ -754,7 +764,7 @@ function buildLessonTabs(){
   allBtn.dataset.key = "alle";
   wrap.appendChild(allBtn);
 
-  Object.keys(SATZANALYSE).sort((a,b) => Number(a) - Number(b)).forEach(key => {
+  Object.keys(SATZANALYSE).sort(lessonKeySort).forEach(key => {
     const l = SATZANALYSE[key];
     const hasContent = (l.concepts && l.concepts.length) || (l.questions && l.questions.length);
     const btn = document.createElement("button");

@@ -1,257 +1,307 @@
-/* ==========================================================================
-   SATZANALYSE — Datenbank (Wort-zu-Rolle-Zuordnung)
-
-   Eigene Lektionsstufung (unabhängig von den Buch-Lektionen), kumulativ:
-     Lektion 1: Tanwin & Fragepartikel, Demonstrativpronomen
-     Lektion 2: + bestimmt & unbestimmt
-     Lektion 3: + هُوَ / هَذَا als Mubtada (Pronomen)
-     Lektion 4: + Genetiv, Nominativ, Präpositionen
-     Lektion 5: + alles kombiniert: Mudaf, Mudaf ilaihi
-     Lektion 6: + weibliche Wortformen mit ة
-     Lektion 7: + weibliche Version von "jenes" (تِلْكَ)
-
+/* Satzanalyse — Grammatikregeln nach dem Madina-Buch-Schlüssel (Teil 1)
+   Lektionen wie in Shins eigener Übersicht nummeriert.
    Jede Lektion hat:
-     - sentences: Liste von Sätzen, jeder Satz ist eine Liste von Wörtern
-       mit { ar: "...", role: "tag-id" }
-   TAGS_PER_LESSON legt fest, welche Rollen-Chips in einer Lektion
-   angezeigt werden (id + Anzeigename), kumulativ aufgebaut.
-   ========================================================================== */
-
-const SATZANALYSE_LABELS = {
-  1: "Lektion 1",
-  2: "Lektion 2",
-  3: "Lektion 3",
-  4: "Lektion 4",
-  5: "Lektion 5",
-  6: "Lektion 6",
-  7: "Lektion 7"
-};
-
-const TAGS_PER_LESSON = {
-  1: [
-    { id: "mubtada", label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",  label: "Khabar (Satzaussage)" }
-  ],
-  2: [
-    { id: "mubtada", label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",  label: "Khabar (Satzaussage)" }
-  ],
-  3: [
-    { id: "mubtada", label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",  label: "Khabar (Satzaussage)" }
-  ],
-  4: [
-    { id: "mubtada",              label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",               label: "Khabar (Satzaussage)" },
-    { id: "praeposition",         label: "Präposition" },
-    { id: "praepositionalobjekt", label: "Präpositionalobjekt (Genetiv)" }
-  ],
-  5: [
-    { id: "mubtada",              label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",               label: "Khabar (Satzaussage)" },
-    { id: "praeposition",         label: "Präposition" },
-    { id: "praepositionalobjekt", label: "Präpositionalobjekt (Genetiv)" },
-    { id: "mudaf",                label: "Mudaf" },
-    { id: "mudaf-ilaihi",         label: "Mudaf ilaihi" }
-  ],
-  6: [
-    { id: "mubtada",              label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",               label: "Khabar (Satzaussage)" },
-    { id: "praeposition",         label: "Präposition" },
-    { id: "praepositionalobjekt", label: "Präpositionalobjekt (Genetiv)" },
-    { id: "mudaf",                label: "Mudaf" },
-    { id: "mudaf-ilaihi",         label: "Mudaf ilaihi" }
-  ],
-  7: [
-    { id: "mubtada",              label: "Mubtada (Satzgegenstand)" },
-    { id: "khabar",               label: "Khabar (Satzaussage)" },
-    { id: "praeposition",         label: "Präposition" },
-    { id: "praepositionalobjekt", label: "Präpositionalobjekt (Genetiv)" },
-    { id: "mudaf",                label: "Mudaf" },
-    { id: "mudaf-ilaihi",         label: "Mudaf ilaihi" }
-  ]
-};
+     - concepts: [{ term, explanation }]   -> Karteikarten-Modus
+     - questions: [
+         { type:"mc", question, choices:[...], correct, explanation },
+         { type:"tf", statement, correct: true|false, explanation }
+       ]
+   Arabischer Text in question/statement/choices sollte in <span class="ar">...</span>
+   stehen, damit die arabische Schrift korrekt formatiert wird.
+*/
 
 const SATZANALYSE = {
 
-  /* ===== Lektion 1: Demonstrativpronomen + einfacher Nominalsatz ===== */
-  1: {
-    sentences: [
-      { text: "هَذَا بَيْتٌ", words: [
-        { ar: "هَذَا",  role: "mubtada" },
-        { ar: "بَيْتٌ", role: "khabar" }
-      ]},
-      { text: "هَذَا كِتَابٌ", words: [
-        { ar: "هَذَا",   role: "mubtada" },
-        { ar: "كِتَابٌ", role: "khabar" }
-      ]},
-      { text: "هَذَا مَسْجِدٌ", words: [
-        { ar: "هَذَا",    role: "mubtada" },
-        { ar: "مَسْجِدٌ", role: "khabar" }
-      ]},
-      { text: "هَذَا قَلَمٌ", words: [
-        { ar: "هَذَا",   role: "mubtada" },
-        { ar: "قَلَمٌ", role: "khabar" }
-      ]},
-      { text: "هَذَا وَلَدٌ", words: [
-        { ar: "هَذَا",   role: "mubtada" },
-        { ar: "وَلَدٌ", role: "khabar" }
-      ]}
+  "1": {
+    concepts: [
+      {
+        term: "Tanwîn",
+        explanation: "Der n-Laut am Ende eines Substantivs (Tanwîn, z. B. بَيْتٌ) entspricht dem deutschen unbestimmten Artikel 'ein/eine'. Ein eigenes Wort dafür gibt es im Arabischen nicht."
+      },
+      {
+        term: "Fragepartikel أَ",
+        explanation: "Wird أَ vor einen Aussagesatz gesetzt, wird daraus eine Ja/Nein-Frage: هَذَا بَيْتٌ. (Dies ist ein Haus.) → أَهَذَا بَيْتٌ؟ (Ist dies ein Haus?)"
+      },
+      {
+        term: "Keine Kopula",
+        explanation: "Das Arabische hat kein Wort, das dem deutschen 'ist' entspricht. هَذَا كِتَابٌ heißt wörtlich 'Dies Buch' und bedeutet 'Dies ist ein Buch'."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Was drückt das Tanwîn (der n-Laut) am Ende eines arabischen Substantivs aus?",
+        choices: ["den bestimmten Artikel 'der/die/das'", "den unbestimmten Artikel 'ein/eine'", "die Mehrzahl", "die Verneinung"],
+        correct: "den unbestimmten Artikel 'ein/eine'"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>أَهَذَا بَيْتٌ؟</span> bedeutet 'Ist dies ein Haus?'",
+        correct: true
+      },
+      {
+        type: "tf",
+        statement: "Das Arabische hat ein eigenes Wort für 'ist' (eine Kopula).",
+        correct: false,
+        explanation: "Das Arabische hat keine Kopula – 'ist' wird nicht ausgesprochen."
+      }
     ]
   },
 
-  /* ===== Lektion 2: + bestimmt/unbestimmt, ذَلِكَ und وَ ===== */
-  2: {
-    sentences: [
-      { text: "هَذَا بَيْتٌ وَذَلِكَ مَسْجِدٌ", words: [
-        { ar: "هَذَا",     role: "mubtada" },
-        { ar: "بَيْتٌ",    role: "khabar" },
-        { ar: "وَذَلِكَ",  role: "mubtada" },
-        { ar: "مَسْجِدٌ",  role: "khabar" }
-      ]},
-      { text: "الْبَيْتُ جَدِيدٌ", words: [
-        { ar: "الْبَيْتُ", role: "mubtada" },
-        { ar: "جَدِيدٌ",   role: "khabar" }
-      ]},
-      { text: "هَذَا كِتَابٌ وَذَلِكَ بَيْتٌ", words: [
-        { ar: "هَذَا",    role: "mubtada" },
-        { ar: "كِتَابٌ",  role: "khabar" },
-        { ar: "وَذَلِكَ", role: "mubtada" },
-        { ar: "بَيْتٌ",   role: "khabar" }
-      ]},
-      { text: "الْمَسْجِدُ جَمِيلٌ", words: [
-        { ar: "الْمَسْجِدُ", role: "mubtada" },
-        { ar: "جَمِيلٌ",     role: "khabar" }
-      ]}
+  "2": {
+    concepts: [
+      {
+        term: "Bestimmter Artikel ال",
+        explanation: "Wird 'al' vor ein Substantiv gestellt, entspricht es dem deutschen 'der/die/das'. Das Tanwîn (unbestimmter Artikel) entfällt dann: بَيْتٌ (ein Haus) → الْبَيْتُ (das Haus)."
+      },
+      {
+        term: "Hamzatu l-wasl",
+        explanation: "Das 'a' von 'al' wird nur ausgesprochen, wenn kein Wort davorsteht. Nach وَ ('und') entfällt es: وَالْبَيْتُ wird 'wa l-baitu' ausgesprochen, nicht 'wa al-baitu'."
+      },
+      {
+        term: "Adjektive ohne Tanwîn-Regel",
+        explanation: "Adjektive wie مَفْتُوحٌ ('offen') oder مَكْسُورٌ ('kaputt') folgen der Tanwîn-Regel nicht wie normale Substantive – sie behalten ihr eigenes Muster unabhängig vom Artikel des Substantivs, das sie beschreiben."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie verändert sich <span class='ar'>بَيْتٌ</span> (ein Haus), wenn man den bestimmten Artikel davorsetzt?",
+        choices: ["<span class='ar'>بَيْتٌ</span> bleibt gleich", "<span class='ar'>الْبَيْتُ</span> – Tanwîn entfällt", "<span class='ar'>بَيْتٌال</span>", "<span class='ar'>الْبَيْتٌ</span> – Tanwîn bleibt"],
+        correct: "<span class='ar'>الْبَيْتُ</span> – Tanwîn entfällt"
+      },
+      {
+        type: "tf",
+        statement: "Das 'a' von 'al' wird immer ausgesprochen, egal was davorsteht.",
+        correct: false,
+        explanation: "Steht ein Wort davor (z. B. وَ), entfällt das 'a' in der Aussprache – das nennt man Hamzatu l-wasl."
+      }
     ]
   },
 
-  /* ===== Lektion 3: + هُوَ / هِيَ als Mubtada ===== */
-  3: {
-    sentences: [
-      { text: "هُوَ مُدَرِّسٌ", words: [
-        { ar: "هُوَ",      role: "mubtada" },
-        { ar: "مُدَرِّسٌ", role: "khabar" }
-      ]},
-      { text: "هِيَ مُدَرِّسَةٌ", words: [
-        { ar: "هِيَ",       role: "mubtada" },
-        { ar: "مُدَرِّسَةٌ", role: "khabar" }
-      ]},
-      { text: "هُوَ طَبِيبٌ", words: [
-        { ar: "هُوَ",    role: "mubtada" },
-        { ar: "طَبِيبٌ", role: "khabar" }
-      ]},
-      { text: "هَذَا مُدَرِّسٌ", words: [
-        { ar: "هَذَا",     role: "mubtada" },
-        { ar: "مُدَرِّسٌ", role: "khabar" }
-      ]}
+  "3": {
+    concepts: [
+      {
+        term: "Sonnenbuchstaben",
+        explanation: "Vor den 14 Sonnenbuchstaben (z. B. ت ن ر س) wird das 'l' von 'al' an den folgenden Buchstaben assimiliert. Geschrieben bleibt 'al' stehen, aber ausgesprochen wird nur der doppelte Buchstabe: الشَّمْسُ = ash-shamsu."
+      },
+      {
+        term: "Mondbuchstaben",
+        explanation: "Vor den 14 Mondbuchstaben (z. B. ب و م ك) findet keine Assimilation statt. الْقَمَرُ wird ganz normal al-qamaru ausgesprochen."
+      },
+      {
+        term: "Erkennungszeichen Shadda",
+        explanation: "Bei Sonnenbuchstaben zeigt ein Shadda auf dem ersten Buchstaben des Wortes die Assimilation an, auch wenn 'al' im Schriftbild unverändert bleibt."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie wird <span class='ar'>الشَّمْسُ</span> (die Sonne) ausgesprochen?",
+        choices: ["al-shamsu", "ash-shamsu", "al-samsu", "asch-al-shamsu"],
+        correct: "ash-shamsu",
+        explanation: "ش ist ein Sonnenbuchstabe, das 'l' von 'al' wird an ihn assimiliert."
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>الْقَمَرُ</span> (der Mond) wird 'al-qamaru' ausgesprochen, weil ق ein Mondbuchstabe ist.",
+        correct: true
+      }
     ]
   },
 
-  /* ===== Lektion 4: + Präposition + Präpositionalobjekt (Genetiv) ===== */
-  4: {
-    sentences: [
-      { text: "هُوَ فِي الْمَسْجِدِ", words: [
-        { ar: "هُوَ",         role: "mubtada" },
-        { ar: "فِي",          role: "praeposition" },
-        { ar: "الْمَسْجِدِ",  role: "praepositionalobjekt" }
-      ]},
-      { text: "هِيَ فِي الْبَيْتِ", words: [
-        { ar: "هِيَ",       role: "mubtada" },
-        { ar: "فِي",        role: "praeposition" },
-        { ar: "الْبَيْتِ",  role: "praepositionalobjekt" }
-      ]},
-      { text: "الْكِتَابُ عَلَى الْمَكْتَبِ", words: [
-        { ar: "الْكِتَابُ",  role: "mubtada" },
-        { ar: "عَلَى",       role: "praeposition" },
-        { ar: "الْمَكْتَبِ", role: "praepositionalobjekt" }
-      ]},
-      { text: "أَنَا فِي الْفَصْلِ", words: [
-        { ar: "أَنَا",     role: "mubtada" },
-        { ar: "فِي",       role: "praeposition" },
-        { ar: "الْفَصْلِ", role: "praepositionalobjekt" }
-      ]}
+  "4": {
+    concepts: [
+      {
+        term: "Nominativ (marfû')",
+        explanation: "Die normale Endung eines Substantivs ist '-u' (Damma). Das ist der Nominativ, z. B. الْبَيْتُ جَدِيدٌ (Das Haus ist neu)."
+      },
+      {
+        term: "Genitiv nach Präposition (majrûr)",
+        explanation: "Nach einer Präposition ändert sich die Endung zu '-i' (Kasra), z. B. فِي الْبَيْتِ (in dem Haus), عَلَى الْمَكْتَبِ (auf dem Schreibtisch)."
+      },
+      {
+        term: "هُوَ / هِيَ",
+        explanation: "هُوَ ('er/es') steht für männliche, هِيَ ('sie/es') für weibliche Substantive – egal ob Mensch, Tier oder Sache."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Welche Endung bekommt ein Substantiv nach einer Präposition wie <span class='ar'>فِي</span> oder <span class='ar'>عَلَى</span>?",
+        choices: ["-u (Damma)", "-i (Kasra)", "-a (Fatha)", "keine Endung"],
+        correct: "-i (Kasra)"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>هُوَ</span> wird für weibliche Substantive verwendet.",
+        correct: false,
+        explanation: "هُوَ steht für männliche, هِيَ für weibliche Substantive."
+      }
     ]
   },
 
-  /* ===== Lektion 5: + Mudaf / Mudaf ilaihi, alles kombiniert ===== */
-  5: {
-    sentences: [
-      { text: "كِتَابُ بِلَالٍ جَدِيدٌ", words: [
-        { ar: "كِتَابُ",  role: "mudaf" },
-        { ar: "بِلَالٍ",  role: "mudaf-ilaihi" },
-        { ar: "جَدِيدٌ",  role: "khabar" }
-      ]},
-      { text: "بَيْتُ الإِمَامِ جَمِيلٌ", words: [
-        { ar: "بَيْتُ",    role: "mudaf" },
-        { ar: "الإِمَامِ", role: "mudaf-ilaihi" },
-        { ar: "جَمِيلٌ",   role: "khabar" }
-      ]},
-      { text: "هُوَ فِي بَيْتِ الْمُدَرِّسِ", words: [
-        { ar: "هُوَ",         role: "mubtada" },
-        { ar: "فِي",          role: "praeposition" },
-        { ar: "بَيْتِ",       role: "mudaf" },
-        { ar: "الْمُدَرِّسِ", role: "mudaf-ilaihi" }
-      ]},
-      { text: "مَكْتَبُ الْمُدَرِّسِ جَدِيدٌ", words: [
-        { ar: "مَكْتَبُ",     role: "mudaf" },
-        { ar: "الْمُدَرِّسِ", role: "mudaf-ilaihi" },
-        { ar: "جَدِيدٌ",      role: "khabar" }
-      ]}
+  "5": {
+    concepts: [
+      {
+        term: "Mudâf",
+        explanation: "Das erste Wort einer Idafa-Konstruktion (das Besitztum) steht ohne jeden Artikel – weder bestimmt noch unbestimmt, z. B. كِتَابُ بِلَالٍ (Bilâls Buch)."
+      },
+      {
+        term: "Mudâf ilaihi",
+        explanation: "Das zweite Wort (der Besitzer) steht im Genitiv – entweder mit Tanwîn oder mit bestimmtem Artikel, z. B. بَيْتُ الْإِمَامِ (das Haus des Imâms)."
+      },
+      {
+        term: "لِمَنْ – wessen",
+        explanation: "لِمَنْ ('wessen') hat keine Genitivendung, da es undeklinierbar ist – es verändert sich nie."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Welche Regel gilt für den Mudâf (erstes Wort in einer Idafa-Konstruktion)?",
+        choices: ["Er bekommt immer den bestimmten Artikel", "Er bekommt nie einen Artikel (weder bestimmt noch unbestimmt)", "Er bekommt immer Tanwîn", "Er steht immer im Akkusativ"],
+        correct: "Er bekommt nie einen Artikel (weder bestimmt noch unbestimmt)"
+      },
+      {
+        type: "tf",
+        statement: "Der Mudâf ilaihi (Besitzer) steht immer im Genitiv.",
+        correct: true
+      }
     ]
   },
 
-  /* ===== Lektion 6: + weibliche Wortformen mit ة ===== */
-  6: {
-    sentences: [
-      { text: "هَذِهِ مُدَرِّسَةٌ", words: [
-        { ar: "هَذِهِ",      role: "mubtada" },
-        { ar: "مُدَرِّسَةٌ", role: "khabar" }
-      ]},
-      { text: "بِنْتُ الْمُدَرِّسِ صَغِيرَةٌ", words: [
-        { ar: "بِنْتُ",       role: "mudaf" },
-        { ar: "الْمُدَرِّسِ", role: "mudaf-ilaihi" },
-        { ar: "صَغِيرَةٌ",    role: "khabar" }
-      ]},
-      { text: "هِيَ فِي غُرْفَةٍ", words: [
-        { ar: "هِيَ",      role: "mubtada" },
-        { ar: "فِي",       role: "praeposition" },
-        { ar: "غُرْفَةٍ",  role: "praepositionalobjekt" }
-      ]},
-      { text: "سَاعَةُ آمِنَةَ جَمِيلَةٌ", words: [
-        { ar: "سَاعَةُ",   role: "mudaf" },
-        { ar: "آمِنَةَ",   role: "mudaf-ilaihi" },
-        { ar: "جَمِيلَةٌ", role: "khabar" }
-      ]}
+  "6": {
+    concepts: [
+      {
+        term: "Feminine Endung ة",
+        explanation: "Substantive werden feminin gemacht, indem am Ende ein ة angehängt wird. Der letzte Buchstabe davor bekommt ein Fatha: مُدَرِّسٌ → مُدَرِّسَةٌ."
+      },
+      {
+        term: "Eigene weibliche Formen",
+        explanation: "Manche Wörter haben eine eigene, unabhängige weibliche Form statt der ة-Endung, z. B. أَخٌ (Bruder) / أُخْتٌ (Schwester), ابْنٌ (Sohn) / بِنْتٌ (Tochter)."
+      },
+      {
+        term: "هَذِهِ",
+        explanation: "هَذِهِ ist die weibliche Form von هَذَا. Ausgesprochen 'hâdhihi', wobei das Alif in der Schrift entfällt."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie bildet man aus <span class='ar'>مُدَرِّسٌ</span> (ein Lehrer) die weibliche Form?",
+        choices: ["<span class='ar'>مُدَرِّسٌة</span>", "<span class='ar'>مُدَرِّسَةٌ</span>", "<span class='ar'>مُدَرِّسِينٌ</span>", "<span class='ar'>الْمُدَرِّسٌ</span>"],
+        correct: "<span class='ar'>مُدَرِّسَةٌ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Jedes weibliche Substantiv im Arabischen endet auf ة.",
+        correct: false,
+        explanation: "Manche weiblichen Wörter (z. B. أُخْتٌ – Schwester) haben eine eigene Form ohne ة-Endung."
+      }
     ]
   },
 
-  /* ===== Lektion 7: + تِلْكَ (feminine Form von ذَلِكَ) ===== */
-  7: {
-    sentences: [
-      { text: "هَذِهِ بِنْتٌ وَتِلْكَ مُدَرِّسَةٌ", words: [
-        { ar: "هَذِهِ",      role: "mubtada" },
-        { ar: "بِنْتٌ",      role: "khabar" },
-        { ar: "وَتِلْكَ",    role: "mubtada" },
-        { ar: "مُدَرِّسَةٌ", role: "khabar" }
-      ]},
-      { text: "تِلْكَ سَاعَةُ آمِنَةَ", words: [
-        { ar: "تِلْكَ",   role: "mubtada" },
-        { ar: "سَاعَةُ",  role: "mudaf" },
-        { ar: "آمِنَةَ",  role: "mudaf-ilaihi" }
-      ]},
-      { text: "هَذِهِ سَيَّارَةُ الْمُدَرِّسَةِ", words: [
-        { ar: "هَذِهِ",          role: "mubtada" },
-        { ar: "سَيَّارَةُ",      role: "mudaf" },
-        { ar: "الْمُدَرِّسَةِ",  role: "mudaf-ilaihi" }
-      ]},
-      { text: "هِيَ فِي غُرْفَةِ الْبِنْتِ", words: [
-        { ar: "هِيَ",       role: "mubtada" },
-        { ar: "فِي",        role: "praeposition" },
-        { ar: "غُرْفَةِ",   role: "mudaf" },
-        { ar: "الْبِنْتِ",  role: "mudaf-ilaihi" }
-      ]}
+  "7": {
+    concepts: [
+      {
+        term: "تِلْكَ",
+        explanation: "تِلْكَ ('jene/das dort') ist die weibliche Form von ذَلِكَ ('jener/das dort', maskulin)."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Welches Wort ist die weibliche Form von <span class='ar'>ذَلِكَ</span>?",
+        choices: ["<span class='ar'>هَذِهِ</span>", "<span class='ar'>تِلْكَ</span>", "<span class='ar'>هَؤُلَاءِ</span>", "<span class='ar'>أُولَئِكَ</span>"],
+        correct: "<span class='ar'>تِلْكَ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>هَذِهِ آمِنَةُ، وَتِلْكَ مَرْيَمُ.</span> bedeutet 'Dies ist Amina, und das ist Maryam.'",
+        correct: true
+      }
+    ]
+  },
+
+  "8": {
+    concepts: [
+      {
+        term: "Demonstrativ + bestimmtes Substantiv",
+        explanation: "هَذَا الْكِتَابُ bedeutet nur 'dies Buch' – noch kein vollständiger Satz. Erst mit einem Prädikat wird daraus ein Satz: هَذَا الْكِتَابُ جَدِيدٌ (Dies Buch ist neu)."
+      },
+      {
+        term: "Langes Alif ohne Endung",
+        explanation: "An Substantive, die auf ein langes 'â' enden (z. B. أَمْرِيكَا), wird keine Fallendung angehängt – sie bleiben in jedem Fall unverändert."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Was bedeutet <span class='ar'>هَذَا الْكِتَابُ جَدِيدٌ</span>?",
+        choices: ["Dies ist ein Buch.", "Dies Buch ist neu.", "Das ist neu.", "Ist dies ein Buch?"],
+        correct: "Dies Buch ist neu."
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>هَذَا الْكِتَابُ</span> allein ist bereits ein vollständiger Satz.",
+        correct: false,
+        explanation: "Es fehlt ein Prädikat (eine Satzaussage), um daraus einen vollständigen Satz zu machen."
+      }
+    ]
+  },
+
+  "9a": {
+    concepts: [
+      {
+        term: "Adjektiv nach dem Substantiv",
+        explanation: "Im Arabischen steht das Adjektiv (نعت) NACH dem Substantiv (منعوت), das es näher bestimmt – anders als im Deutschen: بَيْتٌ جَدِيدٌ (ein neues Haus)."
+      },
+      {
+        term: "Übereinstimmung im Geschlecht",
+        explanation: "Das Adjektiv stimmt im Geschlecht mit dem Substantiv überein: وَلَدٌ صَغِيرٌ (ein kleiner Junge) / بِنْتٌ صَغِيرَةٌ (ein kleines Mädchen)."
+      },
+      {
+        term: "Übereinstimmung in Bestimmtheit",
+        explanation: "Ist das Substantiv bestimmt (mit ال), muss auch das Adjektiv bestimmt sein: الْمُدَرِّسُ الْجَدِيدُ (der neue Lehrer)."
+      },
+      {
+        term: "Übereinstimmung im Fall",
+        explanation: "Das Adjektiv steht immer im gleichen grammatikalischen Fall (Nominativ/Genitiv/Akkusativ) wie das Substantiv, das es beschreibt."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wo steht das Adjektiv im arabischen Satz im Vergleich zum Substantiv?",
+        choices: ["Davor, wie im Deutschen", "Danach", "Es gibt keine feste Regel", "Am Satzende, unabhängig vom Substantiv"],
+        correct: "Danach"
+      },
+      {
+        type: "mc",
+        question: "Welche Form ist korrekt für 'der neue Lehrer' (bestimmt)?",
+        choices: ["<span class='ar'>مُدَرِّسٌ جَدِيدٌ</span>", "<span class='ar'>الْمُدَرِّسُ جَدِيدٌ</span>", "<span class='ar'>الْمُدَرِّسُ الْجَدِيدُ</span>", "<span class='ar'>مُدَرِّسٌ الْجَدِيدُ</span>"],
+        correct: "<span class='ar'>الْمُدَرِّسُ الْجَدِيدُ</span>",
+        explanation: "Ist das Substantiv bestimmt, muss auch das Adjektiv den bestimmten Artikel bekommen."
+      },
+      {
+        type: "tf",
+        statement: "Das Adjektiv muss immer im gleichen grammatikalischen Fall stehen wie das Substantiv, das es beschreibt.",
+        correct: true
+      }
     ]
   }
 
+};
+
+const SATZANALYSE_LABELS = {
+  "1": "Lektion 1",
+  "2": "Lektion 2",
+  "3": "Lektion 3",
+  "4": "Lektion 4",
+  "5": "Lektion 5",
+  "6": "Lektion 6",
+  "7": "Lektion 7",
+  "8": "Lektion 8",
+  "9a": "Lektion 9A"
 };
