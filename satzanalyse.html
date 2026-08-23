@@ -348,7 +348,52 @@ main {
   padding: 0.9rem; border: none; border-radius: 12px; cursor: pointer;
   transition: filter 0.2s ease;
 }
-.next-btn:hover { filter: brightness(1.1); }
+.next-btn:hover:not(:disabled) { filter: brightness(1.1); }
+.next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---------- Satzbau-Modus ---------- */
+.word-row {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;
+  direction: rtl; width: 100%;
+}
+.word-static {
+  font-family: var(--font-arabic); font-size: 1.3rem; color: #9fb0d4;
+  padding: 0.9rem 0.5rem; display: flex; align-items: center;
+}
+.word-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--text-light);
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  transition: all 0.15s ease;
+}
+.word-btn .w-text { font-family: var(--font-arabic); font-size: 1.3rem; }
+.word-btn .w-role { font-family: var(--font-main); font-size: 0.65rem; letter-spacing: 0.04em; color: var(--accent-color); text-transform: uppercase; font-weight: 700; }
+.word-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.08); }
+.word-btn.selected { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(229, 186, 115, 0.25); }
+.word-btn.correct { background: rgba(127, 214, 194, 0.15); border-color: #7fd6c2; }
+.word-btn.wrong { background: rgba(217, 138, 115, 0.15); border-color: var(--wrong-color); }
+
+.role-row { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+.role-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  color: var(--text-light);
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.role-btn:hover:not(:disabled) { filter: brightness(1.25); }
+.role-btn:disabled { cursor: default; opacity: 0.55; }
+
+.satzbau-translation { font-size: 0.82rem; color: #7d8bab; font-style: italic; max-width: 480px; }
 
 .progress-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.75rem; }
 .progress-track { flex: 1; height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); }
@@ -474,6 +519,7 @@ kbd {
         <button class="pill-btn" data-mode="concept">Konzepte</button>
         <button class="pill-btn" data-mode="mc">Multiple Choice</button>
         <button class="pill-btn" data-mode="truefalse">Richtig/Falsch</button>
+        <button class="pill-btn" data-mode="satzbau">Satzbau</button>
         <button class="pill-btn" data-mode="mix">Mix-Modus</button>
       </div>
     </div>
@@ -537,6 +583,7 @@ function currentDeck(){
   lessonList().forEach(l => {
     (l.concepts || []).forEach(c => items.push({ kind: "concept", key: "c:" + c.term, term: c.term, explanation: c.explanation }));
     (l.questions || []).forEach(q => items.push({ kind: q.type, key: (q.type === "mc" ? "q:" + q.question : "t:" + q.statement), ...q }));
+    (l.sentences || []).forEach(s => items.push({ kind: "satzbau", key: "s:" + s.words.map(w => w.text).join("|"), words: s.words, translation: s.translation }));
   });
   if(mode === "mix") return items;
   return items.filter(i => i.kind === mode);
@@ -807,6 +854,7 @@ function nextCard(){
   }
   if(currentItem.kind === "concept") renderConcept();
   else if(currentItem.kind === "mc") renderMC();
+  else if(currentItem.kind === "satzbau") renderSatzbau();
   else renderTrueFalse();
 }
 
@@ -872,7 +920,8 @@ function renderMC(){
   item.choices.forEach(choice => {
     const btn = document.createElement("button");
     btn.className = "opt-btn" + (isArabicText(choice) ? " ar" : "");
-    btn.innerText = choice;
+    btn.innerHTML = choice;
+    btn.dataset.choice = choice;
     btn.onclick = () => selectMC(choice, btn, item.correct, item.explanation);
     grid.appendChild(btn);
   });
@@ -894,7 +943,7 @@ function selectMC(choice, btn, correctAnswer, explanation){
     btn.classList.add("wrong");
     feedback.innerText = `Falsch — richtig wäre: ${correctAnswer}`;
     feedback.className = "feedback bad";
-    buttons.forEach(b => { if(b.innerText === correctAnswer) b.classList.add("correct"); });
+    buttons.forEach(b => { if(b.dataset.choice === correctAnswer) b.classList.add("correct"); });
   }
   if(explanation){ explainEl.innerText = explanation; explainEl.style.display = "block"; }
   document.getElementById("next-btn").style.display = "block";
@@ -939,6 +988,153 @@ function selectTF(choice, btn, correctAnswer, explanation){
   document.getElementById("next-btn").style.display = "block";
 }
 
+/* ---------- Satzbau-Modus: Wort antippen, dann Rolle zuweisen ---------- */
+let satzbauState = null;
+
+/* Feste Farbzuordnung je Grammatik-Rolle, damit z. B. Mubtada immer gold
+   und Khabar immer türkis erscheint — konsistent über alle Lektionen. */
+const ROLE_COLORS = {
+  "Mubtada": "#e5ba73",
+  "Khabar": "#7fd6c2",
+  "Mudaf": "#7fa8e8",
+  "Mudaf ilaihi": "#c98af0",
+  "Na't": "#f0a8c9",
+  "Man'ut": "#9ee87a",
+  "Präposition": "#f0935a",
+  "Genitivobjekt": "#f0e07a"
+};
+const ROLE_FALLBACK_PALETTE = ["#e5ba73", "#7fd6c2", "#7fa8e8", "#c98af0", "#f0a8c9", "#9ee87a", "#f0935a", "#f0e07a"];
+function roleColor(role, idx){
+  return ROLE_COLORS[role] || ROLE_FALLBACK_PALETTE[(idx || 0) % ROLE_FALLBACK_PALETTE.length];
+}
+function hexToRgba(hex, alpha){
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0,2), 16), g = parseInt(h.substring(2,4), 16), b = parseInt(h.substring(4,6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function renderSatzbau(){
+  const item = currentItem;
+  satzbauState = {
+    words: item.words,
+    assignments: new Array(item.words.length).fill(null),
+    selected: null,
+    checked: false
+  };
+  const roles = [...new Set(item.words.map(w => w.role).filter(r => r !== null && r !== undefined))];
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Wort antippen, dann Rolle wählen</div>
+    ${item.translation ? `<div class="satzbau-translation">„${item.translation}“</div>` : ""}
+    <div class="word-row" id="word-row"></div>
+    <div class="role-row" id="role-row"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="check-btn" disabled>Prüfen</button>
+  `;
+  const wordRow = document.getElementById("word-row");
+  item.words.forEach((w, i) => {
+    if(w.role === null || w.role === undefined){
+      const span = document.createElement("div");
+      span.className = "word-static";
+      span.innerText = w.text;
+      wordRow.appendChild(span);
+    } else {
+      const btn = document.createElement("button");
+      btn.className = "word-btn";
+      btn.innerHTML = `<span class="w-text">${w.text}</span>`;
+      btn.dataset.index = i;
+      btn.onclick = () => selectWord(i);
+      wordRow.appendChild(btn);
+    }
+  });
+  const roleRow = document.getElementById("role-row");
+  roles.forEach((r, idx) => {
+    const color = roleColor(r, idx);
+    const btn = document.createElement("button");
+    btn.className = "role-btn";
+    btn.innerText = r;
+    btn.dataset.role = r;
+    btn.dataset.color = color;
+    btn.style.borderColor = color;
+    btn.style.color = color;
+    btn.onclick = () => assignRole(r);
+    roleRow.appendChild(btn);
+  });
+  document.getElementById("check-btn").onclick = checkSatzbau;
+}
+
+function refreshRoleHighlight(){
+  const assignedHere = satzbauState.selected !== null ? satzbauState.assignments[satzbauState.selected] : null;
+  document.querySelectorAll("#role-row .role-btn").forEach(b => {
+    const isActive = b.dataset.role === assignedHere;
+    b.style.background = isActive ? hexToRgba(b.dataset.color, 0.18) : "rgba(255, 255, 255, 0.03)";
+    b.style.boxShadow = isActive ? `0 0 0 2px ${hexToRgba(b.dataset.color, 0.35)}` : "none";
+  });
+}
+
+function selectWord(i){
+  if(satzbauState.checked) return;
+  Sound.click();
+  satzbauState.selected = i;
+  document.querySelectorAll("#word-row .word-btn").forEach(b => {
+    b.classList.toggle("selected", Number(b.dataset.index) === i);
+  });
+  refreshRoleHighlight();
+}
+
+function assignRole(role){
+  if(satzbauState.checked || satzbauState.selected === null) return;
+  Sound.click();
+  const i = satzbauState.selected;
+  satzbauState.assignments[i] = role;
+  const btn = document.querySelector(`#word-row .word-btn[data-index="${i}"]`);
+  if(btn){
+    const color = roleColor(role, 0);
+    const roleBtn = document.querySelector(`#role-row .role-btn[data-role="${role}"]`);
+    const c = roleBtn ? roleBtn.dataset.color : color;
+    btn.innerHTML = `<span class="w-text">${satzbauState.words[i].text}</span><span class="w-role" style="color:${c}">${role}</span>`;
+    btn.style.borderColor = c;
+  }
+  refreshRoleHighlight();
+  const allAssigned = satzbauState.words.every((w, idx) => (w.role === null || w.role === undefined) || satzbauState.assignments[idx]);
+  document.getElementById("check-btn").disabled = !allAssigned;
+}
+
+function checkSatzbau(){
+  if(satzbauState.checked){ nextCard(); return; }
+  satzbauState.checked = true;
+  let allCorrect = true;
+  satzbauState.words.forEach((w, i) => {
+    if(w.role === null || w.role === undefined) return;
+    const btn = document.querySelector(`#word-row .word-btn[data-index="${i}"]`);
+    const correct = satzbauState.assignments[i] === w.role;
+    if(!correct){
+      allCorrect = false;
+      if(btn) btn.innerHTML = `<span class="w-text">${w.text}</span><span class="w-role">${w.role}</span>`;
+    }
+    if(btn){
+      btn.classList.add(correct ? "correct" : "wrong");
+      btn.style.borderColor = "";
+      const roleSpan = btn.querySelector(".w-role");
+      if(roleSpan) roleSpan.style.color = correct ? "#7fd6c2" : "#d98a73";
+    }
+  });
+  document.querySelectorAll("#role-row .role-btn").forEach(b => b.disabled = true);
+  document.querySelectorAll("#word-row .word-btn").forEach(b => b.onclick = null);
+  const feedback = document.getElementById("feedback");
+  markResult(currentItem, allCorrect);
+  if(allCorrect){
+    feedback.innerText = "Richtig! 🎉";
+    feedback.className = "feedback ok";
+  } else {
+    feedback.innerText = "Nicht ganz — die richtige Zuordnung ist jetzt markiert.";
+    feedback.className = "feedback bad";
+  }
+  const checkBtn = document.getElementById("check-btn");
+  checkBtn.innerText = "Nächste Frage ➔";
+  checkBtn.disabled = false;
+  checkBtn.onclick = nextCard;
+}
+
 document.getElementById("tabs").addEventListener("click", e => {
   const btn = e.target.closest(".pill-btn");
   if(btn){ Sound.click(); setMode(btn.dataset.mode); }
@@ -968,4 +1164,4 @@ if (typeof SATZANALYSE === "undefined") {
 }
 </script>
 </body>
-</html>
+</html> 

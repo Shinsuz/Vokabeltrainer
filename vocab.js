@@ -56,7 +56,7 @@ const LESSONS = {
     { arabic: "وَسِخٌ", german: "schmutzig" },
     { arabic: "صَغِيرٌ", german: "klein" },
     { arabic: "كَبِيرٌ", german: "groß" },
-    { arabic: "خَفِيفٌ", german: "leicht" },
+    { arabic: "خَفِيفٌ", german: "leicht (im Sinne des Gewichtes)" },
     { arabic: "ثَقِيلٌ", german: "schwer" },
     { arabic: "الْوَرَقُ", german: "das Papier" },
     { arabic: "الْمَاءُ", german: "das Wasser" },
@@ -181,16 +181,16 @@ const LESSONS = {
 
   9: [
     { arabic: "الفَاكِهَةُ", german: "das Obst"},
-    { arabic: "الإِنْكِلِيزِيَّةُ", german: "Englisch (die englische Sprache)"},
+    { arabic: "الإِنْكِلِيزِيَّةُ", german: "Englisch"},
     { arabic: "العُصْفُورُ", german: "der Spatz (kleiner Vogel)"},
     { arabic: "صَعْبٌ", german: "schwierig"},
     { arabic: "الطَّائِرُ", german: "der Vogel (allgemein)"},
     { arabic: "المَدِينَةُ", german: "die Stadt"},
-    { arabic: "العَرَبِيَّةُ", german: "Arabisch (die arabische Sprache)"},
+    { arabic: "العَرَبِيَّةُ", german: "Arabisch"},
     { arabic: "القَاهِرَةُ", german: "Kairo"},
     { arabic: "اللُّغَةُ", german: "die Sprache"},
     { arabic: "اليَوْمَ", german: "heute"},
-    { arabic: "سَهْلٌ", german: "leicht"},
+    { arabic: "سَهْلٌ", german: "leicht (im Sinne der Komplextität)"},
     { arabic: "لِمَاذَا", german: "warum"},
     { arabic: "مُجْتَهِدٌ", german: "fleißig"},
     { arabic: "الكُوبُ", german: "die Tasse, der Becher"},
@@ -211,7 +211,13 @@ const LESSONS = {
     { arabic: "الَّذِي", german: "der, welcher"},
     { arabic: "فَرَنْسَا", german: "Frankreich"},
     { arabic: "السَّبُّورَةُ", german: "die Tafel"},
-    { arabic: "الْمِحْرَابُ", german: "die Mihrab (Gebetsnische)"}
+    { arabic: "الْمِحْرَابُ", german: "die Mihrab (Gebetsnische)"},
+    { arabic: "الْيَوْمُ", german: "der Tag" },
+    { arabic: "كَسْلَانُ", german: "faul" },
+    { arabic: "جَوْعَانُ", german: "hungrig" },
+    { arabic: "عَطْشَانُ", german: "durstig" },
+    { arabic: "غَضْبَانُ", german: "ärgerlich" },
+    { arabic: "مَلآنُ", german: "voll" }
     ],
 
 
