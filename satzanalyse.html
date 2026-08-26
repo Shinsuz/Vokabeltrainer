@@ -116,6 +116,30 @@ header p.subtitle {
   margin-top: 0.6rem;
 }
 
+header .divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1.1rem auto 0;
+  width: 180px;
+}
+header .divider::before,
+header .divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(to var(--dir, right), transparent, rgba(229, 186, 115, 0.45));
+}
+header .divider::after { --dir: left; }
+header .divider .diamond {
+  width: 6px; height: 6px;
+  background: var(--primary-color);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
 header .nav-link {
   display: inline-block;
   margin-top: 0.9rem;
@@ -224,7 +248,7 @@ main {
   cursor: pointer;
   transition: all 0.25s ease;
 }
-.lesson-pill:hover:not(.disabled) { border-color: rgba(229, 186, 115, 0.35); color: var(--accent-color); }
+.lesson-pill:hover:not(.disabled) { border-color: rgba(229, 186, 115, 0.35); color: var(--accent-color); transform: translateY(-1px); }
 .lesson-pill.active {
   background: rgba(229, 186, 115, 0.15);
   border-color: var(--primary-color);
@@ -256,7 +280,9 @@ main {
 .corner.br { bottom: -6px; right: -6px; transform: scale(-1, -1); }
 
 .card {
-  background: rgba(255, 255, 255, 0.03);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(229, 186, 115, 0.06) 0%, transparent 60%),
+    rgba(255, 255, 255, 0.03);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(14px);
@@ -267,10 +293,16 @@ main {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 .card:hover {
   border-color: rgba(229, 186, 115, 0.3);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 25px rgba(229, 186, 115, 0.15);
+}
+@keyframes cardEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card > * { animation: cardEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .card > * { animation: none; }
 }
 
 .empty-state { color: #7d8bab; max-width: 420px; line-height: 1.6; }
@@ -352,48 +384,92 @@ main {
 .next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ---------- Satzbau-Modus ---------- */
+.satzbau-translation {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #9fb0d4;
+  max-width: 480px;
+  position: relative;
+  padding: 0 1.6rem;
+}
+.satzbau-translation::before, .satzbau-translation::after {
+  font-family: var(--font-heading);
+  color: var(--primary-color);
+  opacity: 0.7;
+  font-size: 1.3rem;
+  position: absolute;
+  line-height: 1;
+}
+.satzbau-translation::before { content: "“"; left: 0; top: 0.1rem; }
+.satzbau-translation::after { content: "”"; right: 0; bottom: -0.3rem; }
+
+.sentence-plaque {
+  position: relative;
+  width: 100%;
+  padding: 1.9rem 1.4rem 1.6rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(229, 186, 115, 0.07), rgba(229, 186, 115, 0.02));
+  border-top: 1px solid rgba(229, 186, 115, 0.35);
+  border-bottom: 1px solid rgba(229, 186, 115, 0.35);
+}
+.sentence-plaque::before {
+  content: "";
+  position: absolute;
+  top: -5px; left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px; height: 8px;
+  background: var(--dark-color);
+  border-top: 1px solid rgba(229, 186, 115, 0.6);
+  border-left: 1px solid rgba(229, 186, 115, 0.6);
+}
+
 .word-row {
-  display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;
+  display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center;
   direction: rtl; width: 100%;
 }
 .word-static {
-  font-family: var(--font-arabic); font-size: 1.3rem; color: #9fb0d4;
-  padding: 0.9rem 0.5rem; display: flex; align-items: center;
+  font-family: var(--font-arabic); font-size: 1.4rem; color: #6b7c9e;
+  padding: 0.95rem 0.4rem; display: flex; align-items: center;
 }
 .word-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-light);
-  padding: 0.85rem 1.1rem;
-  border-radius: 12px;
+  padding: 0.9rem 1.2rem 0.75rem;
+  border-radius: 10px;
   cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
-  transition: all 0.15s ease;
+  display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  position: relative;
 }
-.word-btn .w-text { font-family: var(--font-arabic); font-size: 1.3rem; }
-.word-btn .w-role { font-family: var(--font-main); font-size: 0.65rem; letter-spacing: 0.04em; color: var(--accent-color); text-transform: uppercase; font-weight: 700; }
-.word-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.08); }
-.word-btn.selected { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(229, 186, 115, 0.25); }
+.word-btn .w-text { font-family: var(--font-arabic); font-size: 1.45rem; line-height: 1; }
+.word-btn .w-role {
+  font-family: var(--font-main); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--accent-color);
+  text-transform: uppercase; font-weight: 700; padding-top: 0.15rem; border-top: 1px solid currentColor; opacity: 0.9;
+}
+.word-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.1); transform: translateY(-2px); }
+.word-btn.selected { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(229, 186, 115, 0.3), 0 8px 18px rgba(229, 186, 115, 0.12); transform: translateY(-2px); }
 .word-btn.correct { background: rgba(127, 214, 194, 0.15); border-color: #7fd6c2; }
 .word-btn.wrong { background: rgba(217, 138, 115, 0.15); border-color: var(--wrong-color); }
 
 .role-row { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
 .role-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1.5px solid rgba(255, 255, 255, 0.18);
   color: var(--text-light);
   font-family: var(--font-main);
   font-weight: 700;
-  font-size: 0.85rem;
-  padding: 0.6rem 1.1rem;
+  font-size: 0.83rem;
+  padding: 0.55rem 1.05rem 0.55rem 0.8rem;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
-.role-btn:hover:not(:disabled) { filter: brightness(1.25); }
+.role-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.role-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.2); }
 .role-btn:disabled { cursor: default; opacity: 0.55; }
-
-.satzbau-translation { font-size: 0.82rem; color: #7d8bab; font-style: italic; max-width: 480px; }
 
 .progress-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.75rem; }
 .progress-track { flex: 1; height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); }
@@ -459,6 +535,11 @@ kbd {
   .grammar-question { font-size: 1rem; }
   .mc-grid, .tf-grid { max-width: 100%; }
   .opt-btn { font-size: 0.88rem; padding: 0.8rem 0.6rem; }
+  .sentence-plaque { padding: 1.5rem 0.9rem 1.3rem; }
+  .word-btn { padding: 0.75rem 0.9rem 0.65rem; }
+  .word-btn .w-text { font-size: 1.25rem; }
+  .role-btn { font-size: 0.78rem; padding: 0.5rem 0.9rem 0.5rem 0.75rem; }
+  .satzbau-translation { font-size: 0.85rem; padding: 0 1.3rem; }
   .flash-actions { max-width: 100%; }
   .controls { flex-direction: column; }
   .controls .ghost-btn { width: 100%; text-align: center; }
@@ -501,6 +582,7 @@ kbd {
     <h1>Satzanalyse</h1>
     <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
     <p class="subtitle">Wörtern ihre Rolle im Satz zuweisen</p>
+    <div class="divider"><span class="diamond"></span></div>
     <a class="nav-link" href="index.html">← Zum Vokabeltrainer</a>
   </header>
 
@@ -1006,8 +1088,8 @@ function renderSatzbau(){
   const roles = [...new Set(item.words.map(w => w.role).filter(r => r !== null && r !== undefined))];
   cardEl.innerHTML = `
     <div class="prompt-hint">Wort antippen, dann Rolle wählen</div>
-    ${item.translation ? `<div class="satzbau-translation">„${item.translation}“</div>` : ""}
-    <div class="word-row" id="word-row"></div>
+    ${item.translation ? `<div class="satzbau-translation">${item.translation}</div>` : ""}
+    <div class="sentence-plaque"><div class="word-row" id="word-row"></div></div>
     <div class="role-row" id="role-row"></div>
     <div class="feedback" id="feedback"></div>
     <button class="next-btn" id="check-btn" disabled>Prüfen</button>
@@ -1033,7 +1115,7 @@ function renderSatzbau(){
     const color = roleColor(r, idx);
     const btn = document.createElement("button");
     btn.className = "role-btn";
-    btn.innerText = r;
+    btn.innerHTML = `<span class="dot"></span><span>${r}</span>`;
     btn.dataset.role = r;
     btn.dataset.color = color;
     btn.style.borderColor = color;
