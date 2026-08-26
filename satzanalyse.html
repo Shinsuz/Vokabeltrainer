@@ -500,7 +500,7 @@ kbd {
     <div class="header-star"></div>
     <h1>Satzanalyse</h1>
     <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
-    <p class="subtitle">Regeln lernen &amp; abfragen</p>
+    <p class="subtitle">Wörtern ihre Rolle im Satz zuweisen</p>
     <a class="nav-link" href="index.html">← Zum Vokabeltrainer</a>
   </header>
 
@@ -512,16 +512,6 @@ kbd {
         <div>Sitzung <b id="stat-session">0/0</b></div>
       </div>
       <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
-    </div>
-
-    <div class="pill-row">
-      <div class="pill-group" id="tabs">
-        <button class="pill-btn" data-mode="concept">Konzepte</button>
-        <button class="pill-btn" data-mode="mc">Multiple Choice</button>
-        <button class="pill-btn" data-mode="truefalse">Richtig/Falsch</button>
-        <button class="pill-btn" data-mode="satzbau">Satzbau</button>
-        <button class="pill-btn" data-mode="mix">Mix-Modus</button>
-      </div>
     </div>
 
     <div class="pill-row">
@@ -659,7 +649,7 @@ const Sound = (() => {
 })();
 
 let progress = loadProgress();
-let mode = "concept";
+let mode = "satzbau";
 let currentItem = null;
 let sessionCorrect = 0, sessionTotal = 0;
 let cardEl = document.getElementById("card");
@@ -781,14 +771,6 @@ function shuffle(arr){
     [arr[i],arr[j]]=[arr[j],arr[i]];
   }
   return arr;
-}
-
-function setMode(m){
-  mode = m;
-  document.querySelectorAll("#tabs .pill-btn").forEach(t => t.classList.toggle("active", t.dataset.mode === m));
-  window.__endShownFor = null;
-  updateStats();
-  nextCard();
 }
 
 /* ---------- Lektionen-Auswahl ---------- */
@@ -1135,10 +1117,6 @@ function checkSatzbau(){
   checkBtn.onclick = nextCard;
 }
 
-document.getElementById("tabs").addEventListener("click", e => {
-  const btn = e.target.closest(".pill-btn");
-  if(btn){ Sound.click(); setMode(btn.dataset.mode); }
-});
 document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
 document.getElementById("reset-progress-btn").addEventListener("click", () => {
   if(confirm("Gesamten Fortschritt zurücksetzen?")){
@@ -1159,9 +1137,9 @@ if (typeof SATZANALYSE === "undefined") {
   cardEl.innerHTML = `<div class="empty-state"><div class="big">main.js wurde nicht geladen.</div>Prüfe, ob <kbd>main.js</kbd> im selben Ordner liegt und <kbd>const SATZANALYSE = {...}</kbd> enthält.</div>`;
 } else {
   buildLessonTabs();
-  setMode("concept");
   updateStats();
+  nextCard();
 }
 </script>
 </body>
-</html> 
+</html>
