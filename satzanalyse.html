@@ -257,6 +257,15 @@ main {
 }
 .lesson-pill.disabled { opacity: 0.3; cursor: not-allowed; }
 
+.scope-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #7d8bab;
+  margin: -0.4rem 0 1rem;
+  letter-spacing: 0.02em;
+}
+.scope-hint b { color: var(--accent-color); font-weight: 600; }
+
 .toggle-pill {
   display: flex;
   align-items: center;
@@ -309,6 +318,10 @@ main {
 .empty-state .big { font-family: var(--font-heading); font-size: 1.2rem; color: var(--text-light); margin-bottom: 8px; }
 
 .prompt-hint { font-size: 0.75rem; color: #7d8bab; letter-spacing: 0.06em; text-transform: uppercase; }
+.level-hint {
+  font-size: 0.72rem; color: var(--accent-color); letter-spacing: 0.04em;
+  font-weight: 600; text-align: center;
+}
 
 .concept-term { font-family: var(--font-heading); font-size: 1.55rem; font-weight: 600; color: var(--text-light); line-height: 1.4; }
 .concept-explanation { font-size: 1rem; line-height: 1.8; color: var(--text-color); max-width: 520px; text-align: left; }
@@ -599,6 +612,7 @@ kbd {
     <div class="pill-row">
       <div class="pill-group" id="lesson-tabs"></div>
     </div>
+    <div class="scope-hint" id="scope-hint"></div>
 
     <div class="card-outer">
       <svg class="corner tl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
@@ -648,7 +662,11 @@ function isArabicText(t){ return ARABIC_REGEX.test(t || ""); }
 /* ---------- Lektionen ---------- */
 let selectedLesson = "alle";
 function lessonList(){
-  return selectedLesson === "alle" ? Object.values(SATZANALYSE) : [SATZANALYSE[selectedLesson]].filter(Boolean);
+  if(selectedLesson === "alle") return Object.values(SATZANALYSE);
+  const orderedKeys = Object.keys(SATZANALYSE).sort(lessonKeySort);
+  const idx = orderedKeys.indexOf(selectedLesson);
+  const keysUpToHere = idx === -1 ? [selectedLesson] : orderedKeys.slice(0, idx + 1);
+  return keysUpToHere.map(k => SATZANALYSE[k]).filter(Boolean);
 }
 function currentDeck(){
   const items = [];
@@ -825,6 +843,7 @@ function backToAll(){
   buildLessonTabs();
   window.__endShownFor = null;
   hideEndOverlay();
+  updateScopeHint();
   updateStats();
   nextCard();
 }
@@ -866,6 +885,24 @@ function lessonKeySort(a, b){
   return String(pa[2]).localeCompare(String(pb[2]));
 }
 
+function updateScopeHint(){
+  const hintEl = document.getElementById("scope-hint");
+  if(!hintEl) return;
+  if(selectedLesson === "alle"){
+    hintEl.innerHTML = "Übt Sätze aus <b>allen Lektionen</b> gemischt.";
+    return;
+  }
+  const orderedKeys = Object.keys(SATZANALYSE).sort(lessonKeySort);
+  const idx = orderedKeys.indexOf(selectedLesson);
+  const included = idx === -1 ? [selectedLesson] : orderedKeys.slice(0, idx + 1);
+  const labels = included.map(k => (SATZANALYSE_LABELS[k] || `Lektion ${k}`).replace("Lektion ", ""));
+  if(labels.length <= 1){
+    hintEl.innerHTML = `Übt nur <b>Lektion ${labels[0]}</b>.`;
+  } else {
+    hintEl.innerHTML = `Kumulativ: übt <b>Lektion ${labels[0]}–${labels[labels.length-1]}</b> zusammen.`;
+  }
+}
+
 function buildLessonTabs(){
   const wrap = document.getElementById("lesson-tabs");
   wrap.innerHTML = "";
@@ -893,6 +930,7 @@ function buildLessonTabs(){
     selectedLesson = btn.dataset.key;
     [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
     window.__endShownFor = null;
+    updateScopeHint();
     updateStats();
     nextCard();
   });
@@ -1052,7 +1090,7 @@ function selectTF(choice, btn, correctAnswer, explanation){
   document.getElementById("next-btn").style.display = "block";
 }
 
-/* ---------- Satzbau-Modus: Wort antippen, dann Rolle zuweisen ---------- */
+/* ---------- Satzbau-Modus: mehrstufige Satzanalyse ---------- */
 let satzbauState = null;
 
 /* Feste Farbzuordnung je Grammatik-Rolle, damit z. B. Mubtada immer gold
@@ -1064,12 +1102,38 @@ const ROLE_COLORS = {
   "Mudaf ilaihi": "#c98af0",
   "Na't": "#f0a8c9",
   "Man'ut": "#9ee87a",
-  "Präposition": "#f0935a",
-  "Genitivobjekt": "#f0e07a"
+  "Harful Jarr": "#f0935a",
+  "Majrur": "#f0e07a",
+  "Marfu": "#c9a878",
+  "Mudhakkar": "#8fb8e0",
+  "Muannath": "#e0a8d4",
+  "Bestimmt": "#a8c9e0",
+  "Unbestimmt": "#e0c9a8"
+};
+/* Anzeigename inkl. arabischem Original — wird für Rollen-Buttons und
+   zugewiesene Wort-Badges verwendet. Der kurze Schlüssel (links) bleibt
+   die interne, stabile Kennung für Logik/Datenabgleich. */
+const ROLE_LABELS = {
+  "Mubtada": "Mubtada (مبتدأ)",
+  "Khabar": "Khabar (خبر)",
+  "Mudaf": "Mudaf (مضاف)",
+  "Mudaf ilaihi": "Mudaf ilaihi (مضاف إليه)",
+  "Na't": "Na't (نعت)",
+  "Man'ut": "Man'ut (منعوت)",
+  "Harful Jarr": "Harful-Jarr (حرف جر)",
+  "Majrur": "Majrur (مجرور)",
+  "Marfu": "Marfû' (مرفوع)",
+  "Mudhakkar": "Mudhakkar (مذكر)",
+  "Muannath": "Mu'annath (مؤنث)",
+  "Bestimmt": "Bestimmt (معرفة)",
+  "Unbestimmt": "Unbestimmt (نكرة)"
 };
 const ROLE_FALLBACK_PALETTE = ["#e5ba73", "#7fd6c2", "#7fa8e8", "#c98af0", "#f0a8c9", "#9ee87a", "#f0935a", "#f0e07a"];
 function roleColor(role, idx){
   return ROLE_COLORS[role] || ROLE_FALLBACK_PALETTE[(idx || 0) % ROLE_FALLBACK_PALETTE.length];
+}
+function roleLabel(role){
+  return ROLE_LABELS[role] || role;
 }
 function hexToRgba(hex, alpha){
   const h = hex.replace("#", "");
@@ -1077,17 +1141,60 @@ function hexToRgba(hex, alpha){
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+/* Jedes Wort trägt jetzt tags:{ebene: Rolle} statt einer einzelnen role.
+   Fehlt eine Ebene bei einem Wort, ist es in dieser Runde nicht anklickbar
+   (entweder ein Füllwort wie وَ, oder auf dieser Ebene bereits geklärt). */
+function wordTag(word, level){
+  return word.tags ? word.tags[level] : undefined;
+}
+/* Nur Ebenen mit echter Auswahl liefern (mindestens 2 unterschiedliche
+   Rollen). Ebenen, bei denen wegen einer grammatischen Übereinstimmungsregel
+   ohnehin nur ein Wert infrage kommt (z. B. Geschlecht/Bestimmtheit bei
+   Na't+Man'ut, die per Definition immer übereinstimmen), wären kein echtes
+   Rätsel — die werden hier übersprungen. */
+function usableLevels(item){
+  const raw = (() => {
+    let max = 1;
+    item.words.forEach(w => { if(w.tags){ Object.keys(w.tags).forEach(k => { max = Math.max(max, Number(k)); }); } });
+    return max;
+  })();
+  const list = [];
+  for(let lvl = 1; lvl <= raw; lvl++){
+    const roles = new Set(item.words.map(w => wordTag(w, lvl)).filter(r => r !== undefined));
+    if(roles.size >= 2) list.push(lvl);
+  }
+  return list.length ? list : [1];
+}
+
 function renderSatzbau(){
   const item = currentItem;
   satzbauState = {
     words: item.words,
-    assignments: new Array(item.words.length).fill(null),
+    levels: usableLevels(item),
+    levelIndex: 0,
+    assignments: {},
     selected: null,
-    checked: false
+    checked: false,
+    overallCorrect: true
   };
-  const roles = [...new Set(item.words.map(w => w.role).filter(r => r !== null && r !== undefined))];
+  renderSatzbauLevel();
+}
+
+function renderSatzbauLevel(){
+  const item = currentItem;
+  const level = satzbauState.levels[satzbauState.levelIndex];
+  satzbauState.assignments[level] = new Array(item.words.length).fill(null);
+  satzbauState.selected = null;
+  satzbauState.checked = false;
+
+  const roles = [...new Set(item.words.map(w => wordTag(w, level)).filter(r => r !== undefined))];
+  const levelHint = satzbauState.levels.length > 1
+    ? `<div class="level-hint">Ebene ${satzbauState.levelIndex + 1} von ${satzbauState.levels.length} — ${roles.map(roleLabel).join(" · ")}</div>`
+    : "";
+
   cardEl.innerHTML = `
     <div class="prompt-hint">Wort antippen, dann Rolle wählen</div>
+    ${levelHint}
     ${item.translation ? `<div class="satzbau-translation">${item.translation}</div>` : ""}
     <div class="sentence-plaque"><div class="word-row" id="word-row"></div></div>
     <div class="role-row" id="role-row"></div>
@@ -1096,7 +1203,8 @@ function renderSatzbau(){
   `;
   const wordRow = document.getElementById("word-row");
   item.words.forEach((w, i) => {
-    if(w.role === null || w.role === undefined){
+    const tag = wordTag(w, level);
+    if(tag === undefined){
       const span = document.createElement("div");
       span.className = "word-static";
       span.innerText = w.text;
@@ -1115,7 +1223,7 @@ function renderSatzbau(){
     const color = roleColor(r, idx);
     const btn = document.createElement("button");
     btn.className = "role-btn";
-    btn.innerHTML = `<span class="dot"></span><span>${r}</span>`;
+    btn.innerHTML = `<span class="dot"></span><span>${roleLabel(r)}</span>`;
     btn.dataset.role = r;
     btn.dataset.color = color;
     btn.style.borderColor = color;
@@ -1127,7 +1235,8 @@ function renderSatzbau(){
 }
 
 function refreshRoleHighlight(){
-  const assignedHere = satzbauState.selected !== null ? satzbauState.assignments[satzbauState.selected] : null;
+  const lvl = satzbauState.levels[satzbauState.levelIndex];
+  const assignedHere = satzbauState.selected !== null ? satzbauState.assignments[lvl][satzbauState.selected] : null;
   document.querySelectorAll("#role-row .role-btn").forEach(b => {
     const isActive = b.dataset.role === assignedHere;
     b.style.background = isActive ? hexToRgba(b.dataset.color, 0.18) : "rgba(255, 255, 255, 0.03)";
@@ -1148,32 +1257,47 @@ function selectWord(i){
 function assignRole(role){
   if(satzbauState.checked || satzbauState.selected === null) return;
   Sound.click();
+  const lvl = satzbauState.levels[satzbauState.levelIndex];
   const i = satzbauState.selected;
-  satzbauState.assignments[i] = role;
+  satzbauState.assignments[lvl][i] = role;
   const btn = document.querySelector(`#word-row .word-btn[data-index="${i}"]`);
   if(btn){
-    const color = roleColor(role, 0);
-    const roleBtn = document.querySelector(`#role-row .role-btn[data-role="${role}"]`);
-    const c = roleBtn ? roleBtn.dataset.color : color;
-    btn.innerHTML = `<span class="w-text">${satzbauState.words[i].text}</span><span class="w-role" style="color:${c}">${role}</span>`;
+    const roleBtn = document.querySelector(`#role-row .role-btn[data-role="${CSS.escape(role)}"]`);
+    const c = roleBtn ? roleBtn.dataset.color : roleColor(role, 0);
+    btn.innerHTML = `<span class="w-text">${satzbauState.words[i].text}</span><span class="w-role" style="color:${c}">${roleLabel(role)}</span>`;
     btn.style.borderColor = c;
   }
   refreshRoleHighlight();
-  const allAssigned = satzbauState.words.every((w, idx) => (w.role === null || w.role === undefined) || satzbauState.assignments[idx]);
+  const taggable = satzbauState.words
+    .map((w, idx) => ({ w, idx }))
+    .filter(o => wordTag(o.w, lvl) !== undefined);
+  const allAssigned = taggable.every(o => satzbauState.assignments[lvl][o.idx]);
   document.getElementById("check-btn").disabled = !allAssigned;
 }
 
 function checkSatzbau(){
-  if(satzbauState.checked){ nextCard(); return; }
+  const item = currentItem;
+  if(satzbauState.checked){
+    if(satzbauState.levelIndex < satzbauState.levels.length - 1){
+      satzbauState.levelIndex++;
+      renderSatzbauLevel();
+    } else {
+      markResult(item, satzbauState.overallCorrect);
+      nextCard();
+    }
+    return;
+  }
   satzbauState.checked = true;
-  let allCorrect = true;
+  const lvl = satzbauState.levels[satzbauState.levelIndex];
+  let levelCorrect = true;
   satzbauState.words.forEach((w, i) => {
-    if(w.role === null || w.role === undefined) return;
+    const tag = wordTag(w, lvl);
+    if(tag === undefined) return;
     const btn = document.querySelector(`#word-row .word-btn[data-index="${i}"]`);
-    const correct = satzbauState.assignments[i] === w.role;
+    const correct = satzbauState.assignments[lvl][i] === tag;
     if(!correct){
-      allCorrect = false;
-      if(btn) btn.innerHTML = `<span class="w-text">${w.text}</span><span class="w-role">${w.role}</span>`;
+      levelCorrect = false;
+      if(btn) btn.innerHTML = `<span class="w-text">${w.text}</span><span class="w-role">${roleLabel(tag)}</span>`;
     }
     if(btn){
       btn.classList.add(correct ? "correct" : "wrong");
@@ -1182,11 +1306,11 @@ function checkSatzbau(){
       if(roleSpan) roleSpan.style.color = correct ? "#7fd6c2" : "#d98a73";
     }
   });
+  satzbauState.overallCorrect = satzbauState.overallCorrect && levelCorrect;
   document.querySelectorAll("#role-row .role-btn").forEach(b => b.disabled = true);
   document.querySelectorAll("#word-row .word-btn").forEach(b => b.onclick = null);
   const feedback = document.getElementById("feedback");
-  markResult(currentItem, allCorrect);
-  if(allCorrect){
+  if(levelCorrect){
     feedback.innerText = "Richtig! 🎉";
     feedback.className = "feedback ok";
   } else {
@@ -1194,9 +1318,8 @@ function checkSatzbau(){
     feedback.className = "feedback bad";
   }
   const checkBtn = document.getElementById("check-btn");
-  checkBtn.innerText = "Nächste Frage ➔";
+  checkBtn.innerText = satzbauState.levelIndex < satzbauState.levels.length - 1 ? "Nächste Ebene ➔" : "Nächste Frage ➔";
   checkBtn.disabled = false;
-  checkBtn.onclick = nextCard;
 }
 
 document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
@@ -1219,6 +1342,7 @@ if (typeof SATZANALYSE === "undefined") {
   cardEl.innerHTML = `<div class="empty-state"><div class="big">main.js wurde nicht geladen.</div>Prüfe, ob <kbd>main.js</kbd> im selben Ordner liegt und <kbd>const SATZANALYSE = {...}</kbd> enthält.</div>`;
 } else {
   buildLessonTabs();
+  updateScopeHint();
   updateStats();
   nextCard();
 }

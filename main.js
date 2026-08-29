@@ -1,13 +1,32 @@
 /* Satzanalyse — Grammatikregeln nach dem Madina-Buch-Schlüssel (Teil 1)
    Lektionen wie in Shins eigener Übersicht nummeriert.
+
    Jede Lektion hat:
-     - concepts: [{ term, explanation }]   -> Karteikarten-Modus
-     - questions: [
-         { type:"mc", question, choices:[...], correct, explanation },
-         { type:"tf", statement, correct: true|false, explanation }
-       ]
-   Arabischer Text in question/statement/choices sollte in <span class="ar">...</span>
-   stehen, damit die arabische Schrift korrekt formatiert wird.
+     - concepts: [{ term, explanation }]   -> Karteikarten-Modus (aktuell ungenutzt,
+       da satzanalyse.html nur noch den Satzbau-Modus zeigt; Inhalt bleibt als
+       Referenz/Backup erhalten)
+     - questions: [...]                    -> ungenutzt, siehe oben
+     - sentences: [...]                    -> Satzbau-Modus (einzig aktiver Modus)
+
+   SATZBAU-DATENFORMAT (mehrstufig):
+   Jedes Wort trägt statt einer einzelnen "role" ein "tags"-Objekt:
+     { text: "هَذَا", tags: { 1: "Mubtada" } }
+   Der Schlüssel ist die Analyse-EBENE (1, 2, 3, ...). Ein Wort kann auf
+   mehreren Ebenen unterschiedliche Rollen haben, z. B. ein Mudaf-Wort:
+     { text: "كِتَابُ", tags: { 1: "Khabar", 2: "Mudaf", 3: "Marfu" } }
+   Ebene 1 ist bei JEDEM Satz Mubtada/Khabar (die beiden gehören immer
+   zusammen — nie das eine ohne das andere abfragen). Höhere Ebenen
+   verfeinern das: Mudaf/Mudaf ilaihi, Harful-Jarr/Majrur, Na't/Man'ut,
+   Fall (Marfû'/Majrur), Geschlecht (Mudhakkar/Mu'annath) — abhängig davon,
+   was in der jeweiligen Lektion bereits gelehrt wurde. Wörter ohne Eintrag
+   auf der aktuellen Ebene sind in dieser Runde nicht anklickbar (Füllwort
+   wie وَ, oder auf dieser Ebene bereits durch eine frühere Ebene geklärt).
+
+   WICHTIG (grammatikalisch korrekt gehalten):
+   - خَلْفَ / أَمَامَ (und ähnliche Ẓuruf wie تَحْتَ) sind KEINE echten
+     Präpositionen (حرف جر), sondern fungieren selbst als Mudaf – das
+     folgende Wort ist ihr Mudaf ilaihi. Nur echte Partikel wie فِي، عَلَى،
+     مِنْ، إِلَى werden als Harful-Jarr (حرف جر) + Majrur (مجرور) markiert.
 */
 
 const SATZANALYSE = {
@@ -47,18 +66,18 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"وَلَدٌ", role:"Khabar"}], translation: "Dies ist ein Junge." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بَيْتٌ", role:"Khabar"}], translation: "Dies ist ein Haus." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"طَالِبٌ", role:"Khabar"}], translation: "Dies ist ein Student." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"مَسْجِدٌ", role:"Khabar"}], translation: "Dies ist eine Moschee." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"كِتَابٌ", role:"Khabar"}], translation: "Dies ist ein Buch." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"قَلَمٌ", role:"Khabar"}], translation: "Dies ist ein Stift." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"كَلْبٌ", role:"Khabar"}], translation: "Dies ist ein Hund." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"حِصَانٌ", role:"Khabar"}], translation: "Dies ist ein Pferd." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"رَجُلٌ", role:"Khabar"}], translation: "Dies ist ein Mann." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بَابٌ", role:"Khabar"}], translation: "Dies ist eine Tür." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"مِفْتَاحٌ", role:"Khabar"}], translation: "Dies ist ein Schlüssel." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"جَمَلٌ", role:"Khabar"}], translation: "Dies ist ein Kamel." }
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"وَلَدٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Junge." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Haus." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"طَالِبٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Student." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"مَسْجِدٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Moschee." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كِتَابٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Buch." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"قَلَمٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Stift." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كَلْبٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Hund." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"حِصَانٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Pferd." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"رَجُلٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Mann." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَابٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Tür." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"مِفْتَاحٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Schlüssel." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"جَمَلٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Kamel." }
     ]
   },
 
@@ -92,16 +111,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بَيْتٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"مَسْجِدٌ", role:"Khabar"}], translation: "Dies ist ein Haus, und das ist eine Moschee." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"إِمَامٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"طَالِبٌ", role:"Khabar"}], translation: "Dies ist ein Imam, und das ist ein Student." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"سُكَّرٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"لَبَنٌ", role:"Khabar"}], translation: "Dies ist Zucker, und das ist Milch." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"حَجَرٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"قَلَمٌ", role:"Khabar"}], translation: "Dies ist ein Stein, und das ist ein Stift." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"كِتَابٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"مِفْتَاحٌ", role:"Khabar"}], translation: "Dies ist ein Buch, und das ist ein Schlüssel." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"وَلَدٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"رَجُلٌ", role:"Khabar"}], translation: "Dies ist ein Junge, und das ist ein Mann." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"مَسْجِدٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"بَيْتٌ", role:"Khabar"}], translation: "Dies ist eine Moschee, und das ist ein Haus." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"طَبِيبٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"تَاجِرٌ", role:"Khabar"}], translation: "Dies ist ein Arzt, und das ist ein Händler." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"كَلْبٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"حِمَارٌ", role:"Khabar"}], translation: "Dies ist ein Hund, und das ist ein Esel." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"حَجَرٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"سُكَّرٌ", role:"Khabar"}], translation: "Dies ist ein Stein, und das ist Zucker." }
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"بَيْتٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"مَسْجِدٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Haus, und das ist eine Moschee." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"إِمَامٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"طَالِبٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Imam, und das ist ein Student." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"سُكَّرٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"لَبَنٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist Zucker, und das ist Milch." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"حَجَرٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"قَلَمٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Stein, und das ist ein Stift." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"كِتَابٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"مِفْتَاحٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Buch, und das ist ein Schlüssel." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"وَلَدٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"رَجُلٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Junge, und das ist ein Mann." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"مَسْجِدٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"بَيْتٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist eine Moschee, und das ist ein Haus." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"طَبِيبٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"تَاجِرٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Arzt, und das ist ein Händler." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"كَلْبٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"حِمَارٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Hund, und das ist ein Esel." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"حَجَرٌ", tags:{1:"Khabar",2:"Unbestimmt"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"سُكَّرٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies ist ein Stein, und das ist Zucker." }
     ]
   },
 
@@ -135,18 +154,18 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"الْبَابُ", role:"Mubtada"}, {text:"مَفْتُوحٌ", role:"Khabar"}], translation: "Die Tür ist offen." },
-      { words: [{text:"الْقَلَمُ", role:"Mubtada"}, {text:"مَكْسُورٌ", role:"Khabar"}], translation: "Der Stift ist kaputt." },
-      { words: [{text:"الرَّجُلُ", role:"Mubtada"}, {text:"غَنِيٌّ", role:"Khabar"}], translation: "Der Mann ist reich." },
-      { words: [{text:"الْوَلَدُ", role:"Mubtada"}, {text:"فَقِيرٌ", role:"Khabar"}], translation: "Der Junge ist arm." },
-      { words: [{text:"الطَّالِبُ", role:"Mubtada"}, {text:"طَوِيلٌ", role:"Khabar"}], translation: "Der Student ist groß." },
-      { words: [{text:"الْبَيْتُ", role:"Mubtada"}, {text:"قَدِيمٌ", role:"Khabar"}], translation: "Das Haus ist alt." },
-      { words: [{text:"الشَّمْسُ", role:"Mubtada"}, {text:"حَارَّةٌ", role:"Khabar"}], translation: "Die Sonne ist heiß." },
-      { words: [{text:"الْقَمَرُ", role:"Mubtada"}, {text:"بَعِيدٌ", role:"Khabar"}], translation: "Der Mond ist fern." },
-      { words: [{text:"النَّجْمُ", role:"Mubtada"}, {text:"صَغِيرٌ", role:"Khabar"}], translation: "Der Stern ist klein." },
-      { words: [{text:"الدِّيكُ", role:"Mubtada"}, {text:"جَالِسٌ", role:"Khabar"}], translation: "Der Hahn sitzt." },
-      { words: [{text:"الطَّالِبُ", role:"Mubtada"}, {text:"وَاقِفٌ", role:"Khabar"}], translation: "Der Student steht." },
-      { words: [{text:"الْقَلَمُ", role:"Mubtada"}, {text:"جَدِيدٌ", role:"Khabar"}], translation: "Der Stift ist neu." }
+      { words: [{text:"الْبَابُ", tags:{1:"Mubtada"}}, {text:"مَفْتُوحٌ", tags:{1:"Khabar"}}], translation: "Die Tür ist offen." },
+      { words: [{text:"الْقَلَمُ", tags:{1:"Mubtada"}}, {text:"مَكْسُورٌ", tags:{1:"Khabar"}}], translation: "Der Stift ist kaputt." },
+      { words: [{text:"الرَّجُلُ", tags:{1:"Mubtada"}}, {text:"غَنِيٌّ", tags:{1:"Khabar"}}], translation: "Der Mann ist reich." },
+      { words: [{text:"الْوَلَدُ", tags:{1:"Mubtada"}}, {text:"فَقِيرٌ", tags:{1:"Khabar"}}], translation: "Der Junge ist arm." },
+      { words: [{text:"الطَّالِبُ", tags:{1:"Mubtada"}}, {text:"طَوِيلٌ", tags:{1:"Khabar"}}], translation: "Der Student ist groß." },
+      { words: [{text:"الْبَيْتُ", tags:{1:"Mubtada"}}, {text:"قَدِيمٌ", tags:{1:"Khabar"}}], translation: "Das Haus ist alt." },
+      { words: [{text:"الشَّمْسُ", tags:{1:"Mubtada"}}, {text:"حَارَّةٌ", tags:{1:"Khabar"}}], translation: "Die Sonne ist heiß." },
+      { words: [{text:"الْقَمَرُ", tags:{1:"Mubtada"}}, {text:"بَعِيدٌ", tags:{1:"Khabar"}}], translation: "Der Mond ist fern." },
+      { words: [{text:"النَّجْمُ", tags:{1:"Mubtada"}}, {text:"صَغِيرٌ", tags:{1:"Khabar"}}], translation: "Der Stern ist klein." },
+      { words: [{text:"الدِّيكُ", tags:{1:"Mubtada"}}, {text:"جَالِسٌ", tags:{1:"Khabar"}}], translation: "Der Hahn sitzt." },
+      { words: [{text:"الطَّالِبُ", tags:{1:"Mubtada"}}, {text:"وَاقِفٌ", tags:{1:"Khabar"}}], translation: "Der Student steht." },
+      { words: [{text:"الْقَلَمُ", tags:{1:"Mubtada"}}, {text:"جَدِيدٌ", tags:{1:"Khabar"}}], translation: "Der Stift ist neu." }
     ]
   },
 
@@ -180,16 +199,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"بِلَالٌ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْمَسْجِدِ", role:"Genitivobjekt"}], translation: "Bilâl ist in der Moschee." },
-      { words: [{text:"هُوَ", role:"Mubtada"}, {text:"عَلَى", role:"Präposition"}, {text:"الْمَكْتَبِ", role:"Genitivobjekt"}], translation: "Es ist auf dem Schreibtisch." },
-      { words: [{text:"هِيَ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْبَيْتِ", role:"Genitivobjekt"}], translation: "Sie ist im Haus." },
-      { words: [{text:"الْقَلَمُ", role:"Mubtada"}, {text:"عَلَى", role:"Präposition"}, {text:"الْمَكْتَبِ", role:"Genitivobjekt"}], translation: "Der Stift ist auf dem Schreibtisch." },
-      { words: [{text:"الطَّالِبُ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْفَصْلِ", role:"Genitivobjekt"}], translation: "Der Student ist im Klassenzimmer." },
-      { words: [{text:"الْحَمَّامُ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْبَيْتِ", role:"Genitivobjekt"}], translation: "Das Badezimmer ist im Haus." },
-      { words: [{text:"هُوَ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْمَطْبَخِ", role:"Genitivobjekt"}], translation: "Er ist in der Küche." },
-      { words: [{text:"هِيَ", role:"Mubtada"}, {text:"عَلَى", role:"Präposition"}, {text:"السَّرِيرِ", role:"Genitivobjekt"}], translation: "Sie (es) ist auf dem Bett." },
-      { words: [{text:"الْمِفْتَاحُ", role:"Mubtada"}, {text:"عَلَى", role:"Präposition"}, {text:"الْكُرْسِيِّ", role:"Genitivobjekt"}], translation: "Der Schlüssel ist auf dem Stuhl." },
-      { words: [{text:"الْقِطَّةُ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْغُرْفَةِ", role:"Genitivobjekt"}], translation: "Die Katze ist im Zimmer." }
+      { words: [{text:"بِلَالٌ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Bilâl ist in der Moschee." },
+      { words: [{text:"هُوَ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"عَلَى", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْمَكْتَبِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Es ist auf dem Schreibtisch." },
+      { words: [{text:"هِيَ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْبَيْتِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Sie ist im Haus." },
+      { words: [{text:"الْقَلَمُ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"عَلَى", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْمَكْتَبِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Der Stift ist auf dem Schreibtisch." },
+      { words: [{text:"الطَّالِبُ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْفَصْلِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Der Student ist im Klassenzimmer." },
+      { words: [{text:"الْحَمَّامُ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْبَيْتِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Das Badezimmer ist im Haus." },
+      { words: [{text:"هُوَ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْمَطْبَخِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Er ist in der Küche." },
+      { words: [{text:"هِيَ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"عَلَى", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"السَّرِيرِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Sie (es) ist auf dem Bett." },
+      { words: [{text:"الْمِفْتَاحُ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"عَلَى", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْكُرْسِيِّ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Der Schlüssel ist auf dem Stuhl." },
+      { words: [{text:"الْقِطَّةُ", tags:{1:"Mubtada",2:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"الْغُرْفَةِ", tags:{1:"Khabar",2:"Majrur",3:"Majrur"}}], translation: "Die Katze ist im Zimmer." }
     ]
   },
 
@@ -222,16 +241,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"كِتَابُ", role:"Mudaf"}, {text:"بِلَالٍ", role:"Mudaf ilaihi"}], translation: "Dies ist Bilâls Buch." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بَيْتُ", role:"Mudaf"}, {text:"الْإِمَامِ", role:"Mudaf ilaihi"}], translation: "Dies ist das Haus des Imâms." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"مِفْتَاحُ", role:"Mudaf"}, {text:"الْبَيْتِ", role:"Mudaf ilaihi"}], translation: "Dies ist der Schlüssel des Hauses." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"ابْنُ", role:"Mudaf"}, {text:"الطَّبِيبِ", role:"Mudaf ilaihi"}], translation: "Dies ist der Sohn des Arztes." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"سَيَّارَةُ", role:"Mudaf"}, {text:"الْعَمِّ", role:"Mudaf ilaihi"}], translation: "Dies ist das Auto des Onkels." },
-      { words: [{text:"اسْمُ", role:"Mudaf"}, {text:"الْبِنْتِ", role:"Mudaf ilaihi"}, {text:"آمِنَةُ", role:"Khabar"}], translation: "Der Name des Mädchens ist Amina." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"قَلَمُ", role:"Mudaf"}, {text:"حَامِدٍ", role:"Mudaf ilaihi"}], translation: "Dies ist Hâmids Stift." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"حَقِيبَةُ", role:"Mudaf"}, {text:"الطَّالِبِ", role:"Mudaf ilaihi"}], translation: "Dies ist die Tasche des Studenten." },
-      { words: [{text:"مَكْتَبُ", role:"Mudaf"}, {text:"الْمُدَرِّسِ", role:"Mudaf ilaihi"}, {text:"جَدِيدٌ", role:"Khabar"}], translation: "Der Schreibtisch des Lehrers ist neu." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بَابُ", role:"Mudaf"}, {text:"الْمَسْجِدِ", role:"Mudaf ilaihi"}], translation: "Dies ist die Tür der Moschee." }
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كِتَابُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"بِلَالٍ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist Bilâls Buch." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"الْإِمَامِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist das Haus des Imâms." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"مِفْتَاحُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"الْبَيْتِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist der Schlüssel des Hauses." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"ابْنُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"الطَّبِيبِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist der Sohn des Arztes." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"سَيَّارَةُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"الْعَمِّ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist das Auto des Onkels." },
+      { words: [{text:"اسْمُ", tags:{1:"Mubtada",2:"Mudaf",3:"Marfu"}}, {text:"الْبِنْتِ", tags:{1:"Mubtada",2:"Mudaf ilaihi",3:"Majrur"}}, {text:"آمِنَةُ", tags:{1:"Khabar"}}], translation: "Der Name des Mädchens ist Amina." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"قَلَمُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"حَامِدٍ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist Hâmids Stift." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"حَقِيبَةُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"الطَّالِبِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist die Tasche des Studenten." },
+      { words: [{text:"مَكْتَبُ", tags:{1:"Mubtada",2:"Mudaf",3:"Marfu"}}, {text:"الْمُدَرِّسِ", tags:{1:"Mubtada",2:"Mudaf ilaihi",3:"Majrur"}}, {text:"جَدِيدٌ", tags:{1:"Khabar"}}], translation: "Der Schreibtisch des Lehrers ist neu." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَابُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"الْمَسْجِدِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist die Tür der Moschee." }
     ]
   },
 
@@ -265,16 +284,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"وَلَدٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذِهِ", role:"Mubtada"}, {text:"بِنْتٌ", role:"Khabar"}], translation: "Dies ist ein Junge, und dies ist ein Mädchen." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"يَدٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"رَأْسٌ", role:"Khabar"}], translation: "Dies ist eine Hand, und dies ist ein Kopf." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"عَيْنٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"أَنْفٌ", role:"Khabar"}], translation: "Dies ist ein Auge, und dies ist eine Nase." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"مُدَرِّسَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"مُدَرِّسٌ", role:"Khabar"}], translation: "Dies ist eine Lehrerin, und dies ist ein Lehrer." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"بِنْتٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"وَلَدٌ", role:"Khabar"}], translation: "Dies ist ein Mädchen, und dies ist ein Junge." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"قِطَّةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"كَلْبٌ", role:"Khabar"}], translation: "Dies ist eine Katze, und dies ist ein Hund." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"رِجْلٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"فَمٌ", role:"Khabar"}], translation: "Dies ist ein Bein, und dies ist ein Mund." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"أُخْتٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذَا", role:"Mubtada"}, {text:"أَخٌ", role:"Khabar"}], translation: "Dies ist eine Schwester, und dies ist ein Bruder." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"ثَلَّاجَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذِهِ", role:"Mubtada"}, {text:"مِكْوَاةٌ", role:"Khabar"}], translation: "Dies ist ein Kühlschrank, und dies ist ein Bügeleisen." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"فَمٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"هَذِهِ", role:"Mubtada"}, {text:"عَيْنٌ", role:"Khabar"}], translation: "Dies ist ein Mund, und dies ist ein Auge." }
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"وَلَدٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"بِنْتٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Junge, und dies ist ein Mädchen." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"يَدٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"رَأْسٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Hand, und dies ist ein Kopf." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"عَيْنٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَنْفٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Auge, und dies ist eine Nase." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"مُدَرِّسٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Lehrerin, und dies ist ein Lehrer." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"بِنْتٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"وَلَدٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Mädchen, und dies ist ein Junge." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"قِطَّةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كَلْبٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Katze, und dies ist ein Hund." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"رِجْلٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"فَمٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Bein, und dies ist ein Mund." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"أُخْتٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَخٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Schwester, und dies ist ein Bruder." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"ثَلَّاجَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مِكْوَاةٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Kühlschrank, und dies ist ein Bügeleisen." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"فَمٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"عَيْنٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Mund, und dies ist ein Auge." }
     ]
   },
 
@@ -299,16 +318,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"آمِنَةُ", role:"Khabar"}, {text:"وَ", role:null}, {text:"تِلْكَ", role:"Mubtada"}, {text:"مَرْيَمُ", role:"Khabar"}], translation: "Dies ist Amina, und das ist Maryam." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بِلَالٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"حَامِدٌ", role:"Khabar"}], translation: "Dies ist Bilâl, und das ist Hâmid." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"دَجَاجَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"تِلْكَ", role:"Mubtada"}, {text:"بَطَّةٌ", role:"Khabar"}], translation: "Dies ist eine Henne, und das ist eine Ente." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"نَاقَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"تِلْكَ", role:"Mubtada"}, {text:"بَطَّةٌ", role:"Khabar"}], translation: "Dies ist eine Kamelstute, und das ist eine Ente." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"مُؤَذِّنٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"طَبِيبٌ", role:"Khabar"}], translation: "Dies ist ein Muezzin, und das ist ein Arzt." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"مُمَرِّضَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"تِلْكَ", role:"Mubtada"}, {text:"مُدَرِّسَةٌ", role:"Khabar"}], translation: "Dies ist eine Krankenschwester, und das ist eine Lehrerin." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"قَلَمٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"كِتَابٌ", role:"Khabar"}], translation: "Dies ist ein Stift, und das ist ein Buch." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"بَيْضَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"تِلْكَ", role:"Mubtada"}, {text:"دَجَاجَةٌ", role:"Khabar"}], translation: "Dies ist ein Ei, und das ist eine Henne." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"طَالِبٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"ذَلِكَ", role:"Mubtada"}, {text:"مُدَرِّسٌ", role:"Khabar"}], translation: "Dies ist ein Student, und das ist ein Lehrer." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"مِرْوَحَةٌ", role:"Khabar"}, {text:"وَ", role:null}, {text:"تِلْكَ", role:"Mubtada"}, {text:"سَاعَةٌ", role:"Khabar"}], translation: "Dies ist ein Ventilator, und das ist eine Uhr." }
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"آمِنَةُ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"مَرْيَمُ", tags:{1:"Khabar"}}], translation: "Dies ist Amina, und das ist Maryam." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بِلَالٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"حَامِدٌ", tags:{1:"Khabar"}}], translation: "Dies ist Bilâl, und das ist Hâmid." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"دَجَاجَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"بَطَّةٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Henne, und das ist eine Ente." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"نَاقَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"بَطَّةٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Kamelstute, und das ist eine Ente." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"مُؤَذِّنٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"طَبِيبٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Muezzin, und das ist ein Arzt." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مُمَرِّضَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَةٌ", tags:{1:"Khabar"}}], translation: "Dies ist eine Krankenschwester, und das ist eine Lehrerin." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"قَلَمٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"كِتَابٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Stift, und das ist ein Buch." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"بَيْضَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"دَجَاجَةٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Ei, und das ist eine Henne." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"طَالِبٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Student, und das ist ein Lehrer." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مِرْوَحَةٌ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"سَاعَةٌ", tags:{1:"Khabar"}}], translation: "Dies ist ein Ventilator, und das ist eine Uhr." }
     ]
   },
 
@@ -338,16 +357,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"الْكِتَابُ", role:"Mubtada"}, {text:"جَدِيدٌ", role:"Khabar"}], translation: "Dies Buch ist neu." },
-      { words: [{text:"ذَلِكَ", role:"Mubtada"}, {text:"الرَّجُلُ", role:"Mubtada"}, {text:"مُهَنْدِسٌ", role:"Khabar"}], translation: "Jener Mann ist ein Ingenieur." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"السَّاعَةُ", role:"Mubtada"}, {text:"جَمِيلَةٌ", role:"Khabar"}], translation: "Diese Uhr ist schön." },
-      { words: [{text:"تِلْكَ", role:"Mubtada"}, {text:"الْمُمَرِّضَةُ", role:"Mubtada"}, {text:"مِنَ", role:"Präposition"}, {text:"الْيَابَانِ", role:"Genitivobjekt"}], translation: "Jene Krankenschwester ist aus Japan." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"الْبَيْتُ", role:"Mubtada"}, {text:"خَلْفَ", role:"Präposition"}, {text:"الْمَسْجِدِ", role:"Genitivobjekt"}], translation: "Dies Haus ist hinter der Moschee." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"أَمْرِيكَا", role:"Khabar"}], translation: "Dies ist Amerika." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"الْوَلَدُ", role:"Mubtada"}, {text:"مُجْتَهِدٌ", role:"Khabar"}], translation: "Dieser Junge ist fleißig." },
-      { words: [{text:"ذَلِكَ", role:"Mubtada"}, {text:"الطَّالِبُ", role:"Mubtada"}, {text:"فِي", role:"Präposition"}, {text:"الْفَصْلِ", role:"Genitivobjekt"}], translation: "Jener Student ist im Klassenzimmer." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"الْمَدْرَسَةُ", role:"Mubtada"}, {text:"كَبِيرَةٌ", role:"Khabar"}], translation: "Diese Schule ist groß." },
-      { words: [{text:"ذَلِكَ", role:"Mubtada"}, {text:"الْبَيْتُ", role:"Mubtada"}, {text:"أَمَامَ", role:"Präposition"}, {text:"السُّوقِ", role:"Genitivobjekt"}], translation: "Jenes Haus ist vor dem Markt." }
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"الْكِتَابُ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"جَدِيدٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dies Buch ist neu." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"الرَّجُلُ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"مُهَنْدِسٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Jener Mann ist ein Ingenieur." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"السَّاعَةُ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"جَمِيلَةٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Diese Uhr ist schön." },
+      { words: [{text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"الْمُمَرِّضَةُ", tags:{1:"Mubtada"}}, {text:"مِنَ", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْيَابَانِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Jene Krankenschwester ist aus Japan." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"الْبَيْتُ", tags:{1:"Mubtada"}}, {text:"خَلْفَ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"الْمَسْجِدِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies Haus ist hinter der Moschee." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"أَمْرِيكَا", tags:{1:"Khabar"}}], translation: "Dies ist Amerika." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"الْوَلَدُ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"مُجْتَهِدٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Dieser Junge ist fleißig." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"الطَّالِبُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْفَصْلِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Jener Student ist im Klassenzimmer." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"الْمَدْرَسَةُ", tags:{1:"Mubtada",2:"Bestimmt"}}, {text:"كَبِيرَةٌ", tags:{1:"Khabar",2:"Unbestimmt"}}], translation: "Diese Schule ist groß." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"الْبَيْتُ", tags:{1:"Mubtada"}}, {text:"أَمَامَ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"السُّوقِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Jenes Haus ist vor dem Markt." }
     ]
   },
 
@@ -391,16 +410,16 @@ const SATZANALYSE = {
       }
     ],
     sentences: [
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"بَيْتٌ", role:"Man'ut"}, {text:"جَدِيدٌ", role:"Na't"}], translation: "Dies ist ein neues Haus." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"بِنْتٌ", role:"Man'ut"}, {text:"صَغِيرَةٌ", role:"Na't"}], translation: "Dies ist ein kleines Mädchen." },
-      { words: [{text:"بِلَالٌ", role:"Mubtada"}, {text:"مُدَرِّسٌ", role:"Man'ut"}, {text:"جَدِيدٌ", role:"Na't"}], translation: "Bilâl ist ein neuer Lehrer." },
-      { words: [{text:"الْمُدَرِّسُ", role:"Man'ut"}, {text:"الْجَدِيدُ", role:"Na't"}, {text:"فِي", role:"Präposition"}, {text:"الْفَصْلِ", role:"Genitivobjekt"}], translation: "Der neue Lehrer ist im Klassenzimmer." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"وَلَدٌ", role:"Man'ut"}, {text:"صَغِيرٌ", role:"Na't"}], translation: "Dies ist ein kleiner Junge." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"سَيَّارَةٌ", role:"Man'ut"}, {text:"جَدِيدَةٌ", role:"Na't"}], translation: "Dies ist ein neues Auto." },
-      { words: [{text:"ذَلِكَ", role:"Mubtada"}, {text:"رَجُلٌ", role:"Man'ut"}, {text:"طَوِيلٌ", role:"Na't"}], translation: "Jener ist ein großer Mann." },
-      { words: [{text:"هَذَا", role:"Mubtada"}, {text:"طَالِبٌ", role:"Man'ut"}, {text:"مُجْتَهِدٌ", role:"Na't"}], translation: "Dies ist ein fleißiger Student." },
-      { words: [{text:"هَذِهِ", role:"Mubtada"}, {text:"مَدِينَةٌ", role:"Man'ut"}, {text:"جَمِيلَةٌ", role:"Na't"}], translation: "Dies ist eine schöne Stadt." },
-      { words: [{text:"الْبِنْتُ", role:"Man'ut"}, {text:"الصَّغِيرَةُ", role:"Na't"}, {text:"فِي", role:"Präposition"}, {text:"الْبَيْتِ", role:"Genitivobjekt"}], translation: "Das kleine Mädchen ist im Haus." }
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتٌ", tags:{1:"Khabar",2:"Man'ut",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}, {text:"جَدِيدٌ", tags:{1:"Khabar",2:"Na't",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist ein neues Haus." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"بِنْتٌ", tags:{1:"Khabar",2:"Man'ut",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}, {text:"صَغِيرَةٌ", tags:{1:"Khabar",2:"Na't",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist ein kleines Mädchen." },
+      { words: [{text:"بِلَالٌ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسٌ", tags:{1:"Khabar",2:"Man'ut",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}, {text:"جَدِيدٌ", tags:{1:"Khabar",2:"Na't",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}], translation: "Bilâl ist ein neuer Lehrer." },
+      { words: [{text:"الْمُدَرِّسُ", tags:{1:"Mubtada",2:"Man'ut",3:"Mudhakkar",4:"Bestimmt",5:"Marfu"}}, {text:"الْجَدِيدُ", tags:{1:"Mubtada",2:"Na't",3:"Mudhakkar",4:"Bestimmt",5:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْفَصْلِ", tags:{1:"Khabar",2:"Majrur",5:"Majrur"}}], translation: "Der neue Lehrer ist im Klassenzimmer." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"وَلَدٌ", tags:{1:"Khabar",2:"Man'ut",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}, {text:"صَغِيرٌ", tags:{1:"Khabar",2:"Na't",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist ein kleiner Junge." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"سَيَّارَةٌ", tags:{1:"Khabar",2:"Man'ut",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}, {text:"جَدِيدَةٌ", tags:{1:"Khabar",2:"Na't",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist ein neues Auto." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"رَجُلٌ", tags:{1:"Khabar",2:"Man'ut",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}, {text:"طَوِيلٌ", tags:{1:"Khabar",2:"Na't",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}], translation: "Jener ist ein großer Mann." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"طَالِبٌ", tags:{1:"Khabar",2:"Man'ut",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}, {text:"مُجْتَهِدٌ", tags:{1:"Khabar",2:"Na't",3:"Mudhakkar",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist ein fleißiger Student." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مَدِينَةٌ", tags:{1:"Khabar",2:"Man'ut",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}, {text:"جَمِيلَةٌ", tags:{1:"Khabar",2:"Na't",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist eine schöne Stadt." },
+      { words: [{text:"الْبِنْتُ", tags:{1:"Mubtada",2:"Man'ut",3:"Muannath",4:"Bestimmt",5:"Marfu"}}, {text:"الصَّغِيرَةُ", tags:{1:"Mubtada",2:"Na't",3:"Muannath",4:"Bestimmt",5:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْبَيْتِ", tags:{1:"Khabar",2:"Majrur",5:"Majrur"}}], translation: "Das kleine Mädchen ist im Haus." }
     ]
   }
 
