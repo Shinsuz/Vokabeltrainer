@@ -36,7 +36,7 @@ const LESSONS = {
     { arabic: "إِمَامٌ", german: "ein Imam" },
     { arabic: "سُكَّرٌ", german: "Zucker" },
     { arabic: "حَجَرٌ", german: "ein Stein" },
-    { arabic: "لَبَنٌ", german: "Milch" },
+    { arabic: "لَبَنٌ", german: "eine Milch" },
   ],
 
   3: [
@@ -69,8 +69,8 @@ const LESSONS = {
     { arabic: "المهندس", german: "der Ingenieur"},
     { arabic: "مُفْتاحٌ", german: "offen"},
     { arabic: "لذيذٌ", german: "lecker"},
-    { arabic: "سَاعَةٌ ", german: "Uhr"},
-    { arabic: "تُفَّاحَةٌ ", german: "Apfel"},
+    { arabic: "سَاعَةٌ ", german: "eine Uhr"},
+    { arabic: "تُفَّاحَةٌ ", german: "ein Apfel"},
     { arabic: "التُّفَّاحَةُ ", german: "der Apfel"},
   
   ],
@@ -118,14 +118,14 @@ const LESSONS = {
   ],
 
   6: [
-    { arabic: "يَدٌ", german: "Hand"},
-    { arabic: "رِجْلٌ", german: "Bein"},
-    { arabic: "عَيْنٌ", german: "Auge"},
-    { arabic: "أُذُنٌ", german: "Ohr"},
-    { arabic: "رَأْسٌ", german: "Kopf"},
-    { arabic: "أَنْفٌ", german: "Nase"},
-    { arabic: "فَمٌ", german: "Mund"},
-    { arabic: "وَجْهٌ", german: "Gesicht"},
+    { arabic: "يَدٌ", german: "eine Hand"},
+    { arabic: "رِجْلٌ", german: "ein Bein"},
+    { arabic: "عَيْنٌ", german: "ein Auge"},
+    { arabic: "أُذُنٌ", german: "ein Ohr"},
+    { arabic: "رَأْسٌ", german: "ein Kopf"},
+    { arabic: "أَنْفٌ", german: "eine Nase"},
+    { arabic: "فَمٌ", german: "ein Mund"},
+    { arabic: "وَجْهٌ", german: "ein Gesicht"},
     { arabic: "الْمِكْوَاةُ", german: "das Bügeleisen" },
     { arabic: "الْأَنْفُ", german: "die Nase" },
     { arabic: "الْبَقَرَةُ", german: "die Kuh" },
@@ -151,8 +151,8 @@ const LESSONS = {
     { arabic: "جِدّاً", german: "sehr"},
     { arabic: "لِمَنْ", german: "wessen oder wem gehört"},
     { arabic: "لِـ", german: "gehören, besitzen, für"},
-    { arabic: "شَمْسٌ ", german: "Sonne"},
-    { arabic: "مُسْلِمٌ ", german: "Muslim"}
+    { arabic: "شَمْسٌ ", german: "eine Sonne"},
+    { arabic: "مُسْلِمٌ ", german: "ein Muslim"}
     ],
 
   7:[
@@ -196,7 +196,7 @@ const LESSONS = {
     { arabic: "الكُوبُ", german: "die Tasse, der Becher"},
     { arabic: "شَهِيرٌ", german: "berühmt"},
     { arabic: "الْمَكْتَبَةُ", german: "die Bücherei, der Buchladen"},
-    { arabic: "الثَّانَوِيَّةُ", german: "Oberstufe, Oberschule"},
+    { arabic: "الثَّانَوِيَّةُ", german: "die Oberstufe, Oberschule"},
     { arabic: "الآنَ", german: "jetzt"},
     { arabic: "الْوَزِيرُ", german: "der Minister"},
     { arabic: "هُنَاكَ", german: "dort (hinten)"},
