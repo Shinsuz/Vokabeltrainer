@@ -240,7 +240,9 @@ const LESSONS = {
     { arabic: "تَـاُء مَرْبُـوطَـةٌ", german: "ة-Endung für Weibliche Substantive und Adjektive"},
     { arabic: "(أَلِف مَقْصُورَة (ى ", german: "Alif maqsūra"},
     { arabic: "نَعْتٌ", german: "Adjektiv"},
-    { arabic: "مَنْعُوتٌ", german: "Substantiv"}
+    { arabic: "مَنْعُوتٌ", german: "Substantiv"},
+    { arabic: "اِسْمٌ مَوْصُولٌ", german: "Relativpronomen" },
+    { arabic: "جُمْلَةُ صِلَةٍ", german: "Relativsatz" }
   ]
   
 };

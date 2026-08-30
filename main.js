@@ -421,6 +421,62 @@ const SATZANALYSE = {
       { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مَدِينَةٌ", tags:{1:"Khabar",2:"Man'ut",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}, {text:"جَمِيلَةٌ", tags:{1:"Khabar",2:"Na't",3:"Muannath",4:"Unbestimmt",5:"Marfu"}}], translation: "Dies ist eine schöne Stadt." },
       { words: [{text:"الْبِنْتُ", tags:{1:"Mubtada",2:"Man'ut",3:"Muannath",4:"Bestimmt",5:"Marfu"}}, {text:"الصَّغِيرَةُ", tags:{1:"Mubtada",2:"Na't",3:"Muannath",4:"Bestimmt",5:"Marfu"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْبَيْتِ", tags:{1:"Khabar",2:"Majrur",5:"Majrur"}}], translation: "Das kleine Mädchen ist im Haus." }
     ]
+  },
+
+  "9b": {
+    concepts: [
+      {
+        term: "الَّذِي / الَّتِي — Relativpronomen",
+        explanation: "الَّذِي ('der, welcher') wird für ein einzelnes männliches Substantiv verwendet, الَّتِي ('die, welche') für ein einzelnes weibliches. Das Bezugswort davor muss bestimmt sein (mit ال)."
+      },
+      {
+        term: "Relativsatz als erweiterte Beschreibung",
+        explanation: "Ein Relativsatz mit الَّذِي/الَّتِي funktioniert wie ein ausführliches Adjektiv: Bezugswort + Relativpronomen + Beschreibung bilden zusammen den Mubtada (oder Teil des Khabar), z. B. الْبَيْتُ الَّذِي أَمَامَ الْمَسْجِدِ (das Haus, das vor der Moschee ist)."
+      },
+      {
+        term: "Relativsatz = Na't, Bezugswort = Man'ut",
+        explanation: "Grammatikalisch fungiert der gesamte Relativsatz (الَّذِي + Beschreibung) wie ein Na't (Adjektiv) zum Bezugswort davor, das dann Man'ut ist – genau wie bei einem einfachen Adjektiv, nur ausführlicher. Das Relativpronomen selbst ist der Kopf dieses Na't-Satzes."
+      },
+      {
+        term: "لـ + ال",
+        explanation: "Wird die Präposition لـ ('gehören zu') mit einem Wort verbunden, das den Artikel ال trägt, entfällt das Alif von ال in der Schrift: لِلْإِمَامِ statt لِالْإِمَامِ."
+      },
+      {
+        term: "عِنْدَ — 'bei, mit'",
+        explanation: "عِنْدَ bedeutet 'bei' oder 'mit'. Das folgende Substantiv steht im Genitiv (Kasra): الْمُدَرِّسُ عِنْدَ الْمُدِيرِ (Der Lehrer ist beim Direktor)."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Welches Relativpronomen passt zu einem weiblichen Substantiv wie <span class='ar'>السَّاعَةُ</span>?",
+        choices: ["<span class='ar'>الَّذِي</span>", "<span class='ar'>الَّتِي</span>", "<span class='ar'>هَذِهِ</span>", "<span class='ar'>تِلْكَ</span>"],
+        correct: "<span class='ar'>الَّتِي</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>الَّذِي</span> wird für weibliche Substantive verwendet.",
+        correct: false,
+        explanation: "الَّذِي ist die männliche Form, الَّتِي die weibliche."
+      },
+      {
+        type: "tf",
+        statement: "Das Bezugswort vor einem Relativpronomen muss bestimmt sein (mit ال).",
+        correct: true
+      }
+    ],
+    sentences: [
+      { words: [{text:"الرَّجُلُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"فِي", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"إِمَامٌ", tags:{1:"Khabar"}}], translation: "Der Mann, der in der Moschee ist, ist ein Imam." },
+      { words: [{text:"الْبَيْتُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"أَمَامَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"الْمَسْجِدِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"جَمِيلٌ", tags:{1:"Khabar"}}], translation: "Das Haus, das vor der Moschee ist, ist schön." },
+      { words: [{text:"السَّاعَةُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"عَلَى", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْمَكْتَبِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"جَدِيدَةٌ", tags:{1:"Khabar"}}], translation: "Die Uhr, die auf dem Schreibtisch ist, ist neu." },
+      { words: [{text:"الطَّالِبُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"فِي", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْفَصْلِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"مُجْتَهِدٌ", tags:{1:"Khabar"}}], translation: "Der Student, der im Klassenzimmer ist, ist fleißig." },
+      { words: [{text:"السَّيَّارَةُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"أَمَامَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"الْبَيْتِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"جَدِيدَةٌ", tags:{1:"Khabar"}}], translation: "Das Auto, das vor dem Haus ist, ist neu." },
+      { words: [{text:"الْكِتَابُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"عَلَى", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْمَكْتَبِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"قَدِيمٌ", tags:{1:"Khabar"}}], translation: "Das Buch, das auf dem Schreibtisch ist, ist alt." },
+      { words: [{text:"الْقَلَمُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"فِي", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْحَقِيبَةِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"جَدِيدٌ", tags:{1:"Khabar"}}], translation: "Der Stift, der in der Tasche ist, ist neu." },
+      { words: [{text:"الْبِنْتُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"فِي", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْفَصْلِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"صَغِيرَةٌ", tags:{1:"Khabar"}}], translation: "Das Mädchen, das im Klassenzimmer ist, ist klein." },
+      { words: [{text:"الْوَلَدُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"خَلْفَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"الْبَيْتِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"مُجْتَهِدٌ", tags:{1:"Khabar"}}], translation: "Der Junge, der hinter dem Haus ist, ist fleißig." },
+      { words: [{text:"الْمَسْجِدُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"أَمَامَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"السُّوقِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"كَبِيرٌ", tags:{1:"Khabar"}}], translation: "Die Moschee, die vor dem Markt ist, ist groß." }
+    ]
   }
 
 };
@@ -434,5 +490,6 @@ const SATZANALYSE_LABELS = {
   "6": "Lektion 6",
   "7": "Lektion 7",
   "8": "Lektion 8",
-  "9a": "Lektion 9A"
+  "9a": "Lektion 9a",
+  "9b": "Lektion 9b"
 };
