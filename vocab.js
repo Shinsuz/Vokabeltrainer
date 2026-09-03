@@ -212,14 +212,38 @@ const LESSONS = {
     { arabic: "فَرَنْسَا", german: "Frankreich"},
     { arabic: "السَّبُّورَةُ", german: "die Tafel"},
     { arabic: "الْمِحْرَابُ", german: "die Mihrab (Gebetsnische)"},
-    { arabic: "الْيَوْمُ", german: "der Tag" },
-    { arabic: "كَسْلَانُ", german: "faul" },
-    { arabic: "جَوْعَانُ", german: "hungrig" },
-    { arabic: "عَطْشَانُ", german: "durstig" },
-    { arabic: "غَضْبَانُ", german: "ärgerlich" },
-    { arabic: "مَلآنُ", german: "voll" }
+    { arabic: "الْيَوْمُ", german: "der Tag"},
+    { arabic: "كَسْلَانُ", german: "faul"},
+    { arabic: "جَوْعَانُ", german: "hungrig"},
+    { arabic: "عَطْشَانُ", german: "durstig"},
+    { arabic: "غَضْبَانُ", german: "ärgerlich"},
+    { arabic: "مَلآنُ", german: "voll"}
     ],
 
+    10: [
+      { arabic: "أَخُوكَ", german: "dein Bruder"},
+      { arabic: "كِتَابُكَ", german: "dein Buch"},
+      { arabic: "كِتَابُهُ", german: "sein Buch"},
+      { arabic: "كِتَابُهَا", german: "ihr Buch"},
+      { arabic: "كِتَابِي", german: "mein Buch"},
+      { arabic: "أَبُوهُ", german: "sein Vater"},
+      { arabic: "أَخِي", german: "mein Bruder"},
+      { arabic: "أَبِي", german: "mein Vater"},
+      { arabic: "لَكَ", german: "gehört dir"},
+      { arabic: "لَهُ", german: "gehört ihm"},
+      { arabic: "لَهَا", german: "gehört ihr"},
+      { arabic: "لِي", german: "gehört mir"},
+      { arabic: "ذَهَبْتُ", german: "ich ging"},
+      { arabic: "ذَهَبْتَ", german: "du gingst"},
+      { arabic: "مَعَ", german: "mit"},
+      { arabic: "بِ", german: "an, in"},
+      { arabic: "بِالْجَامِعَةِ", german: "an der Universität"},
+      { arabic: "الزَّمِيلُ", german: "der Kollege, der Mitschüler"},
+      { arabic: "الفَتَى", german: "der junge Mann"},
+      { arabic: "الزَّوْجُ", german: "der Ehegatte"},
+      { arabic: "وَاحِدٌ", german: "eins"},
+      { arabic: "الطِفْلُ", german: "das Kind"},
+    ],
 
   Grammatik: [
     { arabic: "تَنْوِين", german: "die Unbestimmtheit (hinsichtlich der Wortform)"},
@@ -256,5 +280,6 @@ const LESSON_LABELS = {
   6: "Lektion 6",
   7: "Lektion 7",
   8: "Lektion 8",
-  9: "Lektion 9"
+  9: "Lektion 9",
+  10: "Lektion 10"
 };
