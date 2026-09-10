@@ -477,6 +477,86 @@ const SATZANALYSE = {
       { words: [{text:"الْوَلَدُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"خَلْفَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"الْبَيْتِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"مُجْتَهِدٌ", tags:{1:"Khabar"}}], translation: "Der Junge, der hinter dem Haus ist, ist fleißig." },
       { words: [{text:"الْمَسْجِدُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّذِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"أَمَامَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"السُّوقِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"كَبِيرٌ", tags:{1:"Khabar"}}], translation: "Die Moschee, die vor dem Markt ist, ist groß." }
     ]
+  },
+
+  "10": {
+    concepts: [
+      {
+        term: "Possessivsuffixe",
+        explanation: "Die besitzanzeigenden Fürwörter كَ (dein, mask.), هُ (sein), هَا (ihr) und ي (mein) sind keine eigenständigen Wörter, sondern werden als Suffix an das Substantiv angehängt: كِتَابُكَ (dein Buch), كِتَابُهُ (sein Buch), كِتَابُهَا (ihr Buch), كِتَابِي (mein Buch, aus kitābu-i entstanden)."
+      },
+      {
+        term: "Eingeschobenes و bei أَب und أَخ",
+        explanation: "Werden أَبٌ (Vater) oder أَخٌ (Bruder) zum Mudâf (z. B. mit einem Possessivsuffix oder einem folgenden Substantiv), wird ein zusätzliches و eingeschoben: أَخُوكَ (dein Bruder, nicht أَخْكَ), أَبُوهُ (sein Vater, nicht أَبْهُ), أَبُو مُحَمَّدٍ (Muhammads Vater). Bei 'mein' (ي) entfällt dieses و: أَخِي, أَبِي."
+      },
+      {
+        term: "عِنْدَ für Besitz",
+        explanation: "عِنْدَ bedeutet wörtlich 'bei', wird aber auch benutzt, um Besitz auszudrücken, vor allem bei Dingen, die trennbar sind: عِنْدِي قَلَمٌ (Ich habe einen Stift, wörtlich: Bei mir ist ein Stift)."
+      },
+      {
+        term: "لِ + Pronomen — Fatha außer bei 'mir'",
+        explanation: "Die Präposition لِ ('gehören') bekommt vor einem Pronomen ein Fatha: لَكَ (gehört dir), لَهُ (gehört ihm), لَهَا (gehört ihr). Ausnahme: لِي (gehört mir) bekommt ein Kasra. لِ wird für Dinge benutzt, die untrennbar sind — Verwandtschaftsverhältnisse und Körperteile: لِي أَخٌ (ich habe einen Bruder), لِي فَمٌ (ich habe einen Mund). عِنْدِي أَخٌ wäre hier falsch."
+      },
+      {
+        term: "عِنْدَ vs. مَعَ",
+        explanation: "الْمُدَرِّسُ عِنْدَ الْمُدِيرِ bedeutet, dass der Lehrer zum Büro des Direktors gegangen ist und dort mit ihm zusammen ist — ein fester Ort. الْمُدَرِّسُ مَعَ الْمُدِيرِ legt den Ort nicht fest, die beiden können irgendwo zusammengekommen sein. Das Substantiv nach مَعَ steht wie nach عِنْدَ im Kasra."
+      },
+      {
+        term: "بِ — zusammengeschriebene Präposition",
+        explanation: "Die Präposition بِ bedeutet 'an/in' und wird mit dem folgenden Wort zusammengeschrieben, z. B. بِالْجَامِعَةِ (an der Universität)."
+      },
+      {
+        term: "مَا als Verneinungspartikel",
+        explanation: "مَا bedeutet normalerweise 'was', wird aber auch als Verneinungspartikel gebraucht: مَا عِنْدِي سَيَّارَةٌ (Ich habe kein Auto)."
+      },
+      {
+        term: "Eigennamen ohne Tanwîn",
+        explanation: "Weibliche Eigennamen (مَرْيَمُ، آمِنَةُ) sowie männliche Eigennamen mit ة-Endung (حَمْزَةُ، أُسَامَةُ، مُعَاوِيَةُ) haben kein Tanwîn."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie sagt man 'sein Buch' auf Arabisch?",
+        choices: ["<span class='ar'>كِتَابُكَ</span>", "<span class='ar'>كِتَابُهُ</span>", "<span class='ar'>كِتَابُهَا</span>", "<span class='ar'>كِتَابِي</span>"],
+        correct: "<span class='ar'>كِتَابُهُ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>أَخْكَ</span> ist die korrekte Form für 'dein Bruder'.",
+        correct: false,
+        explanation: "Richtig ist <span class='ar'>أَخُوكَ</span> — zwischen Mudâf und Mudâf ilaihi wird bei أَخ und أَب ein و eingeschoben."
+      },
+      {
+        type: "mc",
+        question: "Bei welchem Possessivsuffix wird bei أَخ/أَب KEIN zusätzliches و eingeschoben?",
+        choices: ["كَ (dein)", "هُ (sein)", "هَا (ihr)", "ي (mein)"],
+        correct: "ي (mein)"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>لِي</span> ('gehört mir') bekommt ausnahmsweise ein Kasra statt eines Fatha.",
+        correct: true
+      }
+    ],
+    sentences: [
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كِتَابُكَ", tags:{1:"Khabar"}}], translation: "Dies ist dein Buch." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُهُ", tags:{1:"Khabar"}}], translation: "Dies ist sein Haus." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"سَيَّارَتُهَا", tags:{1:"Khabar"}}], translation: "Dies ist ihr Auto." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"قَلَمِي", tags:{1:"Khabar"}}], translation: "Dies ist mein Stift." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَبُوهُ", tags:{1:"Khabar"}}], translation: "Dies ist sein Vater." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَخُوكَ", tags:{1:"Khabar"}}], translation: "Dies ist dein Bruder." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَبِي", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَخِي", tags:{1:"Khabar"}}], translation: "Dies ist mein Vater, und dies ist mein Bruder." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَبُو", tags:{1:"Khabar",2:"Mudaf"}}, {text:"مُحَمَّدٍ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist Muhammads Vater." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَخُو", tags:{1:"Khabar",2:"Mudaf"}}, {text:"مُحَمَّدٍ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Dies ist Muhammads Bruder." },
+      { words: [{text:"عِنْدِي", tags:{1:"Khabar"}}, {text:"قَلَمٌ", tags:{1:"Mubtada"}}], translation: "Ich habe einen Stift." },
+      { words: [{text:"لِي", tags:{1:"Khabar"}}, {text:"أَخٌ", tags:{1:"Mubtada"}}], translation: "Ich habe einen Bruder." },
+      { words: [{text:"مَا", tags:{}}, {text:"عِنْدِي", tags:{1:"Khabar"}}, {text:"سَيَّارَةٌ", tags:{1:"Mubtada"}}], translation: "Ich habe kein Auto." },
+      { words: [{text:"الْمُدَرِّسُ", tags:{1:"Mubtada"}}, {text:"عِنْدَ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"الْمُدِيرِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Der Lehrer ist beim Direktor." },
+      { words: [{text:"الْمُدَرِّسُ", tags:{1:"Mubtada"}}, {text:"مَعَ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"الْمُدِيرِ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Der Lehrer ist mit dem Direktor." },
+      { words: [{text:"هُوَ", tags:{1:"Mubtada"}}, {text:"بِالْجَامِعَةِ", tags:{1:"Khabar"}}], translation: "Er ist an der Universität." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"حَمْزَةُ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"أُسَامَةُ", tags:{1:"Khabar"}}], translation: "Dies ist Hamza, und das ist Usama." }
+    ]
   }
 
 };
@@ -491,5 +571,6 @@ const SATZANALYSE_LABELS = {
   "7": "Lektion 7",
   "8": "Lektion 8",
   "9a": "Lektion 9a",
-  "9b": "Lektion 9b"
+  "9b": "Lektion 9b",
+  "10": "Lektion 10"
 };
