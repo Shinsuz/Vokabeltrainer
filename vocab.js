@@ -245,6 +245,11 @@ const LESSONS = {
       { arabic: "الطِفْلُ", german: "das Kind"},
     ],
 
+    11: [
+      { arabic: "فِيهِ", german: "darin" },
+      { arabic: "أُحِبُّ", german: "ich mag, ich liebe" },
+    ],
+
   Grammatik: [
     { arabic: "تَنْوِين", german: "die Unbestimmtheit (hinsichtlich der Wortform)"},
     { arabic: "نَكِرَة", german: "unbestimmt (hinsichtlich der Grammatik)"},
@@ -266,7 +271,8 @@ const LESSONS = {
     { arabic: "نَعْتٌ", german: "Adjektiv"},
     { arabic: "مَنْعُوتٌ", german: "Substantiv"},
     { arabic: "اِسْمٌ مَوْصُولٌ", german: "Relativpronomen"},
-    { arabic: "جُمْلَةُ صِلَةٍ", german: "Relativsatz" }
+    { arabic: "جُمْلَةُ صِلَةٍ", german: "Relativsatz" },
+    { arabic: "مَنْصُوبٌ", german: "Akkusativ" },
   ]
   
 };
@@ -281,5 +287,6 @@ const LESSON_LABELS = {
   7: "Lektion 7",
   8: "Lektion 8",
   9: "Lektion 9",
-  10: "Lektion 10"
+  10: "Lektion 10",
+  11: "Lektion 11"
 };
