@@ -663,10 +663,7 @@ function isArabicText(t){ return ARABIC_REGEX.test(t || ""); }
 let selectedLesson = "alle";
 function lessonList(){
   if(selectedLesson === "alle") return Object.values(SATZANALYSE);
-  const orderedKeys = Object.keys(SATZANALYSE).sort(lessonKeySort);
-  const idx = orderedKeys.indexOf(selectedLesson);
-  const keysUpToHere = idx === -1 ? [selectedLesson] : orderedKeys.slice(0, idx + 1);
-  return keysUpToHere.map(k => SATZANALYSE[k]).filter(Boolean);
+  return [SATZANALYSE[selectedLesson]].filter(Boolean);
 }
 function currentDeck(){
   const items = [];
@@ -889,18 +886,11 @@ function updateScopeHint(){
   const hintEl = document.getElementById("scope-hint");
   if(!hintEl) return;
   if(selectedLesson === "alle"){
-    hintEl.innerHTML = "Übt Sätze aus <b>allen Lektionen</b> gemischt.";
+    hintEl.innerHTML = "Übt Sätze aus <b>allen Lektionen</b> gemischt (kumulativ).";
     return;
   }
-  const orderedKeys = Object.keys(SATZANALYSE).sort(lessonKeySort);
-  const idx = orderedKeys.indexOf(selectedLesson);
-  const included = idx === -1 ? [selectedLesson] : orderedKeys.slice(0, idx + 1);
-  const labels = included.map(k => (SATZANALYSE_LABELS[k] || `Lektion ${k}`).replace("Lektion ", ""));
-  if(labels.length <= 1){
-    hintEl.innerHTML = `Übt nur <b>Lektion ${labels[0]}</b>.`;
-  } else {
-    hintEl.innerHTML = `Kumulativ: übt <b>Lektion ${labels[0]}–${labels[labels.length-1]}</b> zusammen.`;
-  }
+  const label = (SATZANALYSE_LABELS[selectedLesson] || `Lektion ${selectedLesson}`).replace("Lektion ", "");
+  hintEl.innerHTML = `Übt nur <b>Lektion ${label}</b>.`;
 }
 
 function buildLessonTabs(){
@@ -1170,6 +1160,9 @@ function usableLevels(item){
 
 function renderSatzbau(){
   const item = currentItem;
+  const blankWords = item.words
+    .map((w, i) => ({ w, i }))
+    .filter(o => o.w.blank);
   satzbauState = {
     words: item.words,
     levels: usableLevels(item),
@@ -1177,9 +1170,91 @@ function renderSatzbau(){
     assignments: {},
     selected: null,
     checked: false,
-    overallCorrect: true
+    overallCorrect: true,
+    blankWords: blankWords,
+    blankIndex: 0,
+    blankCorrect: true
   };
-  renderSatzbauLevel();
+  if(blankWords.length > 0){
+    renderBlankPhase();
+  } else {
+    renderSatzbauLevel();
+  }
+}
+
+/* ---------- Suffix-Lücken-Phase ----------
+   Läuft VOR der Mubtada/Khabar-Zuordnung, wenn ein Wort ein
+   blank-Feld trägt (z. B. كِتَابُ___ + Optionen كَ/هُ/هَا/ي als
+   komplette Wortformen). Erst wenn alle Lücken dieses Satzes
+   geklärt sind, geht es normal mit renderSatzbauLevel() weiter. */
+function renderBlankPhase(){
+  const item = currentItem;
+  const entry = satzbauState.blankWords[satzbauState.blankIndex];
+  const total = satzbauState.blankWords.length;
+
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Welche Form passt?${total > 1 ? ` (Lücke ${satzbauState.blankIndex + 1}/${total})` : ""}</div>
+    ${item.translation ? `<div class="satzbau-translation">${item.translation}</div>` : ""}
+    <div class="sentence-plaque"><div class="word-row" id="word-row"></div></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="mc-grid" id="blank-grid"></div>
+    <button class="next-btn" id="blank-next-btn" style="display:none;">Weiter ➔</button>
+  `;
+
+  const wordRow = document.getElementById("word-row");
+  item.words.forEach((word, idx) => {
+    const span = document.createElement("div");
+    span.className = "word-static";
+    if(idx === entry.i){
+      span.id = "blank-slot";
+      span.innerText = "……";
+    } else {
+      span.innerText = word.text;
+    }
+    wordRow.appendChild(span);
+  });
+
+  const grid = document.getElementById("blank-grid");
+  const options = shuffle([...entry.w.blank.options]);
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn ar";
+    btn.innerText = opt;
+    btn.onclick = () => selectBlank(opt, btn, entry.w.text);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById("blank-next-btn").onclick = () => {
+    satzbauState.blankIndex++;
+    if(satzbauState.blankIndex < satzbauState.blankWords.length){
+      renderBlankPhase();
+    } else {
+      renderSatzbauLevel();
+    }
+  };
+}
+
+function selectBlank(choice, btn, correctText){
+  const buttons = document.querySelectorAll("#blank-grid .opt-btn");
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById("feedback");
+  const slot = document.getElementById("blank-slot");
+  const correct = choice === correctText;
+  if(!correct) satzbauState.blankCorrect = false;
+  if(slot) slot.innerText = correctText;
+  if(correct){
+    btn.classList.add("correct");
+    feedback.innerText = "Richtig! 🎉";
+    feedback.className = "feedback ok";
+    Sound.correct();
+  } else {
+    btn.classList.add("wrong");
+    feedback.innerText = `Falsch — richtig wäre: ${correctText}`;
+    feedback.className = "feedback bad";
+    buttons.forEach(b => { if(b.innerText === correctText) b.classList.add("correct"); });
+    Sound.wrong();
+  }
+  document.getElementById("blank-next-btn").style.display = "block";
 }
 
 function renderSatzbauLevel(){
@@ -1284,7 +1359,7 @@ function checkSatzbau(){
       satzbauState.levelIndex++;
       renderSatzbauLevel();
     } else {
-      markResult(item, satzbauState.overallCorrect);
+      markResult(item, satzbauState.overallCorrect && satzbauState.blankCorrect);
       nextCard();
     }
     return;

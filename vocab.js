@@ -243,6 +243,7 @@ const LESSONS = {
       { arabic: "الزَّوْجُ", german: "der Ehegatte"},
       { arabic: "وَاحِدٌ", german: "eins"},
       { arabic: "الطِفْلُ", german: "das Kind"},
+      { arabic: "مَا", german: "was, keine/nicht (als Verneinung)"},
     ],
 
     11: [
