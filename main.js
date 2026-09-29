@@ -22,6 +22,19 @@
    auf der aktuellen Ebene sind in dieser Runde nicht anklickbar (Füllwort
    wie وَ, oder auf dieser Ebene bereits durch eine frühere Ebene geklärt).
 
+   Ab Lektion 12 kommen zusätzlich verbale Sätze vor (جملة فعلية), dafür
+   die Rollen "Fi'l" (Verb) und "Fa'il" (Subjekt/Täter) vor. Das
+   betonende Pronomen nach einem Possessivsuffix (z. B. هَذَا كِتَابُكَ
+   أَنْتَ) wird NICHT als eigene Rolle abgefragt, sondern bleibt wie
+   وَ ein nicht anklickbares Füllwort — es steht dafür kein eigener
+   Fachbegriff aus dem Lehrbuch zur Verfügung.
+
+   SUFFIX-LÜCKEN (seit Lektion 10):
+   Ein Wort kann zusätzlich ein "blank"-Feld bekommen:
+     { text: "كِتَابُكَ", tags: {1:"Khabar"}, blank: { options: ["كِتَابُكَ","كِتَابُهُ","كِتَابُهَا","كِتَابِي"] } }
+   Bevor die Mubtada/Khabar-Zuordnung beginnt, muss dann erst aus den
+   "options" die richtige (= mit word.text identische) Form gewählt werden.
+
    WICHTIG (grammatikalisch korrekt gehalten):
    - خَلْفَ / أَمَامَ (und ähnliche Ẓuruf wie تَحْتَ) sind KEINE echten
      Präpositionen (حرف جر), sondern fungieren selbst als Mudaf – das
@@ -560,6 +573,80 @@ const SATZANALYSE = {
       { words: [{text:"هُوَ", tags:{1:"Mubtada"}}, {text:"بِالْجَامِعَةِ", tags:{1:"Khabar"}}], translation: "Er ist an der Universität." },
       { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"حَمْزَةُ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"أُسَامَةُ", tags:{1:"Khabar"}}], translation: "Dies ist Hamza, und das ist Usama." }
     ]
+  },
+
+  "12": {
+    concepts: [
+      {
+        term: "أَنْتِ — du (feminin)",
+        explanation: "أَنْتَ ist 'du' für die zweite Person Singular maskulin (bereits bekannt). أَنْتِ ist 'du' für die zweite Person Singular feminin, z. B. مِنْ أَيْنَ أَنْتِ يَا آمِنَةُ؟ (Woher kommst du, Aminah?)."
+      },
+      {
+        term: "Possessivsuffix ك: männlich vs. feminin",
+        explanation: "Die besitzanzeigende Endung 'dein' wird bei männlich Angesprochenen mit Fatha geschrieben (كَ, z. B. بَيْتُكَ), bei weiblich Angesprochenen mit Kasra (كِ, z. B. بَيْتُكِ). Ohne Vokalzeichen sehen beide Formen im Schriftbild gleich aus (ك) — nur die Aussprache unterscheidet sie."
+      },
+      {
+        term: "ذَهَبَتْ — sie ging",
+        explanation: "Neben ذَهَبَ (er ging), ذَهَبْتُ (ich ging) und ذَهَبْتَ (du gingst) lernen wir jetzt ذَهَبَتْ — die dritte Person Singular feminin der Vergangenheit."
+      },
+      {
+        term: "Sukûn wird zu Kasra vor ال",
+        explanation: "Der letzte Buchstabe von ذَهَبَتْ (das ت) trägt normalerweise ein Sukûn. Folgt darauf ein Wort mit bestimmtem Artikel ال, wird das Sukûn zu einem Kasra: ذَهَبَتِ الْبِنْتُ (Das Mädchen ging)."
+      },
+      {
+        term: "Wegfall des Pronomens bei genanntem Subjekt",
+        explanation: "Wird das Subjekt eines Verbs ausdrücklich genannt (z. B. ein Name), entfällt das eigenständige Pronomen davor: ذَهَبَتْ مَرْيَمُ إِلَى الْمَدْرَسَةِ (Maryam ging zur Schule) — nicht 'هي ذهبت مريم'."
+      },
+      {
+        term: "الَّتِي — Relativpronomen feminin",
+        explanation: "Analog zu الَّذِي (maskulin, bereits bekannt) gibt es الَّتِي für feminin Singular, z. B. الطَّالِبَةُ الَّتِي جَلَسَتْ أَمَامَ الْمُدَرِّسَةِ (Die Studentin, die vor der Lehrerin saß)."
+      },
+      {
+        term: "Betonendes Pronomen nach Possessivsuffix",
+        explanation: "Um ein Possessivsuffix besonders zu betonen (z. B. bei Zweifel oder Uneinigkeit), kann das passende eigenständige Pronomen dahintergestellt werden: هَذَا كِتَابُكَ أَنْتَ (Dies ist DEIN Buch), هَذَا بَيْتُهُ هُوَ, ذَلِكَ قَلَمِي أَنَا, ذَلِكَ كِتَابُهَا هِيَ."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Welches Wort bedeutet 'du', wenn eine weibliche Person angesprochen wird?",
+        choices: ["<span class='ar'>أَنْتَ</span>", "<span class='ar'>أَنْتِ</span>", "<span class='ar'>هِيَ</span>", "<span class='ar'>أَنَا</span>"],
+        correct: "<span class='ar'>أَنْتِ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Die besitzanzeigende Endung ك wird bei männlich und weiblich Angesprochenen genau gleich ausgesprochen.",
+        correct: false,
+        explanation: "Bei männlich hat sie ein Fatha (كَ), bei weiblich ein Kasra (كِ)."
+      },
+      {
+        type: "mc",
+        question: "Wie heißt 'sie ging' auf Arabisch?",
+        choices: ["<span class='ar'>ذَهَبَ</span>", "<span class='ar'>ذَهَبْتُ</span>", "<span class='ar'>ذَهَبْتَ</span>", "<span class='ar'>ذَهَبَتْ</span>"],
+        correct: "<span class='ar'>ذَهَبَتْ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>الَّتِي</span> ist die feminine Form von <span class='ar'>الَّذِي</span>.",
+        correct: true
+      }
+    ],
+    sentences: [
+      { words: [{text:"أَنْتِ", tags:{1:"Mubtada"}, blank:{options:["أَنْتَ","أَنْتِ","هُوَ","هِيَ"]}}, {text:"طَالِبَةٌ", tags:{1:"Khabar"}}], translation: "Du (weibl.) bist eine Studentin." },
+      { words: [{text:"أَنْتِ", tags:{1:"Mubtada"}, blank:{options:["أَنْتَ","أَنْتِ","هُوَ","هِيَ"]}}, {text:"مِنْ", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"أَلْمَانِيَا", tags:{1:"Khabar",2:"Majrur"}}], translation: "Du (weibl.) bist aus Deutschland." },
+      { words: [{text:"بَيْتُكِ", tags:{1:"Mubtada"}, blank:{options:["بَيْتُكَ","بَيْتُكِ","بَيْتُهُ","بَيْتِي"]}}, {text:"جَمِيلٌ", tags:{1:"Khabar"}}], translation: "Dein (weibl.) Haus ist schön." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُكَ", tags:{1:"Khabar"}, blank:{options:["بَيْتُكَ","بَيْتُكِ","بَيْتُهُ","بَيْتِي"]}}], translation: "Dies ist dein (männl.) Haus." },
+      { words: [{text:"كِتَابُكِ", tags:{1:"Mubtada"}, blank:{options:["كِتَابُكَ","كِتَابُكِ","كِتَابُهُ","كِتَابِي"]}}, {text:"جَدِيدٌ", tags:{1:"Khabar"}}], translation: "Dein (weibl.) Buch ist neu." },
+      { words: [{text:"ذَهَبَتْ", tags:{1:"Fi'l"}}, {text:"مَرْيَمُ", tags:{1:"Fa'il"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Majrur"}}], translation: "Maryam ging zur Schule." },
+      { words: [{text:"ذَهَبَتْ", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْجَامِعَةِ", tags:{1:"Majrur"}}], translation: "Sie ging zur Universität." },
+      { words: [{text:"ذَهَبَتِ", tags:{1:"Fi'l"}}, {text:"الْبِنْتُ", tags:{1:"Fa'il"}}], translation: "Das Mädchen ging." },
+      { words: [{text:"الطَّالِبَةُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"جَلَسَتْ", tags:{1:"Mubtada",2:"Na't",3:"Fi'l"}}, {text:"أَمَامَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"الْمُدَرِّسَةِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"مِنْ", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"أَلْمَانِيَا", tags:{1:"Khabar",3:"Majrur"}}], translation: "Die Studentin, die vor der Lehrerin saß, ist aus Deutschland." },
+      { words: [{text:"السَّاعَةُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"عَلَى", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْمَكْتَبِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"لِلْمُدَرِّسِ", tags:{1:"Khabar"}}], translation: "Die Uhr, die auf dem Tisch liegt, gehört dem Lehrer." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كِتَابُكَ", tags:{1:"Khabar"}}, {text:"أَنْتَ", tags:{}}], translation: "Dies ist DEIN Buch." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُهُ", tags:{1:"Khabar"}}, {text:"هُوَ", tags:{}}], translation: "Dies ist SEIN Haus." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"قَلَمِي", tags:{1:"Khabar"}}, {text:"أَنَا", tags:{}}], translation: "Das ist MEIN Stift." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"كِتَابُهَا", tags:{1:"Khabar"}}, {text:"هِيَ", tags:{}}], translation: "Das ist IHR Buch." }
+    ]
   }
 
 };
@@ -575,5 +662,6 @@ const SATZANALYSE_LABELS = {
   "8": "Lektion 8",
   "9a": "Lektion 9a",
   "9b": "Lektion 9b",
-  "10": "Lektion 10"
+  "10": "Lektion 10",
+  "12": "Lektion 12"
 };
