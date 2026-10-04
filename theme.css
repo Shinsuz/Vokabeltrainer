@@ -43,6 +43,39 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; font-size: 17px; }
 
+/* ---------- Absicherung gegen Layout-Verschiebungen ----------
+   Kopf, Inhalt und Fuß sind immer volle Spalten untereinander und lassen sich
+   weder von fremden Stylesheets (z. B. der Hauptseite) noch durch
+   waagerechtes Scrollen aus der Mitte schieben.
+   Die Klassen heißen bewusst tr-topbar / tr-divider, damit sie nicht mit
+   gleichnamigen Klassen der BoycottBuddy-Hauptseite (main.css) kollidieren. */
+html body.bb-trainer {
+  display: block;
+  position: relative;
+  float: none;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+html body.bb-trainer > .tr-topbar,
+html body.bb-trainer > header,
+html body.bb-trainer > main,
+html body.bb-trainer > footer {
+  float: none;
+  left: auto; right: auto; top: auto; bottom: auto;
+  transform: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+html body.bb-trainer > .tr-topbar { position: relative; width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto; }
+html body.bb-trainer > header     { display: block; position: relative; width: 100%; max-width: none; margin-left: 0; margin-right: 0; text-align: center; }
+html body.bb-trainer > main       { display: block; position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; }
+html body.bb-trainer > footer     { display: block; position: relative; width: 100%; }
+main > *, main .pill-row, main .pill-group { min-width: 0; max-width: 100%; }
+
 /* ---------- Hintergrund ---------- */
 body {
   font-family: var(--font-main);
@@ -50,7 +83,7 @@ body {
   margin: 0;
   padding: 0 0 4rem;
   background-color: var(--bg);
-  background-image: url('bg-ornament.jpg');
+  background-image: url('bg-ornament.jpg?v=5');
   background-size: 1700px auto;
   background-position: center top;
   background-repeat: repeat;
@@ -83,7 +116,7 @@ body::after {
 @keyframes fadeOverlay { from { opacity: 1; } to { opacity: 0; } }
 
 /* ---------- Obere Leiste ---------- */
-.topbar {
+.tr-topbar {
   position: relative;
   z-index: 20;
   max-width: 1100px;
@@ -175,7 +208,7 @@ header p.subtitle {
   letter-spacing: 0.1em;
   margin: 0.25rem 0 0;
 }
-.divider { width: 46px; height: 1px; margin: 1.4rem auto 0; background: var(--gold); opacity: 0.75; }
+.tr-divider { width: 46px; height: 1px; margin: 1.4rem auto 0; background: var(--gold); opacity: 0.75; }
 
 /* ---------- Hauptbereich ---------- */
 main {
@@ -636,7 +669,7 @@ kbd { background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); border-rad
   html { font-size: 16px; }
   body { padding-bottom: 3rem; }
 
-  .topbar { padding: 0.9rem 1rem 0.2rem; flex-direction: column; gap: 0.55rem; }
+  .tr-topbar { padding: 0.9rem 1rem 0.2rem; flex-direction: column; gap: 0.55rem; }
   .nav-links { gap: 1rem; justify-content: center; }
   .nav-links a { font-size: 0.95rem; }
   .nav-links .nav-glossary { padding: 0.28rem 0.85rem; font-size: 0.95rem; }

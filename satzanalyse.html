@@ -7,12 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="theme.css?v=5">
 <script src="main.js"></script>
 </head>
-<body>
+<body class="bb-trainer">
 
-  <nav class="topbar" aria-label="Navigation">
+  <nav class="tr-topbar" aria-label="Navigation">
     <div class="nav-links">
       <a href="index.html">Vokabeln</a>
       <a href="satzanalyse.html" class="active">Grammatik</a>
@@ -25,7 +25,7 @@
     <h1>Satzanalyse</h1>
     <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
     <p class="subtitle">Wörtern ihre Rolle im Satz zuweisen</p>
-    <div class="divider"></div>
+    <div class="tr-divider"></div>
   </header>
 
   <main>
@@ -871,6 +871,9 @@ if (typeof SATZANALYSE === "undefined") {
   updateStats();
   nextCard();
 }
+
+// Absicherung: die Seite soll nie waagerecht verschoben sein
+window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
 </body>
 </html>
