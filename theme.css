@@ -91,21 +91,9 @@ body::after {
   padding: 1.15rem 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
 }
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 1.22rem;
-  letter-spacing: 0.04em;
-  color: var(--cream);
-  text-decoration: none;
-}
-.brand-mark { color: var(--gold); font-size: 0.85rem; }
 .nav-links { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; justify-content: flex-end; }
 .nav-links a {
   position: relative;
@@ -705,7 +693,6 @@ kbd { background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); border-rad
 }
 @media (max-width: 420px) {
   .gb-go { display: none; }
-  .brand { font-size: 1.05rem; }
 }
 @media (max-width: 380px) {
   .stats-pill { flex-wrap: wrap; border-radius: 16px; }
