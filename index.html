@@ -518,6 +518,66 @@ kbd {
 .btn-replay { background: rgba(127,214,194,0.12); border-color: #7fd6c2; color:#7fd6c2; }
 .btn-back { background: rgba(255,255,255,0.03); color: var(--text-light); }
 .btn-close { background: rgba(217,138,115,0.12); border-color: var(--wrong-color); color: var(--wrong-color); }
+
+/* =====================
+   GLOSSAR-OVERLAY
+   ===================== */
+.glossary-modal {
+  max-width: 700px;
+  max-height: 85vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.glossary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+.glossary-header h2 { margin: 0; text-align: left; }
+.glossary-header .icon-btn { width: 34px; height: 34px; font-size: 0.9rem; flex-shrink: 0; }
+#glossary-cat-tabs { justify-content: flex-start; margin-bottom: 0.9rem; }
+.glossary-list {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  min-height: 120px;
+}
+.glossary-group { margin-bottom: 1.5rem; }
+.glossary-group:last-child { margin-bottom: 0.2rem; }
+.glossary-group-title {
+  font-family: var(--font-heading);
+  color: var(--accent-color);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.glossary-group-title .ar { font-family: var(--font-arabic); font-size: 1.15rem; color: var(--text-light); }
+.glossary-group-title .count { font-family: var(--font-main); font-size: 0.72rem; color: #7d8bab; font-weight: 500; }
+.glossary-word-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.55rem 0.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+}
+.glossary-word-row:last-child { border-bottom: none; }
+.glossary-word-row .ar { font-family: var(--font-arabic); font-size: 1.2rem; direction: rtl; color: var(--text-light); }
+.glossary-word-row .de { color: var(--text-color); text-align: right; flex-shrink: 0; max-width: 55%; }
+.glossary-empty { color: #7d8bab; font-size: 0.83rem; padding: 0.4rem 0.2rem; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .glossary-modal { max-height: 88vh; padding: 1.1rem; }
+  .glossary-word-row .de { max-width: 60%; }
+}
 </style>
 <script src="vocab.js"></script>
 </head>
@@ -538,6 +598,7 @@ kbd {
         <div class="mastered">Gemeistert <b id="stat-mastered">0</b></div>
         <div>Sitzung <b id="stat-session">0/0</b></div>
       </div>
+      <button id="glossary-toggle" class="icon-btn" title="Glossar öffnen">📖</button>
       <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
     </div>
 
@@ -580,6 +641,16 @@ kbd {
             <button class="btn-back" id="end-back">Zurück zur Übersicht</button>
             <button class="btn-close" id="end-close">Schließen</button>
           </div>
+        </div>
+      </div>
+      <div id="glossary-overlay" class="end-overlay" aria-hidden="true">
+        <div class="end-modal glossary-modal" role="dialog" aria-modal="true" aria-labelledby="glossary-title">
+          <div class="glossary-header">
+            <h2 id="glossary-title">Glossar</h2>
+            <button class="icon-btn" id="glossary-close" title="Schließen">✕</button>
+          </div>
+          <div class="pill-row" id="glossary-cat-tabs"></div>
+          <div class="glossary-list" id="glossary-list"></div>
         </div>
       </div>
     </div>
@@ -1155,6 +1226,97 @@ harakatCheckbox.addEventListener("change", e => {
   harakatState.innerText = showHarakat ? "an" : "aus";
   Sound.click();
   nextCard();
+});
+
+/* ---------- Glossar ----------
+   Zeigt alle Vokabeln (außer dem Sonderblock "Grammatik") gruppiert nach
+   den Kategorien aus CATEGORIES (vocab.js). Ein Wort kann in mehreren
+   Kategorien gleichzeitig auftauchen, wenn sein "categories"-Array
+   mehrere Schlüssel enthält. Wörter ohne (oder mit leerem) "categories"-
+   Feld landen unter "Nicht zugeordnet". */
+let glossaryFilter = "alle";
+
+function allVocabWords(){
+  return Object.entries(LESSONS)
+    .filter(([key]) => key !== "Grammatik")
+    .flatMap(([, words]) => words);
+}
+
+function buildGlossaryTabs(){
+  const wrap = document.getElementById("glossary-cat-tabs");
+  wrap.innerHTML = "";
+  const allBtn = document.createElement("button");
+  allBtn.className = "lesson-pill" + (glossaryFilter === "alle" ? " active" : "");
+  allBtn.textContent = "Alle";
+  allBtn.dataset.key = "alle";
+  wrap.appendChild(allBtn);
+
+  Object.keys(CATEGORIES).forEach(key => {
+    const btn = document.createElement("button");
+    btn.className = "lesson-pill" + (glossaryFilter === key ? " active" : "");
+    btn.textContent = CATEGORIES[key].de;
+    btn.dataset.key = key;
+    wrap.appendChild(btn);
+  });
+
+  wrap.onclick = e => {
+    const btn = e.target.closest(".lesson-pill");
+    if(!btn) return;
+    Sound.click();
+    glossaryFilter = btn.dataset.key;
+    [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
+    renderGlossaryList();
+  };
+}
+
+function glossaryGroupHtml(key){
+  const cat = CATEGORIES[key];
+  const words = allVocabWords().filter(w => Array.isArray(w.categories) && w.categories.includes(key));
+  let html = `<div class="glossary-group">
+      <div class="glossary-group-title">${cat.de} <span class="ar">${cat.ar}</span><span class="count">(${words.length})</span></div>`;
+  if(words.length === 0){
+    html += `<div class="glossary-empty">Noch keine Vokabeln zugeordnet.</div>`;
+  } else {
+    words.forEach(w => {
+      html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}</span></div>`;
+    });
+  }
+  html += `</div>`;
+  return html;
+}
+
+function renderGlossaryList(){
+  const listEl = document.getElementById("glossary-list");
+  if(glossaryFilter === "alle"){
+    let html = Object.keys(CATEGORIES).map(glossaryGroupHtml).join("");
+    const uncategorized = allVocabWords().filter(w => !w.categories || w.categories.length === 0);
+    html += `<div class="glossary-group">
+        <div class="glossary-group-title">Nicht zugeordnet <span class="count">(${uncategorized.length})</span></div>
+        <div class="glossary-empty">Trage bei den gewünschten Wörtern in <kbd>vocab.js</kbd> ein Feld <kbd>categories: ["..."]</kbd> ein, um sie hier einzuordnen — ein Wort kann auch mehrere Kategorien gleichzeitig haben.</div>
+      </div>`;
+    listEl.innerHTML = html;
+  } else {
+    listEl.innerHTML = glossaryGroupHtml(glossaryFilter);
+  }
+}
+
+function openGlossary(){
+  glossaryFilter = "alle";
+  buildGlossaryTabs();
+  renderGlossaryList();
+  const overlay = document.getElementById("glossary-overlay");
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+}
+function closeGlossary(){
+  const overlay = document.getElementById("glossary-overlay");
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+}
+document.getElementById("glossary-toggle").addEventListener("click", () => { Sound.click(); openGlossary(); });
+document.getElementById("glossary-close").addEventListener("click", () => { Sound.click(); closeGlossary(); });
+document.getElementById("glossary-overlay").addEventListener("click", e => {
+  if(e.target.id === "glossary-overlay") closeGlossary();
 });
 
 // Init

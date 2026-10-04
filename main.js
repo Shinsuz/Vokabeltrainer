@@ -22,6 +22,25 @@
    auf der aktuellen Ebene sind in dieser Runde nicht anklickbar (Füllwort
    wie وَ, oder auf dieser Ebene bereits durch eine frühere Ebene geklärt).
 
+   Lektion 11 (I'rab): Ebene 1 = "Mabni"/"Mu'rab"; Ebene 2 = Fall bzw. bei
+   mabnī-Wörtern der Mahall ("Mahallan Marfu/Majrur/Mansub"). Angehängte
+   Pronomen (هُ، هَا، كَ، تُ) stehen dort als EIGENES Wort, weil man sie für
+   die Analyse abtrennt. Partikel und Vergangenheitsverben haben auf Ebene 2
+   keinen Eintrag (kein Mahall) und sind dort nicht anklickbar.
+
+   Ab Lektion 12 kommen zusätzlich verbale Sätze vor (جملة فعلية), dafür
+   die Rollen "Fi'l" (Verb) und "Fa'il" (Subjekt/Täter) vor. Das
+   betonende Pronomen nach einem Possessivsuffix (z. B. هَذَا كِتَابُكَ
+   أَنْتَ) wird NICHT als eigene Rolle abgefragt, sondern bleibt wie
+   وَ ein nicht anklickbares Füllwort — es steht dafür kein eigener
+   Fachbegriff aus dem Lehrbuch zur Verfügung.
+
+   SUFFIX-LÜCKEN (seit Lektion 10):
+   Ein Wort kann zusätzlich ein "blank"-Feld bekommen:
+     { text: "كِتَابُكَ", tags: {1:"Khabar"}, blank: { options: ["كِتَابُكَ","كِتَابُهُ","كِتَابُهَا","كِتَابِي"] } }
+   Bevor die Mubtada/Khabar-Zuordnung beginnt, muss dann erst aus den
+   "options" die richtige (= mit word.text identische) Form gewählt werden.
+
    WICHTIG (grammatikalisch korrekt gehalten):
    - خَلْفَ / أَمَامَ (und ähnliche Ẓuruf wie تَحْتَ) sind KEINE echten
      Präpositionen (حرف جر), sondern fungieren selbst als Mudaf – das
@@ -560,6 +579,168 @@ const SATZANALYSE = {
       { words: [{text:"هُوَ", tags:{1:"Mubtada"}}, {text:"بِالْجَامِعَةِ", tags:{1:"Khabar"}}], translation: "Er ist an der Universität." },
       { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"حَمْزَةُ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"أُسَامَةُ", tags:{1:"Khabar"}}], translation: "Dies ist Hamza, und das ist Usama." }
     ]
+  },
+
+  "11": {
+    concepts: [
+      {
+        term: "Mu'rab (معرب) — veränderliche Endung",
+        explanation: "Ein Wort ist mu'rab, wenn sich seine Endung je nach Funktion im Satz ändert: الْوَلَدُ (marfû', Endung -u), الْوَلَدَ (mansûb, Endung -a), الْوَلَدِ (majrûr, Endung -i). Die meisten Substantive sind mu'rab."
+      },
+      {
+        term: "Mabnī (مبني) — unveränderliche Endung",
+        explanation: "Ein Wort ist mabnī, wenn seine Endung sich nie ändert, egal welche Funktion es im Satz hat. Dazu gehören: Personalpronomen (هُوَ، هِيَ، أَنَا، أَنْتَ), Demonstrativpronomen (هَذَا، هَذِهِ، ذَلِكَ، تِلْكَ), Relativpronomen (الَّذِي، الَّتِي), Fragewörter (أَيْنَ، مَاذَا), Präpositionen und andere Partikel (فِي، عَلَى، مِنْ، إِلَى) sowie Verben in der Vergangenheit (ذَهَبَ)."
+      },
+      {
+        term: "Mahall (محل) — der Platz eines mabnī-Wortes",
+        explanation: "Ein mabnī-Wort ändert seine Endung nicht, hat im Satz aber trotzdem eine Funktion. Man sagt, es steht 'fī maḥalli raf'' (في محل رفع), 'jarr' (جر) oder 'naṣb' (نصب) — kurz: mahallan marfû', mahallan majrûr oder mahallan mansûb. Beispiel: هَذَا كِتَابٌ — هَذَا ist mabnī, steht aber an der Stelle des Mubtada (mahallan marfû'). كِتَابٌ ist mu'rab und wirklich marfû'."
+      },
+      {
+        term: "Angehängte Pronomen: mabnī mit Mahall",
+        explanation: "Die Suffixe كَ، هُ، هَا، ي sind mabnī. Für die Analyse trennt man sie vom Wort ab. Ihr Mahall hängt von der Stelle ab: nach einem Nomen (Mudaf ilaihi) oder nach einer Präposition mahallan majrûr — كِتَابُهُ، لَهُ، فِيهَا; als Objekt eines Verbs mahallan mansûb — أُحِبُّهُ; als Endung am Verb (Subjekt) mahallan marfû' — ذَهَبْتُ (ذَهَبْ + تُ)."
+      },
+      {
+        term: "Partikel haben keinen Mahall",
+        explanation: "Präpositionen wie فِي، عَلَى، مِنْ، إِلَى sind mabnī, haben aber keinen Platz im Satz (لَا مَحَلَّ لَهَا مِنَ الإِعْرَابِ) — sie stehen nur zwischen den Wörtern. Ebenso hat ein Verb in der Vergangenheit hier keinen eigenen Mahall. Deshalb werden sie auf Ebene 2 nicht abgefragt."
+      },
+      {
+        term: "Das Objekt eines Verbs ist mansûb",
+        explanation: "Das Objekt eines Verbs (Satzaussage nach einem Vollverb) steht im Akkusativ und bekommt eine a-Endung (Fatha): أُحِبُّ الْمُدَرِّسَ (Ich mag den Lehrer). Ist das Objekt ein mabnī-Pronomen, ändert sich nichts am Wort — es steht dann mahallan mansûb: أُحِبُّهُ (Ich mag ihn)."
+      },
+      {
+        term: "So gehst du vor",
+        explanation: "Ebene 1: Ändert sich die Endung des Wortes je nach Funktion (mu'rab) oder nie (mabnī)? Ebene 2: Welche Funktion hat das Wort — bei mu'rab-Wörtern marfû', majrûr oder mansûb, bei mabnī-Wörtern mahallan marfû', majrûr oder mansûb (Partikel und Vergangenheitsverben haben keinen Mahall)."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Was bedeutet es, dass ein Wort mabnī (مبني) ist?",
+        choices: ["Seine Endung ändert sich nie", "Seine Endung ändert sich je nach Funktion", "Es steht immer im Genitiv", "Es ist immer ein Verb"],
+        correct: "Seine Endung ändert sich nie"
+      },
+      {
+        type: "mc",
+        question: "Welches dieser Wörter ist mu'rab?",
+        choices: ["<span class='ar'>هَذَا</span>", "<span class='ar'>الْكِتَابُ</span>", "<span class='ar'>فِي</span>", "<span class='ar'>هُوَ</span>"],
+        correct: "<span class='ar'>الْكِتَابُ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Ein mabnī-Wort hat nie eine Funktion im Satz.",
+        correct: false,
+        explanation: "Es hat einen Platz (Mahall), z. B. هَذَا كِتَابٌ: هَذَا steht mahallan marfû' (an der Stelle des Mubtada)."
+      },
+      {
+        type: "mc",
+        question: "In <span class='ar'>أُحِبُّهُ</span> (Ich mag ihn): Welchen Mahall hat <span class='ar'>هُ</span>?",
+        choices: ["mahallan marfû'", "mahallan majrûr", "mahallan mansûb", "mu'rab marfû'"],
+        correct: "mahallan mansûb"
+      },
+      {
+        type: "mc",
+        question: "In <span class='ar'>كِتَابُهُ</span> (sein Buch): Welchen Mahall hat <span class='ar'>هُ</span>?",
+        choices: ["mahallan marfû'", "mahallan majrûr", "mahallan mansûb", "mu'rab majrûr"],
+        correct: "mahallan majrûr"
+      },
+      {
+        type: "tf",
+        statement: "Präpositionen wie <span class='ar'>فِي</span> sind mabnī.",
+        correct: true
+      }
+    ],
+    sentences: [
+      { words: [{text:"تِلْكَ", tags:{1:"Mabni",2:"Mahallan Marfu"}}, {text:"الْمُمَرِّضَةُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"جَمِيلَةٌ", tags:{1:"Mu'rab",2:"Marfu"}}], translation: "Jene Krankenschwester ist schön." },
+      { words: [{text:"هُوَ", tags:{1:"Mabni",2:"Mahallan Marfu"}}, {text:"فِي", tags:{1:"Mabni"}}, {text:"الْبَيْتِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Er ist im Haus." },
+      { words: [{text:"هِيَ", tags:{1:"Mabni",2:"Mahallan Marfu"}}, {text:"عَلَى", tags:{1:"Mabni"}}, {text:"الْمَكْتَبِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Sie ist auf dem Schreibtisch." },
+      { words: [{text:"الْقَلَمُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"فِي", tags:{1:"Mabni"}}, {text:"هَا", tags:{1:"Mabni",2:"Mahallan Majrur"}}], translation: "Der Stift ist darin (in ihr)." },
+      { words: [{text:"مَاذَا", tags:{1:"Mabni",2:"Mahallan Marfu"}}, {text:"فِي", tags:{1:"Mabni"}}, {text:"الْغُرْفَةِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Was ist im Zimmer?" },
+      { words: [{text:"كِتَابُ", tags:{2:"Marfu"}}, {text:"الْمُدَرِّسِ", tags:{2:"Majrur"}}, {text:"جَدِيدٌ", tags:{2:"Marfu"}}], translation: "Das Buch des Lehrers ist neu." },
+      { words: [{text:"كِتَابُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"هُ", tags:{1:"Mabni",2:"Mahallan Majrur"}}, {text:"جَدِيدٌ", tags:{1:"Mu'rab",2:"Marfu"}}], translation: "Sein Buch ist neu." },
+      { words: [{text:"بَيْتُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"كَ", tags:{1:"Mabni",2:"Mahallan Majrur"}}, {text:"جَمِيلٌ", tags:{1:"Mu'rab",2:"Marfu"}}], translation: "Dein Haus ist schön." },
+      { words: [{text:"سَيَّارَةُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"هَا", tags:{1:"Mabni",2:"Mahallan Majrur"}}, {text:"جَدِيدَةٌ", tags:{1:"Mu'rab",2:"Marfu"}}], translation: "Ihr Auto ist neu." },
+      { words: [{text:"أُحِبُّ", tags:{}}, {text:"الْمُدَرِّسَ", tags:{1:"Mu'rab",2:"Mansub"}}, {text:"فِي", tags:{1:"Mabni"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Ich mag den Lehrer in der Schule." },
+      { words: [{text:"أُحِبُّ", tags:{}}, {text:"كِتَابَ", tags:{1:"Mu'rab",2:"Mansub"}}, {text:"هُ", tags:{1:"Mabni",2:"Mahallan Majrur"}}], translation: "Ich mag sein Buch." },
+      { words: [{text:"أُحِبُّ", tags:{}}, {text:"هُ", tags:{1:"Mabni",2:"Mahallan Mansub"}}, {text:"فِي", tags:{1:"Mabni"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Ich mag ihn in der Schule." },
+      { words: [{text:"ذَهَبَ", tags:{1:"Mabni"}}, {text:"الْوَلَدُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"إِلَى", tags:{1:"Mabni"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Der Junge ging zur Schule." },
+      { words: [{text:"ذَهَبْ", tags:{1:"Mabni"}}, {text:"تُ", tags:{1:"Mabni",2:"Mahallan Marfu"}}, {text:"إِلَى", tags:{1:"Mabni"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Mu'rab",2:"Majrur"}}], translation: "Ich ging zur Schule." },
+      { words: [{text:"الْبِنْتُ", tags:{1:"Mu'rab",2:"Marfu"}}, {text:"الَّتِي", tags:{1:"Mabni",2:"Mahallan Marfu"}}, {text:"فِي", tags:{1:"Mabni"}}, {text:"الْغُرْفَةِ", tags:{1:"Mu'rab",2:"Majrur"}}, {text:"طَالِبَةٌ", tags:{1:"Mu'rab",2:"Marfu"}}], translation: "Das Mädchen, das im Zimmer ist, ist eine Studentin." },
+      { words: [{text:"لَ", tags:{1:"Mabni"}}, {text:"هُ", tags:{1:"Mabni",2:"Mahallan Majrur"}}, {text:"أَخٌ", tags:{1:"Mu'rab",2:"Marfu"}}], translation: "Er hat einen Bruder." }
+    ]
+  },
+
+  "12": {
+    concepts: [
+      {
+        term: "أَنْتِ — du (feminin)",
+        explanation: "أَنْتَ ist 'du' für die zweite Person Singular maskulin (bereits bekannt). أَنْتِ ist 'du' für die zweite Person Singular feminin, z. B. مِنْ أَيْنَ أَنْتِ يَا آمِنَةُ؟ (Woher kommst du, Aminah?)."
+      },
+      {
+        term: "Possessivsuffix ك: männlich vs. feminin",
+        explanation: "Die besitzanzeigende Endung 'dein' wird bei männlich Angesprochenen mit Fatha geschrieben (كَ, z. B. بَيْتُكَ), bei weiblich Angesprochenen mit Kasra (كِ, z. B. بَيْتُكِ). Ohne Vokalzeichen sehen beide Formen im Schriftbild gleich aus (ك) — nur die Aussprache unterscheidet sie."
+      },
+      {
+        term: "ذَهَبَتْ — sie ging",
+        explanation: "Neben ذَهَبَ (er ging), ذَهَبْتُ (ich ging) und ذَهَبْتَ (du gingst) lernen wir jetzt ذَهَبَتْ — die dritte Person Singular feminin der Vergangenheit."
+      },
+      {
+        term: "Sukûn wird zu Kasra vor ال",
+        explanation: "Der letzte Buchstabe von ذَهَبَتْ (das ت) trägt normalerweise ein Sukûn. Folgt darauf ein Wort mit bestimmtem Artikel ال, wird das Sukûn zu einem Kasra: ذَهَبَتِ الْبِنْتُ (Das Mädchen ging)."
+      },
+      {
+        term: "Wegfall des Pronomens bei genanntem Subjekt",
+        explanation: "Wird das Subjekt eines Verbs ausdrücklich genannt (z. B. ein Name), entfällt das eigenständige Pronomen davor: ذَهَبَتْ مَرْيَمُ إِلَى الْمَدْرَسَةِ (Maryam ging zur Schule) — nicht 'هي ذهبت مريم'."
+      },
+      {
+        term: "الَّتِي — Relativpronomen feminin",
+        explanation: "Analog zu الَّذِي (maskulin, bereits bekannt) gibt es الَّتِي für feminin Singular, z. B. الطَّالِبَةُ الَّتِي جَلَسَتْ أَمَامَ الْمُدَرِّسَةِ (Die Studentin, die vor der Lehrerin saß)."
+      },
+      {
+        term: "Betonendes Pronomen nach Possessivsuffix",
+        explanation: "Um ein Possessivsuffix besonders zu betonen (z. B. bei Zweifel oder Uneinigkeit), kann das passende eigenständige Pronomen dahintergestellt werden: هَذَا كِتَابُكَ أَنْتَ (Dies ist DEIN Buch), هَذَا بَيْتُهُ هُوَ, ذَلِكَ قَلَمِي أَنَا, ذَلِكَ كِتَابُهَا هِيَ."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Welches Wort bedeutet 'du', wenn eine weibliche Person angesprochen wird?",
+        choices: ["<span class='ar'>أَنْتَ</span>", "<span class='ar'>أَنْتِ</span>", "<span class='ar'>هِيَ</span>", "<span class='ar'>أَنَا</span>"],
+        correct: "<span class='ar'>أَنْتِ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Die besitzanzeigende Endung ك wird bei männlich und weiblich Angesprochenen genau gleich ausgesprochen.",
+        correct: false,
+        explanation: "Bei männlich hat sie ein Fatha (كَ), bei weiblich ein Kasra (كِ)."
+      },
+      {
+        type: "mc",
+        question: "Wie heißt 'sie ging' auf Arabisch?",
+        choices: ["<span class='ar'>ذَهَبَ</span>", "<span class='ar'>ذَهَبْتُ</span>", "<span class='ar'>ذَهَبْتَ</span>", "<span class='ar'>ذَهَبَتْ</span>"],
+        correct: "<span class='ar'>ذَهَبَتْ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>الَّتِي</span> ist die feminine Form von <span class='ar'>الَّذِي</span>.",
+        correct: true
+      }
+    ],
+    sentences: [
+      { words: [{text:"أَنْتِ", tags:{1:"Mubtada"}, blank:{options:["أَنْتَ","أَنْتِ","هُوَ","هِيَ"]}}, {text:"طَالِبَةٌ", tags:{1:"Khabar"}}], translation: "Du (weibl.) bist eine Studentin." },
+      { words: [{text:"أَنْتِ", tags:{1:"Mubtada"}, blank:{options:["أَنْتَ","أَنْتِ","هُوَ","هِيَ"]}}, {text:"مِنْ", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"أَلْمَانِيَا", tags:{1:"Khabar",2:"Majrur"}}], translation: "Du (weibl.) bist aus Deutschland." },
+      { words: [{text:"بَيْتُكِ", tags:{1:"Mubtada"}, blank:{options:["بَيْتُكَ","بَيْتُكِ","بَيْتُهُ","بَيْتِي"]}}, {text:"جَمِيلٌ", tags:{1:"Khabar"}}], translation: "Dein (weibl.) Haus ist schön." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُكَ", tags:{1:"Khabar"}, blank:{options:["بَيْتُكَ","بَيْتُكِ","بَيْتُهُ","بَيْتِي"]}}], translation: "Dies ist dein (männl.) Haus." },
+      { words: [{text:"كِتَابُكِ", tags:{1:"Mubtada"}, blank:{options:["كِتَابُكَ","كِتَابُكِ","كِتَابُهُ","كِتَابِي"]}}, {text:"جَدِيدٌ", tags:{1:"Khabar"}}], translation: "Dein (weibl.) Buch ist neu." },
+      { words: [{text:"ذَهَبَتْ", tags:{1:"Fi'l"}}, {text:"مَرْيَمُ", tags:{1:"Fa'il"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Majrur"}}], translation: "Maryam ging zur Schule." },
+      { words: [{text:"ذَهَبَتْ", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْجَامِعَةِ", tags:{1:"Majrur"}}], translation: "Sie ging zur Universität." },
+      { words: [{text:"ذَهَبَتِ", tags:{1:"Fi'l"}}, {text:"الْبِنْتُ", tags:{1:"Fa'il"}}], translation: "Das Mädchen ging." },
+      { words: [{text:"الطَّالِبَةُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"جَلَسَتْ", tags:{1:"Mubtada",2:"Na't",3:"Fi'l"}}, {text:"أَمَامَ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf"}}, {text:"الْمُدَرِّسَةِ", tags:{1:"Mubtada",2:"Na't",3:"Mudaf ilaihi"}}, {text:"مِنْ", tags:{1:"Khabar",3:"Harful Jarr"}}, {text:"أَلْمَانِيَا", tags:{1:"Khabar",3:"Majrur"}}], translation: "Die Studentin, die vor der Lehrerin saß, ist aus Deutschland." },
+      { words: [{text:"السَّاعَةُ", tags:{1:"Mubtada",2:"Man'ut"}}, {text:"الَّتِي", tags:{1:"Mubtada",2:"Na't",3:"Relativpronomen"}}, {text:"عَلَى", tags:{1:"Mubtada",2:"Na't",3:"Harful Jarr"}}, {text:"الْمَكْتَبِ", tags:{1:"Mubtada",2:"Na't",3:"Majrur"}}, {text:"لِلْمُدَرِّسِ", tags:{1:"Khabar"}}], translation: "Die Uhr, die auf dem Tisch liegt, gehört dem Lehrer." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"كِتَابُكَ", tags:{1:"Khabar"}}, {text:"أَنْتَ", tags:{}}], translation: "Dies ist DEIN Buch." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُهُ", tags:{1:"Khabar"}}, {text:"هُوَ", tags:{}}], translation: "Dies ist SEIN Haus." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"قَلَمِي", tags:{1:"Khabar"}}, {text:"أَنَا", tags:{}}], translation: "Das ist MEIN Stift." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"كِتَابُهَا", tags:{1:"Khabar"}}, {text:"هِيَ", tags:{}}], translation: "Das ist IHR Buch." }
+    ]
   }
 
 };
@@ -575,5 +756,7 @@ const SATZANALYSE_LABELS = {
   "8": "Lektion 8",
   "9a": "Lektion 9a",
   "9b": "Lektion 9b",
-  "10": "Lektion 10"
+  "10": "Lektion 10",
+  "11": "Lektion 11",
+  "12": "Lektion 12"
 };

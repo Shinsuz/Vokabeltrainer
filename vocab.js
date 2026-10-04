@@ -249,6 +249,38 @@ const LESSONS = {
     11: [
       { arabic: "فِيهِ", german: "darin" },
       { arabic: "أُحِبُّ", german: "ich mag, ich liebe" },
+      { arabic: "مَاذَا", german: "was (eindeutiges Fragewort, im Gegensatz zu مَا, das auch 'nicht' bedeuten kann)" },
+    ],
+
+    12: [
+      { arabic: "أَنْتِ", german: "du (weiblich)"},
+      { arabic: "كِ", german: "besitzanzeigende Endung 'dein' bei weiblich Angesprochenen (Kasra, z. B. بَيْتُكِ)"},
+      { arabic: "ذَهَبَتْ", german: "sie ging"},
+      { arabic: "الَّتِي", german: "die, welche (Relativpronomen, feminin Singular)"},
+      { arabic: "الْعَمُّ", german: "der Onkel (väterlicherseits)"},
+      { arabic: "الشَّجَرَةُ", german: "der Baum"},
+      { arabic: "الْعَمَّةُ", german: "die Tante (väterlicherseits)"},
+      { arabic: "سُورِيَا", german: "Syrien"},
+      { arabic: "الْخَالُ", german: "der Onkel (mütterlicherseits)"},
+      { arabic: "الْمَدْرَسَةُ الْمُتَوَسِّطَةُ", german: "die Mittelschule"},
+      { arabic: "الْخَالَةُ", german: "die Tante (mütterlicherseits)"},
+      { arabic: "الْمُفَتِّشُ", german: "der Inspektor"},
+      { arabic: "مُسْتَشْفَى الْوِلَادَةِ", german: "das Entbindungsheim"},
+      { arabic: "الْفَتَاةُ", german: "die junge Frau"},
+      { arabic: "يَا سَيِّدِي", german: "mein Herr!"},
+      { arabic: "الدَّفْتَرُ", german: "das Heft"},
+      { arabic: "يَا سَيِّدَتِي", german: "meine Dame!"},
+      { arabic: "مَالِيزِيَا", german: "Malaysia"},
+      { arabic: "كَيْفَ حَالُكَ؟", german: "Wie geht es dir? / Wie geht es Ihnen?"},
+      { arabic: "أَنَا بِخَيْرٍ", german: "Mir geht es gut."},
+      { arabic: "أُمَّهَاتٌ", german: "Mütter (Plural von أُمٌّ)"},
+      { arabic: "آبَاءٌ", german: "Väter (Plural von أَبٌ)"},
+      { arabic: "وُزَرَاءُ", german: "Minister (Plural von وَزِيرٌ)"},
+      { arabic: "عُلَمَاءُ", german: "Gelehrte (Plural von عَالِمٌ)"},
+      { arabic: "أَقْوِيَاءُ", german: "Starke (Plural von قَوِيٌّ)"},
+      { arabic: "ضُعَفَاءُ", german: "Schwache (Plural von ضَعِيفٌ)"},
+      { arabic: "بَعْدَ", german: "nach (das folgende Substantiv steht im Genitiv)"},
+      { arabic: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ", german: "das Königreich Saudi-Arabien"},
     ],
 
   Grammatik: [
@@ -277,7 +309,47 @@ const LESSONS = {
   ]
   
 };
-  
+
+/* ==========================================================================
+   GLOSSAR-KATEGORIEN
+   ==========================================================================
+   Jedes Vokabelwort (in LESSONS, außer im Sonderblock "Grammatik") kann
+   optional ein Feld "categories" bekommen — ein Array von Schlüsseln aus
+   der Liste unten. Ein Wort kann in MEHREREN Kategorien gleichzeitig
+   stehen, z. B. ein Relativpronomen, das gleichzeitig مبني (mabnī,
+   indeklinabel) ist:
+
+     { arabic: "الَّذِي", german: "der, welcher", categories: ["pronomen", "mabni"] }
+
+   Ohne "categories"-Feld (oder mit leerem Array) gilt ein Wort im Glossar
+   als "nicht zugeordnet". Die Zuordnung trägst du selbst nach und nach
+   ein — nichts hier wurde automatisch vorbelegt.
+
+   Neue Kategorien kannst du unten einfach ergänzen (Schlüssel frei wählbar,
+   ar = arabischer Fachbegriff, de = deutsche Bezeichnung fürs Glossar).
+*/
+const CATEGORIES = {
+  ism:            { ar: "اسْم",            de: "Nomen" },
+  fiil:           { ar: "فِعْل",            de: "Verb" },
+  harf:           { ar: "حَرْف",            de: "Partikel" },
+  praeposition:   { ar: "حَرْفُ جَر",        de: "Präposition" },
+  pronomen:       { ar: "ضَمِير",           de: "Pronomen" },
+  ismmawsul:      { ar: "اِسْمٌ مَوْصُولٌ",     de: "Relativpronomen" },
+  ismishara:      { ar: "اسْمُ إِشَارَة",      de: "Demonstrativpronomen" },
+  mudaf:          { ar: "مُضَاف",           de: "Mudâf" },
+  mudafilaihi:    { ar: "مُضَاف إِلَيْه",      de: "Mudâf ilaihi" },
+  mubtada:        { ar: "مُبْتَدَأ",          de: "Mubtada (Satzgegenstand)" },
+  khabar:         { ar: "خَبَر",            de: "Khabar (Satzaussage)" },
+  naat:           { ar: "نَعْت",            de: "Na't (Adjektiv)" },
+  manuut:         { ar: "مَنْعُوت",          de: "Man'ût (Substantiv zum Adjektiv)" },
+  marfu:          { ar: "مَرْفُوع",          de: "Marfû' (Nominativ)" },
+  majrur:         { ar: "مَجْرُور",          de: "Majrûr (Genitiv)" },
+  mansub:         { ar: "مَنْصُوب",          de: "Mansûb (Akkusativ)" },
+  marifa:         { ar: "مَعْرِفَة",          de: "Ma'rifa (bestimmt)" },
+  nakira:         { ar: "نَكِرَة",           de: "Nakira (unbestimmt)" },
+  mabni:          { ar: "مَبْنِي",           de: "Mabnī (indeklinabel)" },
+};
+
 const LESSON_LABELS = {
   1: "Lektion 1",
   2: "Lektion 2",
@@ -289,5 +361,6 @@ const LESSON_LABELS = {
   8: "Lektion 8",
   9: "Lektion 9",
   10: "Lektion 10",
-  11: "Lektion 11"
+  11: "Lektion 11",
+  12: "Lektion 12"
 };
