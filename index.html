@@ -4,591 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vokabeltrainer | Boycott-Buddy</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
-
-:root {
-  --primary-color: #e5ba73;
-  --secondary-color: #8e7b43;
-  --accent-color: #f4c26f;
-  --dark-color: #060911;
-  --light-color: #f8f9fa;
-  --text-color: #e7e7ea;
-  --text-light: #f8f9fa;
-  --wrong-color: #d98a73;
-  --font-main: 'Poppins', sans-serif;
-  --font-heading: 'Playfair Display', serif;
-  --font-arabic: 'Noto Naskh Arabic', serif;
-}
-
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; font-size: 16px; }
-
-/* ==========================================================================
-   HINTERGRUND — identisch zum Rest der Seite (main.css)
-   ========================================================================== */
-body {
-  font-family: var(--font-main);
-  margin: 0;
-  padding: 0 0 4rem;
-  background-color: var(--dark-color);
-  background-image:
-    radial-gradient(circle at 50% -10%, rgba(229, 186, 115, 0.18) 0%, transparent 45%),
-    radial-gradient(circle at 50% 15%, rgba(15, 23, 42, 0.95) 0%, var(--dark-color) 75%);
-  background-attachment: fixed;
-  color: var(--text-light);
-  min-height: 100vh;
-  overflow-x: hidden;
-  line-height: 1.6;
-  position: relative;
-}
-
-body::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><g fill="none" stroke="%23e5ba73" stroke-width="0.3" stroke-opacity="0.12"><path d="M30 0 L60 30 L30 60 L0 30 Z M0 0 L60 60 M60 0 L0 60 M30 0 L30 60 M0 30 L60 30"/><circle cx="30" cy="30" r="12"/><path d="M30 12 L42 30 L30 48 L18 30 Z"/></g></svg>');
-  background-size: 120px 120px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: var(--dark-color);
-  z-index: 9999;
-  animation: fadeOverlay 1.2s ease forwards;
-  pointer-events: none;
-}
-
-@keyframes fadeOverlay { from { opacity: 1; } to { opacity: 0; } }
-
-
-/* ==========================================================================
-   HEADER: STERN MIT GLOW-ANIMATION (aus main.css übernommen)
-   ========================================================================== */
-header {
-  text-align: center;
-  padding: 4.5rem 1rem 1.25rem;
-  position: relative;
-  z-index: 10;
-}
-
-.header-star {
-  display: block;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 18px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><g fill='none' stroke='%23e5ba73'><circle cx='50' cy='50' r='39' stroke-width='0.5' stroke-dasharray='2 2'/><path d='M50 14 L56 44 L86 50 L56 56 L50 86 L44 56 L14 50 L44 44 Z' stroke-width='1.6' stroke-linejoin='round'/><circle cx='50' cy='50' r='24' stroke-width='0.8'/></g></svg>");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  animation: starGlowPulse 4s ease-in-out infinite;
-}
-
-@keyframes starGlowPulse {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(229, 186, 115, 0.45)); }
-  50% { transform: scale(1.04); filter: drop-shadow(0 0 35px rgba(244, 194, 111, 0.75)); }
-}
-
-h1 {
-  font-family: var(--font-heading);
-  font-weight: 500;
-  font-size: 2.4rem;
-  letter-spacing: 0.5px;
-  margin: 0;
-  background: linear-gradient(to bottom, #ffffff 40%, #cdd7e5 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-header .ar-sub {
-  display: block;
-  font-family: var(--font-arabic);
-  font-weight: 500;
-  color: var(--accent-color);
-  font-size: 1.2rem;
-  line-height: 1.8;
-  margin-top: 0.4rem;
-}
-
-header p.subtitle {
-  color: #52668d;
-  font-size: 0.9rem;
-  font-weight: 400;
-  letter-spacing: 0.8px;
-  margin-top: 0.6rem;
-}
-
-header .nav-link {
-  display: inline-block;
-  margin-top: 0.9rem;
-  font-size: 0.78rem;
-  color: #7d8bab;
-  text-decoration: none;
-  border-bottom: 1px dotted rgba(255,255,255,0.2);
-}
-header .nav-link:hover { color: var(--accent-color); border-color: var(--accent-color); }
-
-/* ==========================================================================
-   HAUPTBEREICH
-   ========================================================================== */
-main {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
-  position: relative;
-  z-index: 10;
-}
-
-/* Stats-Leiste */
-.stats-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-}
-
-.stats-pill {
-  display: flex;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 999px;
-  overflow: hidden;
-  font-size: 0.8rem;
-}
-.stats-pill div { padding: 0.6rem 1.1rem; border-right: 1px solid rgba(255, 255, 255, 0.08); white-space: nowrap; color: var(--text-color); }
-.stats-pill div:last-child { border-right: none; }
-.stats-pill b { color: var(--accent-color); font-family: var(--font-heading); font-size: 0.95rem; }
-.stats-pill .mastered b { color: #7fd6c2; }
-
-.icon-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 999px;
-  width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  color: var(--text-light);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-.icon-btn:hover { border-color: rgba(229, 186, 115, 0.35); box-shadow: 0 0 15px rgba(229, 186, 115, 0.2); }
-
-/* Pill-Buttons: Modi / Lektionen / Richtung / Haraket */
-.pill-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.7rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-.pill-group {
-  display: flex;
-  gap: 0.35rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 0.3rem;
-  border-radius: 14px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.pill-btn {
-  font-family: var(--font-main);
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-color);
-  background: transparent;
-  border: none;
-  border-radius: 10px;
-  padding: 0.55rem 0.95rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  white-space: nowrap;
-}
-.pill-btn:hover { color: var(--accent-color); }
-.pill-btn.active {
-  background: rgba(229, 186, 115, 0.15);
-  color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px rgba(229, 186, 115, 0.4);
-}
-
-.lesson-pill {
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-color);
-  font-size: 0.78rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-.lesson-pill:hover:not(.disabled) { border-color: rgba(229, 186, 115, 0.35); color: var(--accent-color); }
-.lesson-pill.active {
-  background: rgba(229, 186, 115, 0.15);
-  border-color: var(--primary-color);
-  color: var(--accent-color);
-  box-shadow: 0 0 15px rgba(229, 186, 115, 0.2);
-}
-.lesson-pill.disabled { opacity: 0.3; cursor: not-allowed; }
-
-.toggle-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 999px;
-  padding: 0.5rem 0.9rem;
-  cursor: pointer;
-  font-size: 0.78rem;
-  color: var(--text-color);
-  user-select: none;
-}
-.toggle-pill b { color: var(--accent-color); }
-
-.switch { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
-.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-.switch .slider {
-  position: absolute; inset: 0;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  transition: 0.25s;
-}
-.switch .slider::before {
-  content: "";
-  position: absolute;
-  width: 13px; height: 13px;
-  left: 3px; top: 50%;
-  transform: translateY(-50%);
-  background: var(--text-light);
-  border-radius: 50%;
-  transition: 0.25s;
-}
-.switch input:checked + .slider { background: rgba(229, 186, 115, 0.3); border-color: var(--primary-color); }
-.switch input:checked + .slider::before { transform: translate(17px, -50%); background: var(--accent-color); }
-
-/* Karteikarte, im Glow-Stil der Startseiten-Boxen */
-.card-outer { position: relative; margin: 1.5rem 0; }
-.corner { position: absolute; width: 24px; height: 24px; opacity: 0.55; }
-.corner.tl { top: -6px; left: -6px; }
-.corner.tr { top: -6px; right: -6px; transform: scaleX(-1); }
-.corner.bl { bottom: -6px; left: -6px; transform: scaleY(-1); }
-.corner.br { bottom: -6px; right: -6px; transform: scale(-1, -1); }
-
-.card {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-  padding: 3rem 2rem;
-  min-height: 290px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
-  text-align: center;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.card:hover {
-  border-color: rgba(229, 186, 115, 0.3);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 25px rgba(229, 186, 115, 0.15);
-}
-
-.empty-state { color: #7d8bab; max-width: 420px; line-height: 1.6; }
-.empty-state .big { font-family: var(--font-heading); font-size: 1.2rem; color: var(--text-light); margin-bottom: 8px; }
-
-.prompt-word {
-  font-family: var(--font-arabic);
-  font-weight: 600;
-  font-size: 3.2rem;
-  line-height: 1.9;
-  word-spacing: 0.15em;
-  color: var(--text-light);
-  direction: rtl;
-}
-.prompt-word.is-german { font-family: var(--font-heading); font-size: 1.9rem; font-weight: 600; line-height: 1.4; color: var(--accent-color); }
-.prompt-hint { font-size: 0.75rem; color: #7d8bab; letter-spacing: 0.06em; text-transform: uppercase; }
-
-.prompt-row-flex { display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
-
-.mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; width: 100%; max-width: 480px; }
-@media (max-width: 480px) { .mc-grid { grid-template-columns: 1fr; } }
-.opt-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  color: var(--text-light);
-  font-family: var(--font-main), var(--font-arabic);
-  font-size: 0.98rem; font-weight: 500;
-  line-height: 1.6;
-  padding: 0.9rem 0.75rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.opt-btn:hover:not(:disabled) { border-color: var(--primary-color); background: rgba(229, 186, 115, 0.08); }
-.opt-btn:disabled { cursor: default; }
-.opt-btn.correct { background: rgba(127, 214, 194, 0.15); border-color: #7fd6c2; color: #7fd6c2; }
-.opt-btn.wrong { background: rgba(217, 138, 115, 0.15); border-color: var(--wrong-color); color: var(--wrong-color); }
-
-.type-row { display: flex; gap: 0.5rem; width: 100%; max-width: 420px; }
-.type-row input {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-light);
-  font-family: var(--font-main);
-  font-size: 1rem;
-  padding: 0.85rem 1rem;
-  border-radius: 12px;
-  outline: none;
-}
-.type-row input:focus { border-color: var(--primary-color); }
-.type-row button {
-  background: rgba(229, 186, 115, 0.15);
-  border: 1px solid var(--primary-color);
-  color: var(--accent-color);
-  font-family: var(--font-main);
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0 1.4rem;
-  border-radius: 12px;
-  cursor: pointer;
-}
-.type-row button:hover { background: rgba(229, 186, 115, 0.25); }
-
-.feedback { font-size: 0.9rem; font-weight: 600; min-height: 20px; }
-.feedback.ok { color: #7fd6c2; }
-.feedback.bad { color: var(--wrong-color); }
-
-.flash-actions { display: flex; gap: 0.6rem; width: 100%; max-width: 420px; }
-.flash-actions button {
-  flex: 1; padding: 0.85rem; border-radius: 12px;
-  font-family: var(--font-main); font-weight: 600; font-size: 0.86rem; cursor: pointer;
-  border: 1px solid; transition: all 0.2s ease;
-}
-.btn-again { background: rgba(217, 138, 115, 0.1); border-color: var(--wrong-color); color: var(--wrong-color); }
-.btn-again:hover { background: rgba(217, 138, 115, 0.2); }
-.btn-know { background: rgba(127, 214, 194, 0.12); border-color: #7fd6c2; color: #7fd6c2; }
-.btn-know:hover { background: rgba(127, 214, 194, 0.22); }
-
-.tap-hint { font-size: 0.72rem; color: #5c6f96; }
-
-.next-btn {
-  width: 100%;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: var(--dark-color);
-  font-family: var(--font-main);
-  font-weight: 700; font-size: 0.9rem;
-  padding: 0.9rem; border: none; border-radius: 12px; cursor: pointer;
-  transition: filter 0.2s ease;
-}
-.next-btn:hover { filter: brightness(1.1); }
-
-/* Fortschritt */
-.progress-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.75rem; }
-.progress-track { flex: 1; height: 8px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); border-radius: 99px; transition: width 0.35s ease; }
-.progress-label { font-size: 0.75rem; color: #5c6f96; white-space: nowrap; }
-.star-mark { width: 14px; height: 14px; flex-shrink: 0; }
-
-/* untere Steuerung */
-.controls { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-.ghost-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #9fb0d4;
-  font-family: var(--font-main);
-  font-size: 0.78rem;
-  padding: 0.6rem 1.1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-.ghost-btn:hover { border-color: var(--primary-color); color: var(--accent-color); }
-
-footer {
-  text-align: center;
-  padding: 2.5rem 1rem 1rem;
-  margin-top: 1rem;
-  font-size: 0.78rem;
-  color: #7d8bab;
-  line-height: 1.8;
-  position: relative;
-  z-index: 10;
-}
-footer .made-by { opacity: 0.85; }
-footer .made-by a { color: var(--accent-color); text-decoration: none; font-weight: 600; }
-footer .made-by a:hover { text-decoration: underline; }
-
-kbd {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-size: 0.75em;
-  color: var(--text-color);
-}
-
-@media (max-width: 640px) {
-  body { padding-bottom: 3rem; }
-
-  .home {
-    top: 1rem; right: 1rem;
-    width: 42px; height: 42px;
-  }
-
-  header { padding: 3.5rem 1rem 1rem; }
-  .header-star { width: 62px; height: 62px; margin-bottom: 12px; }
-  h1 { font-size: 1.85rem; }
-  header .ar-sub { font-size: 1.05rem; }
-  header p.subtitle { font-size: 0.8rem; }
-
-  main { padding: 0 0.85rem; }
-
-  .stats-row { gap: 0.5rem; }
-  .stats-pill { font-size: 0.72rem; }
-  .stats-pill div { padding: 0.5rem 0.7rem; }
-  .icon-btn { width: 36px; height: 36px; font-size: 0.9rem; }
-
-  .pill-row { gap: 0.5rem; }
-  .pill-group { width: 100%; justify-content: center; flex-wrap: wrap; }
-  .pill-btn { flex: 1 1 auto; padding: 0.55rem 0.7rem; font-size: 0.75rem; }
-  .toggle-pill { width: 100%; justify-content: center; }
-  #lesson-tabs { width: 100%; justify-content: center; flex-wrap: wrap; }
-
-  .card { padding: 2.2rem 1.25rem; min-height: 250px; gap: 1.1rem; }
-  .prompt-word { font-size: 2.3rem; line-height: 1.7; }
-  .prompt-word.is-german { font-size: 1.5rem; }
-  .prompt-hint { font-size: 0.68rem; }
-
-  .mc-grid { max-width: 100%; }
-  .opt-btn { font-size: 0.88rem; padding: 0.8rem 0.6rem; }
-
-  .type-row { max-width: 100%; flex-direction: column; }
-  .type-row button { padding: 0.85rem; }
-
-  .flash-actions { max-width: 100%; }
-
-  .controls { flex-direction: column; }
-  .controls .ghost-btn { width: 100%; text-align: center; }
-
-  footer { padding: 2rem 1rem 1rem; font-size: 0.72rem; }
-}
-
-@media (max-width: 380px) {
-  h1 { font-size: 1.6rem; }
-  .prompt-word { font-size: 2rem; }
-  .stats-pill { flex-wrap: wrap; border-radius: 16px; }
-  .stats-pill div { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .stats-pill div:last-child { border-bottom: none; }
-}
-/* =====================
-   END-SCREEN / OVERLAY
-   ===================== */
-.end-overlay {
-  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.55); z-index: 10010; padding: 1rem; visibility: hidden; opacity: 0; transition: all 0.18s ease;
-}
-.end-overlay.show { visibility: visible; opacity: 1; }
-.end-modal {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  color: var(--text-light); padding: 1.4rem; border-radius: 14px; max-width: 520px; width: 100%; text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-}
-.end-modal h2 { margin: 0 0 0.4rem; font-family: var(--font-heading); color: var(--accent-color); }
-.end-modal p { color: #9fb0d4; margin: 0 0 1rem; }
-.end-modal .end-actions { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap; }
-.end-modal .end-actions button { padding:0.7rem 1rem; border-radius:10px; font-weight:600; cursor:pointer; border:1px solid rgba(255,255,255,0.06); }
-.btn-replay { background: rgba(127,214,194,0.12); border-color: #7fd6c2; color:#7fd6c2; }
-.btn-back { background: rgba(255,255,255,0.03); color: var(--text-light); }
-.btn-close { background: rgba(217,138,115,0.12); border-color: var(--wrong-color); color: var(--wrong-color); }
-
-/* =====================
-   GLOSSAR-OVERLAY
-   ===================== */
-.glossary-modal {
-  max-width: 700px;
-  max-height: 85vh;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-}
-.glossary-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  margin-bottom: 0.9rem;
-}
-.glossary-header h2 { margin: 0; text-align: left; }
-.glossary-header .icon-btn { width: 34px; height: 34px; font-size: 0.9rem; flex-shrink: 0; }
-#glossary-cat-tabs { justify-content: flex-start; margin-bottom: 0.9rem; }
-.glossary-list {
-  overflow-y: auto;
-  flex: 1;
-  padding-right: 4px;
-  min-height: 120px;
-}
-.glossary-group { margin-bottom: 1.5rem; }
-.glossary-group:last-child { margin-bottom: 0.2rem; }
-.glossary-group-title {
-  font-family: var(--font-heading);
-  color: var(--accent-color);
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.glossary-group-title .ar { font-family: var(--font-arabic); font-size: 1.15rem; color: var(--text-light); }
-.glossary-group-title .count { font-family: var(--font-main); font-size: 0.72rem; color: #7d8bab; font-weight: 500; }
-.glossary-word-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.8rem;
-  padding: 0.55rem 0.2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.9rem;
-}
-.glossary-word-row:last-child { border-bottom: none; }
-.glossary-word-row .ar { font-family: var(--font-arabic); font-size: 1.2rem; direction: rtl; color: var(--text-light); }
-.glossary-word-row .de { color: var(--text-color); text-align: right; flex-shrink: 0; max-width: 55%; }
-.glossary-empty { color: #7d8bab; font-size: 0.83rem; padding: 0.4rem 0.2rem; line-height: 1.6; }
-
-@media (max-width: 640px) {
-  .glossary-modal { max-height: 88vh; padding: 1.1rem; }
-  .glossary-word-row .de { max-width: 60%; }
-}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
 <script src="vocab.js"></script>
 </head>
 <body>
 
+  <nav class="topbar" aria-label="Navigation">
+    <a class="brand" href="https://boycott-buddy.com/"><span class="brand-mark">◇</span> BoycottBuddy</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Vokabeln</a>
+      <a href="satzanalyse.html">Grammatik</a>
+      <button type="button" class="nav-glossary" data-open-glossary>Glossar</button>
+    </div>
+  </nav>
+
   <header>
-    <div class="header-star"></div>
+    <div class="ornament">◇ ✦ ◇</div>
     <h1>Vokabeltrainer</h1>
     <span class="ar-sub">المُفرَدات</span>
     <p class="subtitle">عربي ⇄ Deutsch</p>
-    <a class="nav-link" href="satzanalyse.html">Zum Grammatiktrainer →</a>
+    <div class="divider"></div>
   </header>
 
   <main>
@@ -598,9 +36,17 @@ kbd {
         <div class="mastered">Gemeistert <b id="stat-mastered">0</b></div>
         <div>Sitzung <b id="stat-session">0/0</b></div>
       </div>
-      <button id="glossary-toggle" class="icon-btn" title="Glossar öffnen">📖</button>
       <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
     </div>
+
+    <button type="button" class="glossary-banner" data-open-glossary>
+      <span class="gb-ar">المعجم</span>
+      <span class="gb-text">
+        <b>Glossar</b>
+        <small>Alle <span id="glossary-count">…</span> Vokabeln nach Wortart – Verb, Präposition, Pronomen, Mudâf u. a.</small>
+      </span>
+      <span class="gb-go">Öffnen →</span>
+    </button>
 
     <div class="pill-row">
       <div class="pill-group" id="tabs">
@@ -1305,9 +751,16 @@ function renderGlossaryList(){
     let html = Object.keys(CATEGORIES).map(glossaryGroupHtml).join("");
     const uncategorized = allVocabWords().filter(w => !w.categories || w.categories.length === 0);
     html += `<div class="glossary-group">
-        <div class="glossary-group-title">Nicht zugeordnet <span class="count">(${uncategorized.length})</span></div>
-        <div class="glossary-empty">Trage bei den gewünschten Wörtern in <kbd>vocab.js</kbd> ein Feld <kbd>categories: ["..."]</kbd> ein, um sie hier einzuordnen — ein Wort kann auch mehrere Kategorien gleichzeitig haben.</div>
-      </div>`;
+        <div class="glossary-group-title">Nicht zugeordnet <span class="count">(${uncategorized.length})</span></div>`;
+    if(uncategorized.length === 0){
+      html += `<div class="glossary-empty">Alle Vokabeln sind einer Kategorie zugeordnet.</div>`;
+    } else {
+      uncategorized.forEach(w => {
+        html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}</span></div>`;
+      });
+      html += `<div class="glossary-empty">Zum Einordnen in <kbd>vocab.js</kbd> ein Feld <kbd>categories: ["..."]</kbd> ergänzen — ein Wort kann mehrere Kategorien gleichzeitig haben.</div>`;
+    }
+    html += `</div>`;
     listEl.innerHTML = html;
   } else {
     listEl.innerHTML = glossaryGroupHtml(glossaryFilter);
@@ -1327,7 +780,8 @@ function closeGlossary(){
   overlay.classList.remove("show");
   overlay.setAttribute("aria-hidden", "true");
 }
-document.getElementById("glossary-toggle").addEventListener("click", () => { Sound.click(); openGlossary(); });
+document.querySelectorAll("[data-open-glossary]").forEach(el => el.addEventListener("click", () => { Sound.click(); openGlossary(); }));
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeGlossary(); });
 document.getElementById("glossary-close").addEventListener("click", () => { Sound.click(); closeGlossary(); });
 document.getElementById("glossary-overlay").addEventListener("click", e => {
   if(e.target.id === "glossary-overlay") closeGlossary();
@@ -1337,6 +791,9 @@ document.getElementById("glossary-overlay").addEventListener("click", e => {
 buildLessonTabs();
 setMode("flash");
 updateStats();
+const glossaryCountEl = document.getElementById("glossary-count");
+if(glossaryCountEl) glossaryCountEl.textContent = allVocabWords().length;
+if(location.hash === "#glossar") openGlossary();   // Direktlink, z. B. aus dem Grammatiktrainer
 </script>
 </body>
 </html>
