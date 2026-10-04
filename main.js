@@ -28,8 +28,8 @@
    die Analyse abtrennt. Partikel und Vergangenheitsverben haben auf Ebene 2
    keinen Eintrag (kein Mahall) und sind dort nicht anklickbar.
 
-   Ab Lektion 12 kommen zusätzlich verbale Sätze vor (جملة فعلية), dafür
-   die Rollen "Fi'l" (Verb) und "Fa'il" (Subjekt/Täter) vor. Das
+   Ab Lektion 12 kommen zusätzlich verbale Sätze vor (جملة فعلية); dafür
+   gibt es die Rollen "Fi'l" (Verb) und "Fa'il" (Subjekt/Täter). Das
    betonende Pronomen nach einem Possessivsuffix (z. B. هَذَا كِتَابُكَ
    أَنْتَ) wird NICHT als eigene Rolle abgefragt, sondern bleibt wie
    وَ ein nicht anklickbares Füllwort — es steht dafür kein eigener

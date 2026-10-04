@@ -963,7 +963,9 @@ function buildLessonTabs(){
     wrap.appendChild(btn);
   });
 
-  wrap.addEventListener("click", e => {
+  /* onclick statt addEventListener: buildLessonTabs() läuft mehrfach (z. B. bei
+     "Zurück zur Übersicht"); sonst würde der Listener jedes Mal doppelt registriert. */
+  wrap.onclick = e => {
     const btn = e.target.closest(".lesson-pill");
     if(!btn || btn.classList.contains("disabled")) return;
     Sound.click();
@@ -971,7 +973,7 @@ function buildLessonTabs(){
     [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
     updateStats();
     nextCard();
-  });
+  };
 }
 
 function nextCard(){
@@ -1065,15 +1067,27 @@ function renderFlash(){
 
 function renderMC(){
   const {front, back, frontIsArabic} = frontBack(currentWord);
-  const others = currentDeck().filter(w => w !== currentWord);
-  shuffle(others);
   const pickBackOf = (w) => direction === "ar-de" ? w.german : displayArabic(w.arabic);
-  let choices = [back, ...others.slice(0,3).map(pickBackOf)];
-  choices = shuffle([...new Set(choices)]);
-  while(choices.length < 4 && others.length > 0){
-    const extra = pickBackOf(others[Math.floor(Math.random()*others.length)]);
-    if(!choices.includes(extra)) choices.push(extra);
+  /* Falschantworten zuerst aus dem aktuellen Deck. Hat die Lektion zu wenige
+     verschiedene Wörter (z. B. nur 3), wird aus allen Lektionen aufgefüllt —
+     jede Liste wird nur einmal durchlaufen, damit es nie in eine Endlosschleife läuft. */
+  const choices = [back];
+  const addDistractors = list => {
+    for(const w of shuffle([...list])){
+      if(choices.length >= 4) break;
+      const c = pickBackOf(w);
+      if(!choices.includes(c)) choices.push(c);
+    }
+  };
+  addDistractors(currentDeck().filter(w => w !== currentWord));
+  if(choices.length < 4){
+    const padPool = Object.entries(LESSONS)
+      .filter(([key]) => selectedLesson === "Grammatik" || key !== "Grammatik")
+      .flatMap(([, words]) => words)
+      .filter(w => w !== currentWord);
+    addDistractors(padPool);
   }
+  shuffle(choices);
 
   cardEl.innerHTML = `
     <div class="prompt-hint">Was bedeutet</div>

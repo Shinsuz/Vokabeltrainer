@@ -913,7 +913,10 @@ function buildLessonTabs(){
     wrap.appendChild(btn);
   });
 
-  wrap.addEventListener("click", e => {
+  /* onclick statt addEventListener: buildLessonTabs() läuft mehrfach (z. B. bei
+     "Zurück zur Übersicht"), und sonst würde der Listener jedes Mal doppelt
+     registriert — ein Klick löste dann mehrere Karten-Wechsel und Sounds aus. */
+  wrap.onclick = e => {
     const btn = e.target.closest(".lesson-pill");
     if(!btn || btn.classList.contains("disabled")) return;
     Sound.click();
@@ -923,7 +926,7 @@ function buildLessonTabs(){
     updateScopeHint();
     updateStats();
     nextCard();
-  });
+  };
 }
 
 function nextCard(){
