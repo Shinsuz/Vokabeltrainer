@@ -741,6 +741,147 @@ const SATZANALYSE = {
       { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"قَلَمِي", tags:{1:"Khabar"}}, {text:"أَنَا", tags:{}}], translation: "Das ist MEIN Stift." },
       { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"كِتَابُهَا", tags:{1:"Khabar"}}, {text:"هِيَ", tags:{}}], translation: "Das ist IHR Buch." }
     ]
+  }  ,
+  "13a": {
+    concepts: [
+      {
+        term: "Plural von Nomen und Adjektiven",
+        explanation: "Im Arabischen gibt es zwei Arten, den Plural zu bilden: den gesunden Plural (Endung wird angehängt) und den gebrochenen Plural (das Wortgerüst ändert sich). Man lernt den Plural am besten mit jedem neuen Wort mit."
+      },
+      {
+        term: "Gesunder Plural — maskulin: ـُونَ",
+        explanation: "Beim gesunden Plural der Männlichen wird ـُونَ angehängt (Nominativ): مُسْلِمٌ ← مُسْلِمُونَ, مُدَرِّسٌ ← مُدَرِّسُونَ, مُهَنْدِسٌ ← مُهَنْدِسُونَ. Das Tanwîn fällt weg."
+      },
+      {
+        term: "Gesunder Plural — feminin: ـَاتٌ",
+        explanation: "Beim gesunden Plural der Weiblichen wird die Ta marbûta ة zu einem offenen ت, und das kurze 'a' davor wird zum langen 'â': مُسْلِمَةٌ ← مُسْلِمَاتٌ, مُدَرِّسَةٌ ← مُدَرِّسَاتٌ, مُهَنْدِسَةٌ ← مُهَنْدِسَاتٌ."
+      },
+      {
+        term: "Gebrochener Plural — häufige Muster",
+        explanation: "Beim gebrochenen Plural ändert sich das Wortgerüst (ف = 1., ع = 2., ل = 3. Radikal). Muster: فُعُول (نَجْمٌ ← نُجُومٌ), فُعُل (كِتَابٌ ← كُتُبٌ), فِعَال (جَبَلٌ ← جِبَالٌ), فُعَّال (تَاجِرٌ ← تُجَّارٌ), أَفْعَال (قَلَمٌ ← أَقْلَامٌ), فُعَلَاءُ (زَمِيلٌ ← زُمَلَاءُ), أَفْعِلَاءُ (صَدِيقٌ ← أَصْدِقَاءُ), فِعْلَةٌ (أَخٌ ← إِخْوَةٌ)."
+      },
+      {
+        term: "فُعَلَاءُ und أَفْعِلَاءُ — ohne Tanwîn",
+        explanation: "Die Pluralformen auf ـَاءُ wie زُمَلَاءُ und أَصْدِقَاءُ haben im Nominativ kein Tanwîn, sondern nur ein einfaches Dammah."
+      },
+      {
+        term: "هَؤُلَاءِ — Plural von هَذَا / هَذِهِ",
+        explanation: "هَؤُلَاءِ ('diese') ist der Plural von هَذَا und هَذِهِ und wird meist für Personen verwendet: هَؤُلَاءِ تُجَّارٌ (Das sind Händler), هَؤُلَاءِ مُدَرِّسَاتٌ (Das sind Lehrerinnen)."
+      },
+      {
+        term: "هُمْ — sie (Plural, nur Menschen)",
+        explanation: "هُمْ ist der Plural von هُوَ und wird nur für Menschen verwendet: هُمْ مُدَرِّسُونَ (Sie sind Lehrer). In Teil A sind alle Pronomen männlich."
+      },
+      {
+        term: "Besitzendung ـهُمْ — ihr / deren",
+        explanation: "Der Plural der Besitzendung ـهُ ist ـهُمْ: أَيْنَ بَيْتُهُمْ؟ (Wo ist ihr Haus?), أَبُوهُمْ تَاجِرٌ شَهِيرٌ (Ihr Vater ist ein berühmter Händler). Dieselbe Form bedeutet im Deutschen 'sie' bzw. 'ihr'."
+      },
+      {
+        term: "ذَهَبُوا — sie gingen",
+        explanation: "Die Verbform für 'sie (Plural) gingen' ist ذَهَبُوا. Das Alif am Ende wird nicht gesprochen (stummes Alif)."
+      },
+      {
+        term: "بَعْضٌ — einige",
+        explanation: "بَعْضٌ bedeutet 'einige': بَعْضُهُمْ مُدَرِّسُونَ وَبَعْضُهُمْ مُهَنْدِسُونَ (Einige von ihnen sind Lehrer und einige sind Ingenieure)."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie lautet der gesunde Plural (maskulin) von <span class='ar'>مُدَرِّسٌ</span>?",
+        choices: ["<span class='ar'>مُدَرِّسَاتٌ</span>", "<span class='ar'>مُدَرِّسُونَ</span>", "<span class='ar'>مُدَرِّسِينَةٌ</span>", "<span class='ar'>مَدَارِسُ</span>"],
+        correct: "<span class='ar'>مُدَرِّسُونَ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie lautet der gesunde Plural (feminin) von <span class='ar'>مُهَنْدِسَةٌ</span>?",
+        choices: ["<span class='ar'>مُهَنْدِسُونَ</span>", "<span class='ar'>مُهَنْدِسَةُونَ</span>", "<span class='ar'>مُهَنْدِسَاتٌ</span>", "<span class='ar'>مُهَنْدِسٌ</span>"],
+        correct: "<span class='ar'>مُهَنْدِسَاتٌ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Beim gesunden Plural feminin wird die Ta marbûta ة zu einem offenen ت.",
+        correct: true,
+        explanation: "Z. B. مُسْلِمَةٌ ← مُسْلِمَاتٌ (zusätzlich wird das kurze 'a' zu 'â')."
+      },
+      {
+        type: "mc",
+        question: "Was ist der Plural von <span class='ar'>كِتَابٌ</span> (Muster فُعُل)?",
+        choices: ["<span class='ar'>كُتُبٌ</span>", "<span class='ar'>كُتُوبٌ</span>", "<span class='ar'>أَكْتَابٌ</span>", "<span class='ar'>كِتَابَاتٌ</span>"],
+        correct: "<span class='ar'>كُتُبٌ</span>"
+      },
+      {
+        type: "mc",
+        question: "Welches Muster hat der Plural <span class='ar'>أَقْلَامٌ</span> (von <span class='ar'>قَلَمٌ</span>)?",
+        choices: ["<span class='ar'>فُعُول</span>", "<span class='ar'>فِعَال</span>", "<span class='ar'>أَفْعَال</span>", "<span class='ar'>فُعَلَاءُ</span>"],
+        correct: "<span class='ar'>أَفْعَال</span>"
+      },
+      {
+        type: "mc",
+        question: "Was ist der Plural von <span class='ar'>صَدِيقٌ</span> (Freund)?",
+        choices: ["<span class='ar'>صَدِيقُونَ</span>", "<span class='ar'>أَصْدِقَاءُ</span>", "<span class='ar'>صُدُقٌ</span>", "<span class='ar'>صِدَاقٌ</span>"],
+        correct: "<span class='ar'>أَصْدِقَاءُ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>زُمَلَاءُ</span> hat im Nominativ ein Tanwîn.",
+        correct: false,
+        explanation: "Pluralformen auf ـَاءُ (زُمَلَاءُ، أَصْدِقَاءُ) haben kein Tanwîn."
+      },
+      {
+        type: "mc",
+        question: "Welches Wort ist der Plural von <span class='ar'>هَذَا</span> / <span class='ar'>هَذِهِ</span>?",
+        choices: ["<span class='ar'>هُمْ</span>", "<span class='ar'>هَؤُلَاءِ</span>", "<span class='ar'>أُولَئِكَ</span>", "<span class='ar'>ذَلِكَ</span>"],
+        correct: "<span class='ar'>هَؤُلَاءِ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>هُمْ</span> wird nur für Menschen verwendet.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Wie heißt 'ihr Haus' (Plural 'sie') auf Arabisch?",
+        choices: ["<span class='ar'>بَيْتُهُ</span>", "<span class='ar'>بَيْتُهَا</span>", "<span class='ar'>بَيْتُهُمْ</span>", "<span class='ar'>بَيْتُكَ</span>"],
+        correct: "<span class='ar'>بَيْتُهُمْ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Das Alif am Ende von <span class='ar'>ذَهَبُوا</span> wird nicht gesprochen.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Was bedeutet <span class='ar'>بَعْضُهُمْ</span>?",
+        choices: ["alle von ihnen", "einige von ihnen", "keiner von ihnen", "ihr Vater"],
+        correct: "einige von ihnen"
+      }
+    ],
+    sentences: [
+      { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar"}, blank:{options:["مُدَرِّسُونَ","مُدَرِّسَاتٌ","مُدَرِّسٌ","مُدَرِّسَةٌ"]}}], translation: "Sie sind Lehrer." },
+      { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسُونَ", tags:{1:"Khabar"}}], translation: "Sie sind Ingenieure." },
+      { words: [{text:"هَؤُلَاءِ", tags:{1:"Mubtada"}, blank:{options:["هَذَا","هَذِهِ","هَؤُلَاءِ","ذَلِكَ"]}}, {text:"مُدَرِّسَاتٌ", tags:{1:"Khabar"}}], translation: "Das sind Lehrerinnen." },
+      { words: [{text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"تُجَّارٌ", tags:{1:"Khabar"}}], translation: "Das sind Händler." },
+      { words: [{text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"حُجَّاجٌ", tags:{1:"Khabar"}}], translation: "Das sind Pilger." },
+      { words: [{text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"ضُيُوفٌ", tags:{1:"Khabar"}}], translation: "Das sind Gäste." },
+      { words: [{text:"الرِّجَالُ", tags:{1:"Mubtada"}}, {text:"طِوَالٌ", tags:{1:"Khabar"}}], translation: "Die Männer sind groß." },
+      { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"قِصَارٌ", tags:{1:"Khabar"}}], translation: "Sie sind klein." },
+      { words: [{text:"أَيْنَ", tags:{1:"Khabar"}}, {text:"بَيْتُهُمْ", tags:{1:"Mubtada"}, blank:{options:["بَيْتُهُ","بَيْتُهَا","بَيْتُهُمْ","بَيْتُكَ"]}}], translation: "Wo ist ihr Haus?" },
+      { words: [{text:"أَبُوهُمْ", tags:{1:"Mubtada"}, blank:{options:["أَبُوهُ","أَبُوهَا","أَبُوهُمْ","أَبُوكَ"]}}, {text:"تَاجِرٌ", tags:{1:"Khabar",2:"Man'ut"}}, {text:"شَهِيرٌ", tags:{1:"Khabar",2:"Na't"}}], translation: "Ihr Vater ist ein berühmter Händler." },
+      { words: [{text:"بَعْضُهُمْ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar"}}, {text:"وَ", tags:{}}, {text:"بَعْضُهُمْ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسُونَ", tags:{1:"Khabar"}}], translation: "Einige von ihnen sind Lehrer und einige sind Ingenieure." },
+      { words: [{text:"ذَهَبُوا", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَطْعَمِ", tags:{1:"Majrur"}}], translation: "Sie gingen zum Restaurant." },
+      { words: [{text:"ذَهَبُوا", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْقَرْيَةِ", tags:{1:"Majrur"}}], translation: "Sie gingen ins Dorf." },
+      { words: [{text:"الشُّيُوخُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْقَرْيَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die alten Männer sind im Dorf." },
+      { words: [{text:"الطُّلَّابُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْمَطْعَمِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die Studenten sind im Restaurant." },
+      { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"أَصْدِقَاءُ", tags:{1:"Khabar",2:"Mudaf",3:"Marfu"}}, {text:"مُحَمَّدٍ", tags:{1:"Khabar",2:"Mudaf ilaihi",3:"Majrur"}}], translation: "Sie sind Muhammads Freunde." },
+      { words: [{text:"أَبْنَاءُ", tags:{1:"Mubtada",2:"Mudaf",3:"Marfu"}}, {text:"مُحَمَّدٍ", tags:{1:"Mubtada",2:"Mudaf ilaihi",3:"Majrur"}}, {text:"مُجْتَهِدُونَ", tags:{1:"Khabar"}}], translation: "Muhammads Söhne sind fleißig." },
+      { words: [{text:"أَبْنَاؤُهُ", tags:{1:"Mubtada",2:"Gebrochener Plural"}, blank:{options:["أَبْنَاؤُهُ","أَبْنَاؤُهُمْ","أَبْنَاؤُكَ","أَبْنَائِي"]}}, {text:"مُجْتَهِدُونَ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Seine Söhne sind fleißig." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"تَاجِرٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"تُجَّارٌ", tags:{1:"Khabar",2:"Gebrochener Plural"}}], translation: "Dies ist ein Händler und das sind Händler." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"مُسْلِمٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"مُسْلِمُونَ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist ein Muslim und das sind Muslime." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسَةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist eine Ingenieurin und das sind Ingenieurinnen." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"صَدِيقٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"أَصْدِقَاءُ", tags:{1:"Khabar",2:"Gebrochener Plural"}}], translation: "Dies ist ein Freund und das sind Freunde." },
+      { words: [{text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar",2:"Gesunder Plural"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"طُلَّابٌ", tags:{1:"Khabar",2:"Gebrochener Plural"}}], translation: "Das sind Lehrer und das sind Studenten." }
+    ]
   }
 
 };
@@ -758,5 +899,6 @@ const SATZANALYSE_LABELS = {
   "9b": "Lektion 9b",
   "10": "Lektion 10",
   "11": "Lektion 11",
-  "12": "Lektion 12"
+  "12": "Lektion 12",
+  "13a": "Lektion 13a"
 };
