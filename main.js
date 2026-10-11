@@ -766,19 +766,19 @@ const SATZANALYSE = {
       },
       {
         term: "هَؤُلَاءِ — Plural von هَذَا / هَذِهِ",
-        explanation: "هَؤُلَاءِ ('diese') ist der Plural von هَذَا und هَذِهِ und wird meist für Personen verwendet: هَؤُلَاءِ تُجَّارٌ (Das sind Händler), هَؤُلَاءِ مُدَرِّسَاتٌ (Das sind Lehrerinnen)."
+        explanation: "هَؤُلَاءِ ('diese') ist der Plural von هَذَا und هَذِهِ und wird meistens im Zusammenhang mit Personen verwendet, in seltenen Fällen auch für nicht menschliche Lebewesen (mehr dazu in Lektion 16): هَؤُلَاءِ تُجَّارٌ (Das sind Händler), هَؤُلَاءِ مُدَرِّسَاتٌ (Das sind Lehrerinnen)."
       },
       {
         term: "هُمْ — sie (Plural, nur Menschen)",
-        explanation: "هُمْ ist der Plural von هُوَ und wird nur für Menschen verwendet: هُمْ مُدَرِّسُونَ (Sie sind Lehrer). In Teil A sind alle Pronomen männlich."
+        explanation: "هُمْ ist der Plural von هُوَ ('er') und bedeutet 'sie' (maskulin Plural). Es wird nur für Menschen verwendet: هُمْ مُدَرِّسُونَ (Sie sind Lehrer). In Teil A sind alle Pronomen männlich."
       },
       {
         term: "Besitzendung ـهُمْ — ihr / deren",
-        explanation: "Der Plural der Besitzendung ـهُ ist ـهُمْ: أَيْنَ بَيْتُهُمْ؟ (Wo ist ihr Haus?), أَبُوهُمْ تَاجِرٌ شَهِيرٌ (Ihr Vater ist ein berühmter Händler). Dieselbe Form bedeutet im Deutschen 'sie' bzw. 'ihr'."
+        explanation: "Der Plural der Besitzendung ـهُ ist ـهُمْ: أَيْنَ بَيْتُهُمْ؟ (Wo ist ihr Haus?), أَبُوهُمْ تَاجِرٌ شَهِيرٌ (Ihr Vater ist ein berühmter Händler). Die Wörter für 'sie' (m. Pl.) und 'ihr' (m. Pl. besitz.) haben die gleiche Form: هُمْ / ـهُمْ."
       },
       {
         term: "ذَهَبُوا — sie gingen",
-        explanation: "Die Verbform für 'sie (Plural) gingen' ist ذَهَبُوا. Das Alif am Ende wird nicht gesprochen (stummes Alif)."
+        explanation: "Die Verbform für 'sie (Plural) gingen' ist ذَهَبُوا. Das Alif am Ende wird nicht ausgesprochen (stummes Alif). Aussprache: dhahabû. Alle Pronomen in diesem Teil der Lektion sind männlich; weibliche folgen in Teil B."
       },
       {
         term: "بَعْضٌ — einige",
