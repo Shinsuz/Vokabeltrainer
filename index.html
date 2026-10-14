@@ -7,8 +7,46 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=5">
+<link rel="stylesheet" href="theme.css?v=6">
 <script src="vocab.js"></script>
+<style>
+  /* ---- Plural-Trainer: nur das Nötigste, Rest erbt vom bestehenden Theme ---- */
+  .plural-modal{ max-width: 560px; }
+  .plural-stats{
+    display:flex; gap:1.2rem; justify-content:center; align-items:center;
+    margin:.2rem 0 1rem; color:#8d826c; font-size:.78rem; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase;
+  }
+  .plural-stats b{ color: var(--primary-color); font-weight:700; }
+  .plural-type-badge{
+    display:inline-flex; align-items:center; margin-left:.5rem;
+    padding:.18rem .6rem; border-radius:999px; font-size:.68rem; font-weight:700;
+    letter-spacing:.03em; white-space:nowrap; vertical-align:middle;
+    border:1px solid rgba(229,186,115,.4);
+  }
+  .plural-type-badge.gesund{
+    background:linear-gradient(135deg,rgba(244,194,111,.2),rgba(229,186,115,.07));
+    color:#f4dfb3;
+  }
+  .plural-type-badge.gebrochen{
+    background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    border-color:rgba(255,255,255,.25);
+    color:#d9d2c2;
+  }
+  .plural-reveal{
+    margin:.6rem auto 1.1rem; padding:1rem 1rem .9rem; max-width:360px;
+    border:1px solid rgba(229,186,115,.3); border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+    text-align:center;
+  }
+  .plural-reveal-label{
+    color:#8d826c; font-size:.68rem; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; margin-bottom:.35rem;
+  }
+  .plural-reveal-word{
+    font-size:2rem !important; line-height:1.3; margin:0 0 .5rem;
+  }
+</style>
 </head>
 <body class="bb-trainer">
 
@@ -17,6 +55,7 @@
       <a href="index.html" class="active">Vokabeln</a>
       <a href="satzanalyse.html">Grammatik</a>
       <button type="button" class="nav-glossary" data-open-glossary>Glossar</button>
+      <button type="button" class="nav-glossary" id="plural-trainer-btn">🔁 Plural-Trainer</button>
     </div>
   </nav>
 
@@ -98,6 +137,16 @@
           <div class="glossary-list" id="glossary-list"></div>
         </div>
       </div>
+      <div id="plural-overlay" class="end-overlay" aria-hidden="true">
+        <div class="end-modal plural-modal" role="dialog" aria-modal="true" aria-labelledby="plural-title">
+          <div class="glossary-header">
+            <h2 id="plural-title">Plural-Trainer</h2>
+            <button class="icon-btn" id="plural-close" title="Schließen">✕</button>
+          </div>
+          <div class="plural-stats">Karte <b id="plural-count">0</b> · Richtig <b id="plural-correct">0</b></div>
+          <div class="card plural-card" id="plural-card"></div>
+        </div>
+      </div>
     </div>
 
     <div class="progress-row">
@@ -124,7 +173,7 @@ const SOUND_KEY = "vocab_sound_muted";
 const MASTER_THRESHOLD = 3;
 
 /* ---------- Haraket ein-/ausblenden ---------- */
-const HARAKAT_REGEX = /[\u064B-\u0652\u0656-\u065F\u0670\u06D6-\u06ED]/g;
+const HARAKAT_REGEX = /[ً-ْٖ-ٰٟۖ-ۭ]/g;
 function stripHarakat(text){ return text.replace(HARAKAT_REGEX, ""); }
 let showHarakat = true;
 function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
@@ -398,7 +447,9 @@ function buildLessonTabs(){
   allBtn.dataset.key = "alle";
   wrap.appendChild(allBtn);
 
-  Object.keys(LESSONS).sort((a,b) => Number(a) - Number(b)).forEach(key => {
+  /* Schlüssel wie "13a"/"13b": erst nach Zahl, dann nach Suffix sortieren; "Grammatik" ans Ende */
+  const lessonOrder = k => { const m = String(k).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [Infinity, String(k)]; };
+  Object.keys(LESSONS).sort((a,b) => { const x = lessonOrder(a), y = lessonOrder(b); return x[0] !== y[0] ? (x[0] < y[0] ? -1 : 1) : x[1].localeCompare(y[1]); }).forEach(key => {
     const hasWords = LESSONS[key].length > 0;
     const btn = document.createElement("button");
     btn.className = "lesson-pill" + (hasWords ? "" : " disabled") + (selectedLesson === key ? " active" : "");
@@ -470,6 +521,10 @@ function startReviewRound(){
   nextCard();
 }
 
+function pluralHtml(word){
+  return word && word.plural ? `<span class="plural-line">Plural: <span class="ar">${displayArabic(word.plural)}</span></span>` : "";
+}
+
 function frontBack(word){
   if(direction === "ar-de") return { front: displayArabic(word.arabic), back: word.german, frontIsArabic: true };
   return { front: word.german, back: displayArabic(word.arabic), frontIsArabic: false };
@@ -493,7 +548,7 @@ function renderFlash(){
 
   function flip(){
     Sound.flip();
-    face.innerText = back;
+    face.innerHTML = back + pluralHtml(currentWord);
     face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
     actions.style.display = "flex";
     document.removeEventListener("keydown", flipHandler);
@@ -579,7 +634,7 @@ function selectMC(choice, btn, correctAnswer){
 function renderWrite(){
   const word = currentWord;
   function normalizeText(t){
-    return (t||"").toLowerCase().replace(/[\u0300-\u036f]/g,"")
+    return (t||"").toLowerCase().replace(/[̀-ͯ]/g,"")
       .replace(/[^a-z0-9äöüß\s]/g,"")
       .replace(/\s+/g," ").trim();
   }
@@ -737,7 +792,7 @@ function glossaryGroupHtml(key){
     html += `<div class="glossary-empty">Noch keine Vokabeln zugeordnet.</div>`;
   } else {
     words.forEach(w => {
-      html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}</span></div>`;
+      html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`;
     });
   }
   html += `</div>`;
@@ -755,7 +810,7 @@ function renderGlossaryList(){
       html += `<div class="glossary-empty">Alle Vokabeln sind einer Kategorie zugeordnet.</div>`;
     } else {
       uncategorized.forEach(w => {
-        html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}</span></div>`;
+        html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`;
       });
       html += `<div class="glossary-empty">Zum Einordnen in <kbd>vocab.js</kbd> ein Feld <kbd>categories: ["..."]</kbd> ergänzen — ein Wort kann mehrere Kategorien gleichzeitig haben.</div>`;
     }
@@ -784,6 +839,134 @@ document.addEventListener("keydown", e => { if(e.key === "Escape") closeGlossary
 document.getElementById("glossary-close").addEventListener("click", () => { Sound.click(); closeGlossary(); });
 document.getElementById("glossary-overlay").addEventListener("click", e => {
   if(e.target.id === "glossary-overlay") closeGlossary();
+});
+
+/* ---------- Plural-Trainer ----------
+   Eigener kleiner Modus (Button "🔁 Plural-Trainer" unten bei den Controls):
+   zeigt den Singular einer Vokabel mit hinterlegtem "plural"-Feld, man muss
+   die richtige Pluralform unter 3 Fake-Pluralen (echte Plurale anderer
+   Wörter) erkennen. Danach wird zusätzlich angezeigt, ob es ein gesunder
+   oder gebrochener Plural ist (Erkennung über getPluralType() aus vocab.js). */
+let pluralSessionCorrect = 0, pluralSessionTotal = 0;
+let currentPluralWord = null;
+
+function pluralPool(){
+  return allVocabWords().filter(w => w.plural);
+}
+
+function updatePluralStats(){
+  document.getElementById("plural-count").innerText = pluralSessionTotal;
+  document.getElementById("plural-correct").innerText = pluralSessionCorrect;
+}
+
+function openPluralTrainer(){
+  pluralSessionCorrect = 0; pluralSessionTotal = 0;
+  updatePluralStats();
+  const overlay = document.getElementById("plural-overlay");
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+  nextPluralCard();
+}
+function closePluralTrainer(){
+  const overlay = document.getElementById("plural-overlay");
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+}
+
+function nextPluralCard(){
+  const pool = pluralPool();
+  const cardWrap = document.getElementById("plural-card");
+  if(pool.length === 0){
+    cardWrap.innerHTML = `<div class="empty-state"><div class="big">Noch keine Plurale hinterlegt.</div>Trage sie in <kbd>vocab.js</kbd> über das Feld <kbd>plural</kbd> ein.</div>`;
+    return;
+  }
+  currentPluralWord = pool[Math.floor(Math.random() * pool.length)];
+  renderPluralCard(pool);
+}
+
+function renderPluralCard(pool){
+  const word = currentPluralWord;
+  const correctPlural = word.plural.split("/")[0].trim();
+
+  const choices = [correctPlural];
+  const addDistractors = list => {
+    for(const w of shuffle([...list])){
+      if(choices.length >= 4) break;
+      if(w === word || !w.plural) continue;
+      const c = w.plural.split("/")[0].trim();
+      if(!choices.includes(c)) choices.push(c);
+    }
+  };
+  addDistractors(pool);
+  shuffle(choices);
+
+  const cardWrap = document.getElementById("plural-card");
+  cardWrap.innerHTML = `
+    <div class="prompt-hint">Wie lautet der Plural von</div>
+    <div class="prompt-row-flex">
+      <div class="prompt-word">${displayArabic(word.arabic)}</div>
+    </div>
+    <div class="prompt-hint" style="opacity:.7;margin-top:-.4rem;">${word.german.replace(/\s*\([^)]*\)/g, '').trim()}</div>
+    <div class="feedback" id="plural-feedback"></div>
+    <div id="plural-reveal" class="plural-reveal" style="display:none;">
+      <div class="plural-reveal-label">Der Plural lautet</div>
+      <div class="prompt-word plural-reveal-word" id="plural-reveal-word"></div>
+      <div id="plural-reveal-badge"></div>
+    </div>
+    <div class="mc-grid" id="plural-grid"></div>
+    <button class="next-btn" id="plural-next-btn" style="display:none;">Nächstes Wort ➔</button>
+  `;
+
+  const grid = document.getElementById("plural-grid");
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.innerText = displayArabic(choice);
+    btn.onclick = () => selectPlural(choice, btn, correctPlural, word);
+    grid.appendChild(btn);
+  });
+  document.getElementById("plural-next-btn").onclick = nextPluralCard;
+}
+
+function selectPlural(choice, btn, correctPlural, word){
+  const buttons = document.querySelectorAll("#plural-grid .opt-btn");
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById("plural-feedback");
+  const correct = choice === correctPlural;
+  pluralSessionTotal++; if(correct) pluralSessionCorrect++;
+  updatePluralStats();
+
+  const type = getPluralType(word);
+  const typeLabel = type === "gesund" ? "Gesunder Plural" : "Gebrochener Plural";
+  const badgeHtml = `<span class="plural-type-badge ${type}">${typeLabel}</span>`;
+
+  if(correct){
+    Sound.correct();
+    btn.classList.add("correct");
+    feedback.innerText = "Richtig! 🎉";
+    feedback.className = "feedback ok";
+  } else {
+    Sound.wrong();
+    btn.classList.add("wrong");
+    feedback.innerText = "Falsch";
+    feedback.className = "feedback bad";
+    buttons.forEach(b => { if(b.innerText === displayArabic(correctPlural)) b.classList.add("correct"); });
+  }
+
+  // Plural nochmal groß & gut lesbar anzeigen (die kleinen Antwort-Buttons
+  // sind dafür zu klein) -- inkl. gesund/gebrochen-Badge direkt darunter.
+  const reveal = document.getElementById("plural-reveal");
+  document.getElementById("plural-reveal-word").innerText = displayArabic(correctPlural);
+  document.getElementById("plural-reveal-badge").innerHTML = badgeHtml;
+  reveal.style.display = "block";
+
+  document.getElementById("plural-next-btn").style.display = "block";
+}
+
+document.getElementById("plural-trainer-btn").addEventListener("click", () => { Sound.click(); openPluralTrainer(); });
+document.getElementById("plural-close").addEventListener("click", () => { Sound.click(); closePluralTrainer(); });
+document.getElementById("plural-overlay").addEventListener("click", e => {
+  if(e.target.id === "plural-overlay") closePluralTrainer();
 });
 
 // Init

@@ -72,7 +72,7 @@ const LESSONS = {
     { arabic: "سَاعَةٌ ", german: "eine Uhr", plural: "سَاعَاتٌ", categories: ["ism"] },
     { arabic: "تُفَّاحَةٌ ", german: "ein Apfel", plural: "تُفَّاحَاتٌ", categories: ["ism"] },
     { arabic: "التُّفَّاحَةُ ", german: "der Apfel", plural: "التُّفَّاحَاتُ", categories: ["ism"] },
-  
+
   ],
 
   4: [
@@ -282,7 +282,7 @@ const LESSONS = {
       { arabic: "بَعْدَ", german: "nach (das folgende Substantiv steht im Genitiv)", categories: ["ism", "mudaf"] },
       { arabic: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ", german: "das Königreich Saudi-Arabien", categories: ["ism"] },
     ],
-    13: [
+    "13a": [
       { arabic: "هُمْ", german: "sie (m. Pl.; Plural von هُوَ „er“; nur Menschen) — gleiche Form wie das besitzanzeigende ـهُمْ „ihr“", categories: ["pronomen", "mabni"] },
       { arabic: "ـهُ", german: "besitzanzeigende Endung 'sein' (m. s. besitz., z. B. بَيْتُهُ)", plural: "ـهُمْ", categories: ["pronomen", "mabni"] },
       { arabic: "ـهُمْ", german: "besitzanzeigende Endung 'ihr' (m. Pl. besitz., Plural von ـهُ, z. B. بَيْتُهُمْ); hat die gleiche Form wie 'sie' (m. Pl.)", categories: ["pronomen", "mabni"] },
@@ -330,6 +330,39 @@ const LESSONS = {
       { arabic: "مُجْتَهِدُونَ", german: "fleißig (gesunder Plural von مُجْتَهِدٌ)", categories: ["ism"] },
       { arabic: "شَيْخٌ", german: "alter Mann, Gelehrter", plural: "شُيُوخٌ", categories: ["ism"] },
       { arabic: "شُيُوخٌ", german: "alte Männer, Gelehrte (Plural von شَيْخٌ)", categories: ["ism"] },
+
+      /* ---- Teil A: Singularformen zu den oben genannten Pluralen ----
+         (für den Plural-Trainer — die "(Plural von ...)"-Einträge oben
+         zeigen nur die Pluralform, hier steht die fehlende Grundform mit
+         "plural"-Feld, damit sie im Plural-Trainer abgefragt wird) */
+      { arabic: "مُسْلِمَةٌ", german: "eine Muslimin", plural: "مُسْلِمَاتٌ", categories: ["ism"] },
+      { arabic: "مُدَرِّسَةٌ", german: "eine Lehrerin", plural: "مُدَرِّسَاتٌ", categories: ["ism"] },
+      { arabic: "مُهَنْدِسٌ", german: "ein Ingenieur", plural: "مُهَنْدِسُونَ", categories: ["ism"] },
+      { arabic: "مُهَنْدِسَةٌ", german: "eine Ingenieurin", plural: "مُهَنْدِسَاتٌ", categories: ["ism"] },
+      { arabic: "جَبَلٌ", german: "ein Berg", plural: "جِبَالٌ", categories: ["ism"] },
+      { arabic: "أَخٌ", german: "ein Bruder", plural: "إِخْوَةٌ", categories: ["ism"] },
+      { arabic: "فَتًى", german: "ein junger Mann", plural: "فِتْيَةٌ", categories: ["ism"] },
+      { arabic: "اسْمٌ", german: "ein Name", plural: "أَسْمَاءُ", categories: ["ism"] },
+
+    ],
+
+    "13b": [
+      /* ---- Teil B ---- */
+      { arabic: "هِيَ", german: "sie (fem. Singular)", plural: "هُنَّ", categories: ["pronomen", "mabni"] },
+      { arabic: "هُنَّ", german: "sie (f. Pl.; Plural von هِيَ „sie“, fem. Singular) — gleiche Form wie das besitzanzeigende ـهُنَّ „ihr“", categories: ["pronomen", "mabni"] },
+      { arabic: "ـهَا", german: "besitzanzeigende Endung 'ihr' (fem. Sing. besitz., z. B. بَيْتُهَا)", plural: "ـهُنَّ", categories: ["pronomen", "mabni"] },
+      { arabic: "ـهُنَّ", german: "besitzanzeigende Endung 'ihr' (f. Pl. besitz., Plural von ـهَا, z. B. بَيْتُهُنَّ); hat die gleiche Form wie 'sie' (f. Pl.)", categories: ["pronomen", "mabni"] },
+      { arabic: "ذَهَبَتْ", german: "sie ging (fem. Singular)", plural: "ذَهَبْنَ", categories: ["fiil", "mabni"] },
+      { arabic: "ذَهَبْنَ", german: "sie gingen (fem.; gesunder Plural von ذَهَبَتْ „sie ging“)", categories: ["fiil", "mabni"] },
+      { arabic: "بِنْتٌ", german: "ein Mädchen, eine Tochter (unregelmäßiger/gesunder Plural)", plural: "بَنَاتٌ", categories: ["ism"] },
+      { arabic: "أُخْتٌ", german: "eine Schwester (unregelmäßiger/gesunder Plural)", plural: "أَخَوَاتٌ", categories: ["ism"] },
+      { arabic: "فَتَاةٌ", german: "eine junge Frau (unregelmäßiger/gesunder Plural)", plural: "فَتَيَاتٌ", categories: ["ism"] },
+      { arabic: "أُسْتَاذَةٌ", german: "eine Professorin", plural: "أُسْتَاذَاتٌ", categories: ["ism"] },
+      { arabic: "النِّسَاءُ", german: "die Frauen (Plural von اِمْرَأَةٌ/الْمَرْأَةُ „Frau“ — von anderer Wurzel, gebrochener Plural)", pluralType: "gebrochen", categories: ["ism"] },
+      { arabic: "زَوْجَةٌ", german: "eine Ehefrau", plural: "زَوْجَاتٌ", categories: ["ism"] },
+      { arabic: "عَمَّةٌ", german: "eine Tante (väterlicherseits)", plural: "عَمَّاتٌ", categories: ["ism"] },
+      { arabic: "زَوْجٌ", german: "ein Ehemann", plural: "أَزْوَاجٌ", categories: ["ism"] },
+      { arabic: "الْمَرْأَةُ", german: "die Frau", plural: "النِّسَاءُ", pluralType: "gebrochen", categories: ["ism"] },
     ],
 
   Grammatik: [
@@ -356,7 +389,7 @@ const LESSONS = {
     { arabic: "جُمْلَةُ صِلَةٍ", german: "Relativsatz" },
     { arabic: "مَنْصُوبٌ", german: "Akkusativ" },
   ]
-  
+
 };
 
 /* ==========================================================================
@@ -369,7 +402,7 @@ const LESSONS = {
 
      { arabic: "الَّذِي", german: "der, welcher", categories: ["ismmawsul", "mabni"] }
 
-   Die Einteilung für Lektion 1–12 ist anhand des Madina-Buch-Schlüssels
+   Die Einteilung für Lektion 1–13 ist anhand des Madina-Buch-Schlüssels
    vorgenommen worden und kann jederzeit von Hand angepasst werden.
 
    Bewusst NICHT als Kategorien enthalten sind Begriffe, die keine Eigenschaft
@@ -413,5 +446,36 @@ const LESSON_LABELS = {
   10: "Lektion 10",
   11: "Lektion 11",
   12: "Lektion 12",
-  13: "Lektion 13 (Teil A)"
+  "13a": "Lektion 13a",
+  "13b": "Lektion 13b"
 };
+
+/* ==========================================================================
+   PLURAL-TRAINER — Gesunder vs. gebrochener Plural
+   ==========================================================================
+   Jedes Wort mit einem Feld "plural" kann im neuen Plural-Trainer abgefragt
+   werden (Karteikarte: Singular -> richtige Pluralform unter Distraktoren
+   erkennen). Zusätzlich wird automatisch erkannt, ob es sich um einen
+   gesunden Plural (جمع سالم — endet auf ـونَ/ـينَ für Maskulina oder auf ـاتٌ
+   für Feminina) oder einen gebrochenen Plural (جمع تكسير — alles andere,
+   innerer Vokalwechsel) handelt.
+
+   Will man die automatische Erkennung überschreiben (z. B. bei einem
+   Sonderfall), kann man direkt am Wort ein Feld "pluralType" mit dem Wert
+   "gesund" oder "gebrochen" ergänzen — das hat dann immer Vorrang:
+
+     { arabic: "...", german: "...", plural: "...", pluralType: "gebrochen", categories: [...] }
+*/
+function stripArabicDiacritics(text){
+  return (text || "").replace(/[ً-ْٖ-ٰٟۖ-ۭـ]/g, "");
+}
+
+function getPluralType(word){
+  if(!word || !word.plural) return null;
+  if(word.pluralType === "gesund" || word.pluralType === "gebrochen") return word.pluralType;
+  const firstForm = word.plural.split("/")[0].trim();
+  const bare = stripArabicDiacritics(firstForm);
+  if(/(ون|ين)$/.test(bare)) return "gesund";   // جمع مذكر سالم
+  if(/ات$/.test(bare)) return "gesund";        // جمع مؤنث سالم
+  return "gebrochen";                          // جمع تكسير
+}
