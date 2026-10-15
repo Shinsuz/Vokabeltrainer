@@ -475,6 +475,7 @@ function buildLessonTabs(){
 }
 
 function nextCard(){
+  cardEl.onclick = null; cardEl.style.cursor = "";
   const deck = currentDeck();
   if(deck.length === 0){
     const label = selectedLesson === "alle" ? "Vokabeln" : `Lektion ${selectedLesson}`;
@@ -539,7 +540,8 @@ function renderFlash(){
     <div class="prompt-row-flex">
       <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
     </div>
-    <div class="tap-hint">Leertaste oder Klick zum Umdrehen</div>
+    <div class="tap-hint">Leertaste, Enter oder Klick auf die Karte zum Umdrehen</div>
+    <button type="button" class="next-btn" id="flash-flip-btn" style="display:block;">Umdrehen</button>
     <div id="flash-actions" class="flash-actions" style="display:none;">
       <button class="btn-again" id="btn-again">✗ Nochmal</button>
       <button class="btn-know" id="btn-know">✓ Kenn ich</button>
@@ -553,10 +555,18 @@ function renderFlash(){
     face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
     actions.style.display = "flex";
     document.removeEventListener("keydown", flipHandler);
+    cardEl.onclick = null;
+    cardEl.style.cursor = "";
+    const fb = document.getElementById("flash-flip-btn"); if(fb) fb.style.display = "none";
     try{ Sound.flip(); }catch(e){}
   }
-  function flipHandler(e){ if(e.code === "Space"){ e.preventDefault(); flip(); } }
+  function flipHandler(e){ if(e.code === "Space" || e.code === "Enter"){ e.preventDefault(); flip(); } }
+  /* ganze Karte (nicht nur das Wort) + Button zum Umdrehen */
   face.onclick = flip;
+  cardEl.style.cursor = "pointer";
+  cardEl.onclick = e => { if(e.target.closest("#flash-actions")) return; flip(); };
+  const flipBtn = document.getElementById("flash-flip-btn");
+  if(flipBtn) flipBtn.onclick = e => { e.stopPropagation(); flip(); };
   document.addEventListener("keydown", flipHandler);
 
   setTimeout(() => {
