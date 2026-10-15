@@ -205,6 +205,10 @@ const Sound = (() => {
 
   function tone(freq, start, dur, type="sine", gainPeak=0.16, opts={}){
     if(muted) return;
+    /* Sound darf NIE die Bedienung blockieren (z. B. wenn der Browser Audio sperrt) */
+    try{ toneUnsafe(freq, start, dur, type, gainPeak, opts); }catch(e){ /* ignorieren */ }
+  }
+  function toneUnsafe(freq, start, dur, type, gainPeak, opts){
     const c = ensureCtx();
     const osc = c.createOscillator();
     const gain = c.createGain();
@@ -313,9 +317,7 @@ function markResult(word, correct){
   }
 
   const hadJustMastered = justMastered;
-  if(hadJustMastered) Sound.mastered();
-  else if(correct) Sound.correct();
-  else Sound.wrong();
+  try{ if(hadJustMastered) Sound.mastered(); else if(correct) Sound.correct(); else Sound.wrong(); }catch(e){}
 
   updateStats();
 }
@@ -547,11 +549,11 @@ function renderFlash(){
   const actions = document.getElementById("flash-actions");
 
   function flip(){
-    Sound.flip();
     face.innerHTML = back + pluralHtml(currentWord);
     face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
     actions.style.display = "flex";
     document.removeEventListener("keydown", flipHandler);
+    try{ Sound.flip(); }catch(e){}
   }
   function flipHandler(e){ if(e.code === "Space"){ e.preventDefault(); flip(); } }
   face.onclick = flip;
