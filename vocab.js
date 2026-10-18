@@ -273,6 +273,13 @@ const LESSONS = {
       { arabic: "مَالِيزِيَا", german: "Malaysia", categories: ["ism"] },
       { arabic: "كَيْفَ حَالُكَ؟", german: "Wie geht es dir? / Wie geht es Ihnen?"},
       { arabic: "أَنَا بِخَيْرٍ", german: "Mir geht es gut."},
+      /* Singularformen zu den Pluralen aus dem Buch (Lektion 12) — für den Plural-Trainer */
+      { arabic: "أُمٌّ", german: "eine Mutter", plural: "أُمَّهَاتٌ", categories: ["ism"] },
+      { arabic: "أَبٌ", german: "ein Vater", plural: "آبَاءٌ", categories: ["ism"] },
+      { arabic: "وَزِيرٌ", german: "ein Minister", plural: "وُزَرَاءُ", categories: ["ism"] },
+      { arabic: "عَالِمٌ", german: "ein Gelehrter", plural: "عُلَمَاءُ", categories: ["ism"] },
+      { arabic: "قَوِيٌّ", german: "stark", plural: "أَقْوِيَاءُ", categories: ["ism"] },
+      { arabic: "ضَعِيفٌ", german: "schwach", plural: "ضُعَفَاءُ", categories: ["ism"] },
       { arabic: "أُمَّهَاتٌ", german: "Mütter (Plural von أُمٌّ)", categories: ["ism"] },
       { arabic: "آبَاءٌ", german: "Väter (Plural von أَبٌ)", categories: ["ism"] },
       { arabic: "وُزَرَاءُ", german: "Minister (Plural von وَزِيرٌ)", categories: ["ism"] },
