@@ -12,21 +12,21 @@ const LESSONS = {
     { arabic: "كُرْسِيٌّ", german: "ein Stuhl", plural: "كَرَاسِيُّ", categories: ["ism"] },
     { arabic: "نَجْمٌ", german: "ein Stern", plural: "نُجُومٌ", categories: ["ism"] },
     { arabic: "قَمِيصٌ", german: "ein Hemd", plural: "قُمْصَانٌ", categories: ["ism"] },
-    { arabic: "طَبِيبٌ", german: "ein Arzt", plural: "أَطِبَّاءُ", categories: ["ism"] },
+    { arabic: "طَبِيبٌ", german: "ein Arzt", plural: "أَطِبَّاءُ", pluralBook: true, categories: ["ism"] },
     { arabic: "نَعَمْ", german: "ja", categories: ["harf", "mabni"] },
     { arabic: "أَ", german: "Fragepartikel (vor Entscheidungsfragen, direkt vor dem Folgewort)", categories: ["harf", "mabni"] },
     { arabic: "وَ", german: "und (direkt vor dem Folgewort)", categories: ["harf", "mabni"] },
-    { arabic: "وَلَدٌ", german: "ein Junge", plural: "أَوْلَادٌ", categories: ["ism"] },
+    { arabic: "وَلَدٌ", german: "ein Junge", plural: "أَوْلَادٌ", pluralBook: true, categories: ["ism"] },
     { arabic: "طَالِبٌ", german: "ein Student", plural: "طُلَّابٌ", categories: ["ism"] },
-    { arabic: "رَجُلٌ", german: "ein Mann", plural: "رِجَالٌ", categories: ["ism"] },
-    { arabic: "تَاجِرٌ", german: "ein Händler", plural: "تُجَّارٌ", categories: ["ism"] },
+    { arabic: "رَجُلٌ", german: "ein Mann", plural: "رِجَالٌ", pluralBook: true, categories: ["ism"] },
+    { arabic: "تَاجِرٌ", german: "ein Händler", plural: "تُجَّارٌ", pluralBook: true, categories: ["ism"] },
     { arabic: "كَلْبٌ", german: "ein Hund", plural: "كِلَابٌ", categories: ["ism"] },
     { arabic: "قِطٌّ", german: "ein Kater", plural: "قِطَطٌ", categories: ["ism"] },
     { arabic: "حِمَارٌ", german: "ein Esel", plural: "حَمِيرٌ", categories: ["ism"] },
     { arabic: "حِصَانٌ", german: "ein Pferd", plural: "أَحْصِنَةٌ", categories: ["ism"] },
     { arabic: "جَمَلٌ", german: "ein Kamel", plural: "جِمَالٌ", categories: ["ism"] },
     { arabic: "دِيكٌ", german: "ein Hahn", plural: "دُيُوكٌ", categories: ["ism"] },
-    { arabic: "مُدَرِّسٌ", german: "ein Lehrer", plural: "مُدَرِّسُونَ", categories: ["ism"] },
+    { arabic: "مُدَرِّسٌ", german: "ein Lehrer", plural: "مُدَرِّسُونَ", pluralBook: true, categories: ["ism"] },
     { arabic: "مِنْدِيلٌ", german: "ein Tuch (auch: Papiertaschentuch oder Serviette)", plural: "مَنَادِيلُ", categories: ["ism"] },
     { arabic: "لَا", german: "nein", categories: ["harf", "mabni"] },
     { arabic: "مَا", german: "was", categories: ["ismistifham", "mabni"] },
@@ -40,22 +40,22 @@ const LESSONS = {
   ],
 
   3: [
-    { arabic: "غَنِيٌّ", german: "reich", plural: "أَغْنِيَاءُ", categories: ["ism"] },
-    { arabic: "فَقِيرٌ", german: "arm", plural: "فُقَرَاءُ", categories: ["ism"] },
-    { arabic: "طَوِيلٌ", german: "groß (lang)", plural: "طِوَالٌ", categories: ["ism"] },
-    { arabic: "قَصِيرٌ", german: "kurz", plural: "قِصَارٌ", categories: ["ism"] },
+    { arabic: "غَنِيٌّ", german: "reich", plural: "أَغْنِيَاءُ", pluralBook: true, categories: ["ism"] },
+    { arabic: "فَقِيرٌ", german: "arm", plural: "فُقَرَاءُ", pluralBook: true, categories: ["ism"] },
+    { arabic: "طَوِيلٌ", german: "groß (lang)", plural: "طِوَالٌ", pluralBook: true, categories: ["ism"] },
+    { arabic: "قَصِيرٌ", german: "kurz", plural: "قِصَارٌ", pluralBook: true, categories: ["ism"] },
     { arabic: "بَارِدٌ", german: "kalt", categories: ["ism"] },
     { arabic: "حَارٌّ", german: "heiß", categories: ["ism"] },
     { arabic: "جَالِسٌ", german: "sitzend", plural: "جَالِسُونَ", categories: ["ism"] },
     { arabic: "وَاقِفٌ", german: "stehend", plural: "وَاقِفُونَ", categories: ["ism"] },
-    { arabic: "جَدِيدٌ", german: "neu", plural: "جُدُدٌ", categories: ["ism"] },
+    { arabic: "جَدِيدٌ", german: "neu", plural: "جُدُدٌ", pluralBook: true, categories: ["ism"] },
     { arabic: "قَدِيمٌ", german: "alt", plural: "قُدَمَاءُ", categories: ["ism"] },
     { arabic: "قَرِيبٌ", german: "nah", categories: ["ism"] },
     { arabic: "بَعِيدٌ", german: "fern", categories: ["ism"] },
     { arabic: "نَظِيفٌ", german: "sauber", categories: ["ism"] },
     { arabic: "وَسِخٌ", german: "schmutzig", categories: ["ism"] },
-    { arabic: "صَغِيرٌ", german: "klein", plural: "صِغَارٌ", categories: ["ism"] },
-    { arabic: "كَبِيرٌ", german: "groß", plural: "كِبَارٌ", categories: ["ism"] },
+    { arabic: "صَغِيرٌ", german: "klein", plural: "صِغَارٌ", pluralBook: true, categories: ["ism"] },
+    { arabic: "كَبِيرٌ", german: "groß", plural: "كِبَارٌ", pluralBook: true, categories: ["ism"] },
     { arabic: "خَفِيفٌ", german: "leicht (im Sinne des Gewichtes)", plural: "خِفَافٌ", categories: ["ism"] },
     { arabic: "ثَقِيلٌ", german: "schwer", plural: "ثِقَالٌ", categories: ["ism"] },
     { arabic: "الْوَرَقُ", german: "das Papier", plural: "الْأَوْرَاقُ", categories: ["ism"] },
@@ -152,7 +152,7 @@ const LESSONS = {
     { arabic: "لِمَنْ", german: "wessen oder wem gehört", categories: ["ismistifham", "mabni"] },
     { arabic: "لِـ", german: "gehören, besitzen, für", categories: ["praeposition", "harf", "mabni"] },
     { arabic: "شَمْسٌ ", german: "eine Sonne", plural: "شُمُوسٌ", categories: ["ism"] },
-    { arabic: "مُسْلِمٌ ", german: "ein Muslim", plural: "مُسْلِمُونَ", categories: ["ism"] }
+    { arabic: "مُسْلِمٌ ", german: "ein Muslim", plural: "مُسْلِمُونَ", pluralBook: true, categories: ["ism"] }
     ],
 
   7:[
@@ -350,6 +350,8 @@ const LESSONS = {
       { arabic: "أَخٌ", german: "ein Bruder", plural: "إِخْوَةٌ", categories: ["ism"] },
       { arabic: "فَتًى", german: "ein junger Mann", plural: "فِتْيَةٌ", categories: ["ism"] },
       { arabic: "اسْمٌ", german: "ein Name", plural: "أَسْمَاءُ", categories: ["ism"] },
+      { arabic: "عَمٌّ", german: "ein Onkel (väterlicherseits)", plural: "أَعْمَامٌ", categories: ["ism"] },
+      { arabic: "فَلَّاحٌ", german: "ein Bauer", plural: "فَلَّاحُونَ", categories: ["ism"] },
 
     ],
 
@@ -460,6 +462,8 @@ const LESSON_LABELS = {
 /* ==========================================================================
    PLURAL-TRAINER — Gesunder vs. gebrochener Plural
    ==========================================================================
+   Im Plural-Trainer werden standardmäßig die Plurale aus Lektion 12–13 sowie alle
+   Wörter mit "pluralBook: true" abgefragt (= Übung 1 aus Lektion 13).
    Jedes Wort mit einem Feld "plural" kann im neuen Plural-Trainer abgefragt
    werden (Karteikarte: Singular -> richtige Pluralform unter Distraktoren
    erkennen). Zusätzlich wird automatisch erkannt, ob es sich um einen

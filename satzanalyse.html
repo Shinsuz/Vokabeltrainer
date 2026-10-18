@@ -7,8 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=5">
+<link rel="stylesheet" href="theme.css?v=6">
 <script src="main.js"></script>
+<style>
+.role-help{margin:10px 0 0;font-size:.92rem;opacity:.95}
+.role-help summary{cursor:pointer;color:var(--accent,#e5ba73);font-weight:600}
+.role-help ul{margin:8px 0 0;padding-left:18px;line-height:1.5}
+.role-help li{margin:4px 0}
+.satzbau-translation small{opacity:.75;font-size:.8em}
+</style>
 </head>
 <body class="bb-trainer">
 
@@ -32,12 +39,19 @@
     <div class="stats-row">
       <div class="stats-pill">
         <div>Gesamt <b id="stat-total">0</b></div>
-        <div class="mastered">Gemeistert <b id="stat-mastered">0</b></div>
-        <div>Sitzung <b id="stat-session">0/0</b></div>
+        <div class="mastered">Gekonnt <b id="stat-mastered">0</b></div>
       </div>
       <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
     </div>
 
+    <div class="pill-row">
+      <div class="pill-group" id="mode-tabs">
+        <button class="pill-btn" data-mode="satzbau">Sätze analysieren</button>
+        <button class="pill-btn" data-mode="concept">Begriffe</button>
+        <button class="pill-btn" data-mode="fragen">Fragen</button>
+        <button class="pill-btn" data-mode="mix">Alles gemischt</button>
+      </div>
+    </div>
     <div class="pill-row">
       <div class="pill-group" id="lesson-tabs"></div>
     </div>
@@ -51,7 +65,7 @@
       <div class="card" id="card"></div>
       <div id="end-overlay" class="end-overlay" aria-hidden="true">
         <div class="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
-          <h2 id="end-title">Alles gemeistert!</h2>
+          <h2 id="end-title">Alles gekonnt!</h2>
           <p id="end-message">Du hast alles in diesem Bereich erfolgreich gelernt.</p>
           <div class="end-actions">
             <button class="btn-replay" id="end-replay">Nochmal üben</button>
@@ -65,7 +79,7 @@
     <div class="progress-row">
       <svg class="star-mark" viewBox="0 0 100 100"><polygon points="50,4 61,32 92,32 66,50 76,80 50,62 24,80 34,50 8,32 39,32" fill="var(--primary-color)"/></svg>
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      <div class="progress-label" id="progress-label">0 % gemeistert</div>
+      <div class="progress-label" id="progress-label">0 % gekonnt</div>
     </div>
 
     <div class="controls">
@@ -83,7 +97,8 @@
    siehe <script src="main.js"> im <head>. */
 const STORAGE_KEY = "satzanalyse_progress_v1";
 const SOUND_KEY = "satzanalyse_sound_muted";
-const MASTER_THRESHOLD = 3;
+/* Ein Punkt gilt als "gekonnt", sobald die letzte Antwort richtig war; ein Fehler zieht ihn wieder ab. */
+const MASTER_THRESHOLD = 1;
 
 const ARABIC_REGEX = /[\u0600-\u06FF]/;
 function isArabicText(t){ return ARABIC_REGEX.test(t || ""); }
@@ -94,16 +109,19 @@ function lessonList(){
   if(selectedLesson === "alle") return Object.values(SATZANALYSE);
   return [SATZANALYSE[selectedLesson]].filter(Boolean);
 }
-function currentDeck(){
+/* Alle Übungspunkte der übergebenen Lektionen, passend zum gewählten Modus */
+function buildItems(lessons){
   const items = [];
-  lessonList().forEach(l => {
+  lessons.forEach(l => {
     (l.concepts || []).forEach(c => items.push({ kind: "concept", key: "c:" + c.term, term: c.term, explanation: c.explanation }));
     (l.questions || []).forEach(q => items.push({ kind: q.type, key: (q.type === "mc" ? "q:" + q.question : "t:" + q.statement), ...q }));
     (l.sentences || []).forEach(s => items.push({ kind: "satzbau", key: "s:" + s.words.map(w => w.text).join("|"), words: s.words, translation: s.translation }));
   });
   if(mode === "mix") return items;
+  if(mode === "fragen") return items.filter(i => i.kind === "mc" || i.kind === "tf");
   return items.filter(i => i.kind === mode);
 }
+function currentDeck(){ return buildItems(lessonList()); }
 
 /* ---------- Sound-Engine ---------- */
 const Sound = (() => {
@@ -122,6 +140,10 @@ const Sound = (() => {
 
   function tone(freq, start, dur, type="sine", gainPeak=0.16, opts={}){
     if(muted) return;
+    /* Sound darf NIE die Bedienung blockieren (z. B. wenn der Browser Audio sperrt) */
+    try{ toneUnsafe(freq, start, dur, type, gainPeak, opts); }catch(e){ /* ignorieren */ }
+  }
+  function toneUnsafe(freq, start, dur, type, gainPeak, opts){
     const c = ensureCtx();
     const osc = c.createOscillator();
     const gain = c.createGain();
@@ -177,11 +199,11 @@ const Sound = (() => {
 let progress = loadProgress();
 let mode = "satzbau";
 let currentItem = null;
-let sessionCorrect = 0, sessionTotal = 0;
+let lastItemKey = null;
 let cardEl = document.getElementById("card");
-let sessionWrongKeys = new Set();
-let reviewQueue = [];
-let inReview = false;
+let pickQueue = [];          // gemischte Reihenfolge der noch nicht gekonnten Punkte
+let pickSig = "";
+let retryList = [];          // [{key, after}] falsch beantwortete Punkte kommen nach ein paar Karten wieder
 
 function loadProgress(){
   try{
@@ -190,59 +212,68 @@ function loadProgress(){
   }catch(e){ return {}; }
 }
 function saveProgress(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){}
 }
+/* streak: ab 1 = zuletzt richtig (gekonnt). Ältere Speicherstände mit höheren
+   Werten zählen ebenfalls als gekonnt. */
 function getEntry(item){
   if(!progress[item.key]) progress[item.key] = { streak: 0, wrong: 0 };
   return progress[item.key];
 }
 function isMastered(item){
-  return getEntry(item).streak >= MASTER_THRESHOLD;
+  const e = progress[item.key];
+  return !!e && (e.streak || 0) >= MASTER_THRESHOLD;
 }
 function markResult(item, correct){
   const e = getEntry(item);
-  const wasMastered = e.streak >= MASTER_THRESHOLD;
-  if(correct){ e.streak += 1; } else { e.streak = 0; e.wrong += 1; }
-  const justMastered = !wasMastered && e.streak >= MASTER_THRESHOLD;
+  const wasMastered = (e.streak || 0) >= MASTER_THRESHOLD;
+  if(correct){ e.streak = MASTER_THRESHOLD; }
+  else { e.streak = 0; e.wrong = (e.wrong || 0) + 1; }
   saveProgress();
-  sessionTotal++; if(correct) sessionCorrect++;
+  lastItemKey = item.key;
 
-  if(!correct){
-    sessionWrongKeys.add(item.key);
-    if(inReview && !reviewQueue.find(w => w.key === item.key)) reviewQueue.push(item);
-  } else if(sessionWrongKeys.has(item.key)){
-    sessionWrongKeys.delete(item.key);
-    reviewQueue = reviewQueue.filter(w => w.key !== item.key);
-  }
+  if(correct) retryList = retryList.filter(r => r.key !== item.key);
+  else if(!retryList.some(r => r.key === item.key)) retryList.push({ key: item.key, after: 3 });
 
-  if(justMastered) Sound.mastered();
-  else if(correct) Sound.correct();
-  else Sound.wrong();
+  try{
+    if(correct && !wasMastered) Sound.mastered();
+    else if(correct) Sound.correct();
+    else Sound.wrong();
+  }catch(err){}
 
   updateStats();
 }
 
+function updateLessonCounts(){
+  document.querySelectorAll("#lesson-tabs .lesson-pill").forEach(btn => {
+    const key = btn.dataset.key;
+    const items = buildItems(key === "alle" ? Object.values(SATZANALYSE) : [SATZANALYSE[key]].filter(Boolean));
+    const known = items.filter(isMastered).length;
+    const base = key === "alle" ? "Alle" : ((typeof SATZANALYSE_LABELS !== "undefined" && SATZANALYSE_LABELS[key]) || `Lektion ${key}`);
+    btn.textContent = items.length ? `${base} · ${known}/${items.length}` : base;
+  });
+}
+
 function updateStats(){
   const deck = currentDeck();
+  const known = deck.filter(isMastered).length;
+  const pct = deck.length ? Math.round(known / deck.length * 100) : 0;
   document.getElementById("stat-total").innerText = deck.length;
-  const masteredCount = deck.filter(isMastered).length;
-  document.getElementById("stat-session").innerText = `${sessionCorrect}/${sessionTotal}`;
-  const progressCount = deck.filter(item => getEntry(item).streak > 0).length;
-  const pct = deck.length ? Math.round((progressCount / deck.length) * 100) : 0;
+  document.getElementById("stat-mastered").innerText = `${known}/${deck.length}`;
   document.getElementById("progress-fill").style.width = pct + "%";
-  if(pct === 100 && deck.length > 0){
-    document.getElementById("progress-label").innerText = pct + " % — Alles gemeistert!";
-    if(sessionWrongKeys.size > 0 && !inReview){
-      startReviewRound();
-    } else if(!window.__endShownFor || window.__endShownFor !== (selectedLesson + mode)){
-      window.__endShownFor = selectedLesson + mode;
+  const sig = selectedLesson + "|" + mode;
+  if(deck.length > 0 && known === deck.length){
+    document.getElementById("progress-label").innerText = "100 % — Alles gekonnt!";
+    if(window.__endShownFor !== sig){
+      window.__endShownFor = sig;
       try{ showEndOverlay(); }catch(e){}
     }
   } else {
-    document.getElementById("progress-label").innerText = pct + " % bearbeitet";
+    window.__endShownFor = null;
+    document.getElementById("progress-label").innerText = `${known} von ${deck.length} gekonnt · noch ${deck.length - known} offen`;
     try{ hideEndOverlay(); }catch(e){}
   }
-  document.getElementById("stat-mastered").innerText = `${masteredCount}/${deck.length}`;
+  updateLessonCounts();
 }
 
 function showEndOverlay(){
@@ -259,6 +290,7 @@ function hideEndOverlay(){
 function replayLesson(){
   currentDeck().forEach(item => { const e = getEntry(item); e.streak = 0; e.wrong = 0; });
   saveProgress();
+  pickQueue = []; retryList = []; lastItemKey = null;
   window.__endShownFor = null;
   hideEndOverlay();
   updateStats();
@@ -279,18 +311,33 @@ document.addEventListener("click", e => {
   if(e.target && e.target.id === "end-close") hideEndOverlay();
 });
 
-function weightedPick(list){
-  const weights = list.map(item => {
-    const e = getEntry(item);
-    return Math.max(1, (e.wrong + 1) * 3 - e.streak);
-  });
-  const total = weights.reduce((a,b) => a+b, 0);
-  let r = Math.random() * total;
-  for(let i=0;i<list.length;i++){
-    r -= weights[i];
-    if(r <= 0) return list[i];
+/* Gezielte Auswahl statt Zufall:
+   - Noch nicht gekonnte Punkte kommen in gemischter Reihenfolge, jeder genau einmal pro
+     Runde (keine ständigen Wiederholungen).
+   - Falsch beantwortete Punkte kommen nach ca. 3 Karten nochmal.
+   - Etwa jede 4. Karte ist eine Wiederholung eines schon gekonnten Punktes
+     (bei einem Fehler wird dort der Punkt wieder abgezogen). */
+function pickNext(deck){
+  const sig = selectedLesson + "|" + mode + "|" + deck.length;
+  if(sig !== pickSig){ pickSig = sig; pickQueue = []; retryList = []; }
+  const byKey = new Map(deck.map(i => [i.key, i]));
+  retryList = retryList.filter(r => byKey.has(r.key));
+  retryList.forEach(r => r.after--);
+  const due = retryList.findIndex(r => r.after <= 0 && r.key !== lastItemKey);
+  if(due >= 0) return byKey.get(retryList.splice(due, 1)[0].key);
+
+  const known = deck.filter(isMastered);
+  const unknown = deck.filter(i => !isMastered(i));
+  const notLast = list => (list.length > 1 ? list.filter(i => i.key !== lastItemKey) : list);
+  if(unknown.length === 0 || (known.length > 0 && Math.random() < 0.25)){
+    const pool = notLast(known.length ? known : deck);
+    return pool[Math.floor(Math.random() * pool.length)];
   }
-  return list[list.length-1];
+  pickQueue = pickQueue.filter(k => byKey.has(k) && !isMastered(byKey.get(k)));
+  if(pickQueue.length === 0) pickQueue = shuffle(unknown.map(i => i.key));
+  let idx = pickQueue.findIndex(k => k !== lastItemKey);
+  if(idx < 0) idx = 0;
+  return byKey.get(pickQueue.splice(idx, 1)[0]);
 }
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){
@@ -320,6 +367,21 @@ function updateScopeHint(){
   }
   const label = (SATZANALYSE_LABELS[selectedLesson] || `Lektion ${selectedLesson}`).replace("Lektion ", "");
   hintEl.innerHTML = `Übt nur <b>Lektion ${label}</b>.`;
+}
+
+function buildModeTabs(){
+  const wrap = document.getElementById("mode-tabs");
+  wrap.querySelectorAll(".pill-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+  wrap.onclick = e => {
+    const btn = e.target.closest(".pill-btn");
+    if(!btn) return;
+    Sound.click();
+    mode = btn.dataset.mode;
+    buildModeTabs();
+    window.__endShownFor = null;
+    updateStats();
+    nextCard();
+  };
 }
 
 function buildLessonTabs(){
@@ -365,36 +427,12 @@ function nextCard(){
     cardEl.innerHTML = `<div class="empty-state"><div class="big">Noch keine ${label} hinterlegt.</div>Trage Konzepte/Fragen in <kbd>main.js</kbd> in der passenden Lektion ein.</div>`;
     return;
   }
-  if(inReview){
-    if(reviewQueue.length === 0){
-      inReview = false;
-      sessionWrongKeys.clear();
-      try{ showEndOverlay(); }catch(e){}
-      return;
-    }
-    currentItem = reviewQueue.shift();
-  } else {
-    currentItem = weightedPick(deck);
-  }
+  currentItem = pickNext(deck);
+  lastItemKey = currentItem.key;
   if(currentItem.kind === "concept") renderConcept();
   else if(currentItem.kind === "mc") renderMC();
   else if(currentItem.kind === "satzbau") renderSatzbau();
   else renderTrueFalse();
-}
-
-function startReviewRound(){
-  const deck = currentDeck();
-  reviewQueue = [];
-  sessionWrongKeys.forEach(k => {
-    const item = deck.find(x => x.key === k);
-    if(item) reviewQueue.push(item);
-  });
-  if(reviewQueue.length === 0){ sessionWrongKeys.clear(); inReview = false; return; }
-  reviewQueue = shuffle(reviewQueue);
-  inReview = true;
-  hideEndOverlay();
-  document.getElementById("progress-label").innerText = `Wiederhole falsch beantwortete Punkte (${reviewQueue.length})`;
-  nextCard();
 }
 
 function renderConcept(){
@@ -581,6 +619,37 @@ function roleColor(role, idx){
 function roleLabel(role){
   return ROLE_LABELS[role] || role;
 }
+const ROLE_HINTS = {
+  "Mubtada": "Das Satzthema: das, worüber etwas ausgesagt wird (steht im Nominalsatz meist vorn).",
+  "Khabar": "Die Aussage über das Mubtada (was ausgesagt wird).",
+  "Mudaf": "Das erste Wort einer Besitz-Verbindung (die besessene Sache) – ohne Tanwîn und ohne Artikel.",
+  "Mudaf ilaihi": "Das zweite Wort einer Besitz-Verbindung (der Besitzer) – steht im Majrûr.",
+  "Na't": "Das Adjektiv, das ein Nomen näher beschreibt.",
+  "Man'ut": "Das Nomen, das vom Adjektiv (Na't) beschrieben wird.",
+  "Harful Jarr": "Präposition (z. B. فِي، إِلَى، عَلَى، مِنْ).",
+  "Majrur": "Wort im Genitiv-Fall (Kasra): steht nach einer Präposition oder als Mudaf ilaihi.",
+  "Marfu": "Wort im Nominativ-Fall (Damma).",
+  "Mansub": "Wort im Akkusativ-Fall (Fatha).",
+  "Fi'l": "Das Verb.",
+  "Fa'il": "Der Täter, der die Handlung ausführt.",
+  "Mabni": "Unveränderliches Wort: Endung bleibt immer gleich (z. B. Pronomen und Suffixe).",
+  "Mu'rab": "Veränderliches Wort: die Endung richtet sich nach dem Satz.",
+  "Mahallan Marfu": "Unveränderliches Wort, das im Satz die Stelle eines Marfû' einnimmt.",
+  "Mahallan Majrur": "Unveränderliches Wort, das im Satz die Stelle eines Majrûr einnimmt.",
+  "Mahallan Mansub": "Unveränderliches Wort, das im Satz die Stelle eines Mansûb einnimmt.",
+  "Mudhakkar": "Maskulin.",
+  "Muannath": "Feminin.",
+  "Bestimmt": "Mit Artikel / eindeutig bestimmt (معرفة).",
+  "Unbestimmt": "Ohne Artikel, mit Tanwîn (نكرة).",
+  "Relativpronomen": "Verbindet einen Nebensatz mit dem Bezugswort (der/die/das …).",
+  "Singular": "Einzahl (ein Mann / eine Frau / eine Sache).",
+  "Gesunder Plural": "Mehrzahl durch angehängte Endung: ـُونَ (männlich) oder ـَاتٌ (weiblich).",
+  "Gebrochener Plural": "Mehrzahl, bei der sich das Wortgerüst ändert (z. B. تَاجِرٌ ← تُجَّارٌ)."
+};
+function roleHelpHtml(roles){
+  const items = roles.filter(r => ROLE_HINTS[r]).map(r => `<li><b style="color:${roleColor(r)}">${roleLabel(r)}</b> – ${ROLE_HINTS[r]}</li>`);
+  return items.length ? `<details class="role-help"><summary>ℹ️ Was bedeutet was?</summary><ul>${items.join("")}</ul></details>` : "";
+}
 function hexToRgba(hex, alpha){
   const h = hex.replace("#", "");
   const r = parseInt(h.substring(0,2), 16), g = parseInt(h.substring(2,4), 16), b = parseInt(h.substring(4,6), 16);
@@ -729,6 +798,7 @@ function renderSatzbauLevel(){
     ${item.translation ? `<div class="satzbau-translation">${item.translation}</div>` : ""}
     <div class="sentence-plaque"><div class="word-row" id="word-row"></div></div>
     <div class="role-row" id="role-row"></div>
+    ${roleHelpHtml(roles)}
     <div class="feedback" id="feedback"></div>
     <button class="next-btn" id="check-btn" disabled>Prüfen</button>
   `;
@@ -855,10 +925,10 @@ function checkSatzbau(){
 
 document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
 document.getElementById("reset-progress-btn").addEventListener("click", () => {
-  if(confirm("Gesamten Fortschritt zurücksetzen?")){
+  if(confirm("Gesamten Grammatik-Fortschritt zurücksetzen? Alles zählt danach wieder als offen.")){
     progress = {};
     saveProgress();
-    sessionCorrect = 0; sessionTotal = 0;
+    pickQueue = []; retryList = []; lastItemKey = null; window.__endShownFor = null;
     updateStats();
     nextCard();
   }
@@ -872,6 +942,7 @@ refreshSoundBtn();
 if (typeof SATZANALYSE === "undefined") {
   cardEl.innerHTML = `<div class="empty-state"><div class="big">main.js wurde nicht geladen.</div>Prüfe, ob <kbd>main.js</kbd> im selben Ordner liegt und <kbd>const SATZANALYSE = {...}</kbd> enthält.</div>`;
 } else {
+  buildModeTabs();
   buildLessonTabs();
   updateScopeHint();
   updateStats();

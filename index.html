@@ -92,8 +92,7 @@
     <div class="stats-row">
       <div class="stats-pill">
         <div>Gesamt <b id="stat-total">0</b></div>
-        <div class="mastered">Gemeistert <b id="stat-mastered">0</b></div>
-        <div>Sitzung <b id="stat-session">0/0</b></div>
+        <div class="mastered">Gekonnt <b id="stat-mastered">0</b></div>
       </div>
       <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
     </div>
@@ -139,7 +138,7 @@
       <div class="card" id="card"></div>
       <div id="end-overlay" class="end-overlay" aria-hidden="true">
         <div class="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
-          <h2 id="end-title">Alles gemeistert!</h2>
+          <h2 id="end-title">Alles gekonnt!</h2>
           <p id="end-message">Du hast alle Vokabeln dieser Lektion erfolgreich gelernt.</p>
           <div class="end-actions">
             <button class="btn-replay" id="end-replay">Nochmal üben</button>
@@ -168,6 +167,7 @@
           <div class="pill-row" id="plural-filter-row"></div>
           <div class="card plural-card" id="plural-card"></div>
           <div class="plural-overview" id="plural-overview" style="display:none;"></div>
+          <button type="button" class="ghost-btn" id="plural-reset-btn" style="margin:.9rem auto 0;display:block;">↺ Plural-Fortschritt zurücksetzen</button>
         </div>
       </div>
     </div>
@@ -175,7 +175,7 @@
     <div class="progress-row">
       <svg class="star-mark" viewBox="0 0 100 100"><polygon points="50,4 61,32 92,32 66,50 76,80 50,62 24,80 34,50 8,32 39,32" fill="var(--primary-color)"/></svg>
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      <div class="progress-label" id="progress-label">0 % gemeistert</div>
+      <div class="progress-label" id="progress-label">0 % gekonnt</div>
     </div>
 
     <div class="controls">
@@ -193,7 +193,8 @@
    im <head>. Diese Datei hier enthält nur die Trainer-Logik. */
 const STORAGE_KEY = "vocab_progress_v1";
 const SOUND_KEY = "vocab_sound_muted";
-const MASTER_THRESHOLD = 3;
+/* Ein Wort gilt als "gekonnt", sobald die letzte Antwort richtig war; ein Fehler zieht es wieder ab. */
+const MASTER_THRESHOLD = 1;
 
 /* ---------- Haraket ein-/ausblenden ---------- */
 const HARAKAT_REGEX = /[ً-ْٖ-ٰٟۖ-ۭ]/g;
@@ -203,9 +204,12 @@ function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
 
 /* ---------- Lektionen ---------- */
 let selectedLesson = "alle";
+/* Jedes Wort zählt nur einmal, auch wenn es in mehreren Lektionen steht
+   (der Fortschritt wird ohnehin pro Wort gespeichert). */
 function currentDeck(){
-  if(selectedLesson === "alle") return Object.values(LESSONS).flat();
-  return LESSONS[selectedLesson] || [];
+  const list = selectedLesson === "alle" ? Object.values(LESSONS).flat() : (LESSONS[selectedLesson] || []);
+  const seen = new Set();
+  return list.filter(w => { const k = w.arabic.trim(); if(seen.has(k)) return false; seen.add(k); return true; });
 }
 
 /* ---------- Sound-Engine ----------
@@ -292,12 +296,9 @@ let progress = loadProgress();
 let mode = "flash";
 let direction = "ar-de"; // ar-de = Arabisch -> Deutsch, de-ar = Deutsch -> Arabisch
 let currentWord = null;
+let lastWordKey = null;
 let sessionCorrect = 0, sessionTotal = 0;
 let cardEl = document.getElementById("card");
-// Session review queue: track words answered wrong this session
-let sessionWrongKeys = new Set(); // store arabic keys
-let reviewQueue = [];
-let inReview = false;
 
 function loadProgress(){
   try{
@@ -306,71 +307,62 @@ function loadProgress(){
   }catch(e){ return {}; }
 }
 function saveProgress(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){}
 }
+/* Lernstufe pro Wort (Feld "streak", 0 … MASTER_THRESHOLD):
+   richtig  -> eine Stufe hoch (max. MASTER_THRESHOLD = gekonnt)
+   falsch   -> eine Stufe runter (nicht gleich auf 0, damit der Fortschritt nicht einbricht) */
+function wordKey(word){ return word.arabic.trim(); }
 function getEntry(word){
-  if(!progress[word.arabic]) progress[word.arabic] = { streak: 0, wrong: 0 };
-  return progress[word.arabic];
+  const k = wordKey(word);
+  if(!progress[k]){
+    /* ältere Einträge mit Leerzeichen am Ende übernehmen */
+    progress[k] = progress[word.arabic] ? progress[word.arabic] : { streak: 0, wrong: 0 };
+  }
+  return progress[k];
+}
+function getLevel(word){
+  const e = progress[wordKey(word)] || progress[word.arabic];
+  return e ? Math.min(e.streak || 0, MASTER_THRESHOLD) : 0;
 }
 function isMastered(word){
-  return getEntry(word).streak >= MASTER_THRESHOLD;
+  return getLevel(word) >= MASTER_THRESHOLD;
 }
 function markResult(word, correct){
   const e = getEntry(word);
   const wasMastered = e.streak >= MASTER_THRESHOLD;
-  if(correct){ e.streak += 1; } else { e.streak = 0; e.wrong += 1; }
+  if(correct){ e.streak = Math.min(MASTER_THRESHOLD, (e.streak || 0) + 1); }
+  else { e.streak = Math.max(0, Math.min(e.streak || 0, MASTER_THRESHOLD) - 1); e.wrong = (e.wrong || 0) + 1; }
   const justMastered = !wasMastered && e.streak >= MASTER_THRESHOLD;
   saveProgress();
   sessionTotal++; if(correct) sessionCorrect++;
+  lastWordKey = wordKey(word);
 
-  // Manage session wrong list / review queue
-  if(!correct){
-    sessionWrongKeys.add(word.arabic);
-    // if currently in review, ensure the word is queued
-    if(inReview && !reviewQueue.find(w => w.arabic === word.arabic)){
-      reviewQueue.push(word);
-    }
-  } else {
-    // on correct, remove from pending wrongs (if present)
-    if(sessionWrongKeys.has(word.arabic)){
-      sessionWrongKeys.delete(word.arabic);
-      // also remove from reviewQueue if present
-      reviewQueue = reviewQueue.filter(w => w.arabic !== word.arabic);
-    }
-  }
-
-  const hadJustMastered = justMastered;
-  try{ if(hadJustMastered) Sound.mastered(); else if(correct) Sound.correct(); else Sound.wrong(); }catch(e){}
+  try{ if(justMastered) Sound.mastered(); else if(correct) Sound.correct(); else Sound.wrong(); }catch(err){}
 
   updateStats();
 }
 
 function updateStats(){
   const deck = currentDeck();
-  document.getElementById("stat-total").innerText = deck.length;
   const masteredCount = deck.filter(isMastered).length;
-  document.getElementById("stat-mastered").innerText = masteredCount;
-  document.getElementById("stat-session").innerText = `${sessionCorrect}/${sessionTotal}`;
-  const progressCount = deck.filter(word => getEntry(word).streak > 0).length;
-  const pct = deck.length ? Math.round((progressCount / deck.length) * 100) : 0;
+  const levelSum = deck.reduce((sum, w) => sum + getLevel(w), 0);
+  const pct = deck.length ? Math.round(levelSum / (deck.length * MASTER_THRESHOLD) * 100) : 0;
+  document.getElementById("stat-total").innerText = deck.length;
+  document.getElementById("stat-mastered").innerText = `${masteredCount}/${deck.length}`;
   document.getElementById("progress-fill").style.width = pct + "%";
-  if(pct === 100 && deck.length > 0){
-    document.getElementById("progress-label").innerText = pct + " % — Alles gemeistert!";
-    // If there are wrong answers this session, start a focused review round first
-    if(sessionWrongKeys.size > 0 && !inReview){
-      startReviewRound();
-    } else {
-      if(!window.__endShownFor || window.__endShownFor !== selectedLesson){
-        window.__endShownFor = selectedLesson;
-        try{ showEndOverlay(deck); }catch(e){}
-        try{ Sound.mastered(); }catch(e){}
-      }
+  if(deck.length > 0 && masteredCount === deck.length){
+    document.getElementById("progress-label").innerText = "100 % — Alles gekonnt!";
+    if(window.__endShownFor !== selectedLesson){
+      window.__endShownFor = selectedLesson;
+      try{ showEndOverlay(deck); }catch(e){}
+      try{ Sound.mastered(); }catch(e){}
     }
   } else {
-    document.getElementById("progress-label").innerText = pct + " % bearbeitet";
+    window.__endShownFor = null;
+    document.getElementById("progress-label").innerText = `${masteredCount} von ${deck.length} gekonnt · noch ${deck.length - masteredCount} offen`;
     try{ hideEndOverlay(); }catch(e){}
   }
-  document.getElementById("stat-mastered").innerText = `${masteredCount}/${deck.length}`;
 }
 
 /* ---------- End-Screen / Overlay Logik ---------- */
@@ -379,7 +371,7 @@ function showEndOverlay(deck){
   const msg = document.getElementById('end-message');
   const title = document.getElementById('end-title');
   const label = selectedLesson === 'alle' ? 'allen Lektionen' : ((typeof LESSON_LABELS !== 'undefined' && LESSON_LABELS[selectedLesson]) || `Lektion ${selectedLesson}`);
-  title.innerText = 'Alles gemeistert!';
+  title.innerText = 'Alles gekonnt!';
   msg.innerText = `Du hast alle Vokabeln in ${label} erfolgreich gelernt.`;
   overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
 }
@@ -392,6 +384,7 @@ function hideEndOverlay(){
 function replayLesson(){
   const deck = currentDeck();
   deck.forEach(w => { const e = getEntry(w); e.streak = 0; e.wrong = 0; });
+  sessionCorrect = 0; sessionTotal = 0;
   saveProgress();
   window.__endShownFor = null;
   hideEndOverlay();
@@ -420,18 +413,28 @@ function scheduleNextCard(delay = 850){
   window.__vocabAdvanceTimer = window.setTimeout(() => nextCard(), delay);
 }
 
+/* Dasselbe Wort nie zweimal direkt hintereinander; Wörter mit vielen Fehlern kommen häufiger. */
 function weightedPick(list){
-  const weights = list.map(w => {
-    const e = getEntry(w);
-    return Math.max(1, (e.wrong + 1) * 3 - e.streak);
+  const known = list.filter(isMastered);
+  const unknown = list.filter(w => !isMastered(w));
+  /* Meistens kommen noch nicht gekonnte Wörter dran; etwa jede 4. Karte ist eine
+     Wiederholung eines schon gekonnten Wortes — bei einem Fehler wird dort der Punkt
+     wieder abgezogen. */
+  let cand;
+  if(unknown.length === 0) cand = known;
+  else if(known.length > 0 && Math.random() < 0.25) cand = known;
+  else cand = unknown;
+  if(cand.length > 1) cand = cand.filter(w => wordKey(w) !== lastWordKey);
+  const weights = cand.map(w => {
+    const e = progress[wordKey(w)] || {};
+    return 1 + Math.min(e.wrong || 0, 4);
   });
-  const total = weights.reduce((a,b) => a+b, 0);
-  let r = Math.random() * total;
-  for(let i=0;i<list.length;i++){
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+  for(let i = 0; i < cand.length; i++){
     r -= weights[i];
-    if(r <= 0) return list[i];
+    if(r <= 0) return cand[i];
   }
-  return list[list.length-1];
+  return cand[cand.length - 1];
 }
 
 function shuffle(arr){
@@ -498,6 +501,7 @@ function buildLessonTabs(){
 }
 
 function nextCard(){
+  clearTimeout(window.__vocabAdvanceTimer);
   cardEl.onclick = null; cardEl.style.cursor = "";
   const deck = currentDeck();
   if(deck.length === 0){
@@ -505,46 +509,11 @@ function nextCard(){
     cardEl.innerHTML = `<div class="empty-state"><div class="big">Noch keine ${label} hinterlegt.</div>Trage sie in <kbd>vocab.js</kbd> in der passenden Lektion ein.</div>`;
     return;
   }
-  // If we're in a review round, pull from the reviewQueue
-  if(inReview){
-    if(reviewQueue.length === 0){
-      // review finished
-      inReview = false;
-      sessionWrongKeys.clear();
-      // show end overlay now
-      try{ showEndOverlay(deck); }catch(e){}
-      return;
-    }
-    // pop next review item
-    currentWord = reviewQueue.shift();
-  } else {
-    currentWord = weightedPick(deck);
-  }
+  currentWord = weightedPick(deck);
   const roundMode = activeModeForRound();
   if(roundMode === "flash") renderFlash();
   else if(roundMode === "mc") renderMC();
   else renderWrite();
-}
-
-function startReviewRound(){
-  // build reviewQueue from sessionWrongKeys, keeping current deck order shuffled
-  const deck = currentDeck();
-  reviewQueue = [];
-  sessionWrongKeys.forEach(k => {
-    const w = deck.find(x => x.arabic === k) || Object.values(LESSONS).flat().find(x => x.arabic === k);
-    if(w) reviewQueue.push(w);
-  });
-  // fallback: if nothing found, clear
-  if(reviewQueue.length === 0){ sessionWrongKeys.clear(); inReview = false; return; }
-  // shuffle reviewQueue
-  reviewQueue = shuffle(reviewQueue);
-  inReview = true;
-  // notify user and start first review card
-  const overlay = document.getElementById('end-overlay');
-  hideEndOverlay();
-  // small toast via progress-label
-  document.getElementById('progress-label').innerText = `Wiederhole falsch beantwortete Vokabeln (${reviewQueue.length})`;
-  nextCard();
 }
 
 function pluralHtml(word){
@@ -755,7 +724,7 @@ document.getElementById("tabs").addEventListener("click", e => {
 document.getElementById("dir-toggle").addEventListener("click", () => { Sound.click(); toggleDirection(); });
 document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
 document.getElementById("reset-progress-btn").addEventListener("click", () => {
-  if(confirm("Gesamten Lernfortschritt (Gemeistert-Status) zurücksetzen?")){
+  if(confirm("Gesamten Lernfortschritt zurücksetzen?")){
     progress = {};
     saveProgress();
     sessionCorrect = 0; sessionTotal = 0;
@@ -881,21 +850,21 @@ document.getElementById("glossary-overlay").addEventListener("click", e => {
    Vokabel mit "plural"-Feld; man wählt die richtige Pluralform unter 3
    Fake-Pluralen. Fortschritt wird pro Wort gespeichert (localStorage), sodass man
    jederzeit sieht, wie viele Plurale noch fehlen — getrennt nach gesundem und
-   gebrochenem Plural. Ein Plural gilt als gemeistert, wenn er
+   gebrochenem Plural. Ein Plural gilt als gekonnt, wenn er
    PLURAL_MASTER-mal in Folge richtig war. Falsche Plurale kommen nach ein paar
    Karten automatisch nochmal. */
 const PLURAL_PROGRESS_KEY = "plural_progress_v1";
-const PLURAL_MASTER = 2;
+const PLURAL_MASTER = 1;   // gekonnt = letzte Antwort richtig; Fehler zieht es wieder ab
 let pluralProgress = (() => { try{ return JSON.parse(localStorage.getItem(PLURAL_PROGRESS_KEY)) || {}; }catch(e){ return {}; } })();
 function savePluralProgress(){ try{ localStorage.setItem(PLURAL_PROGRESS_KEY, JSON.stringify(pluralProgress)); }catch(e){} }
 function pEntry(w){ return pluralProgress[w.arabic] || (pluralProgress[w.arabic] = { streak: 0, wrong: 0, seen: 0 }); }
-function pStreak(w){ const e = pluralProgress[w.arabic]; return e ? e.streak : 0; }
+function pStreak(w){ const e = pluralProgress[w.arabic]; return e ? Math.min(e.streak || 0, PLURAL_MASTER) : 0; }
 function pMastered(w){ return pStreak(w) >= PLURAL_MASTER; }
 
 let pluralSessionCorrect = 0, pluralSessionTotal = 0;
 let currentPluralWord = null;
 let pluralFilter = "alle";       // alle | gesund | gebrochen
-let pluralOnlyOpen = true;       // nur noch nicht gemeisterte Plurale abfragen
+let pluralOnlyOpen = false;       // nur noch nicht gekonnte Plurale abfragen
 let pluralView = "trainer";      // trainer | overview
 let pluralRetry = [];            // [{word, after}] falsch beantwortete, kommen wieder
 let pluralLastKey = null;
@@ -908,9 +877,11 @@ let pluralIncludeOld = false;
 function pluralPoolAll(){
   const seen = new Set();
   return Object.entries(LESSONS)
-    .filter(([key]) => key !== "Grammatik" && (pluralIncludeOld || PLURAL_BOOK_LESSONS.includes(key)))
-    .flatMap(([, words]) => words)
-    .filter(w => w.plural && !seen.has(w.arabic) && seen.add(w.arabic));
+    .filter(([key]) => key !== "Grammatik")
+    .flatMap(([key, words]) => words.map(w => ({ w, inBook: PLURAL_BOOK_LESSONS.includes(key) })))
+    .filter(x => x.w.plural && (pluralIncludeOld || x.inBook || x.w.pluralBook))
+    .map(x => x.w)
+    .filter(w => !seen.has(w.arabic) && seen.add(w.arabic));
 }
 function pluralPool(){
   return pluralPoolAll().filter(w => pluralFilter === "alle" || getPluralType(w) === pluralFilter);
@@ -926,14 +897,14 @@ function updatePluralStats(){
   const g = pluralCounts(all.filter(w => getPluralType(w) === "gesund"));
   const b = pluralCounts(all.filter(w => getPluralType(w) === "gebrochen"));
   const sel = pluralCounts(pluralPool());
-  const pct = sel.total ? Math.round(sel.mastered / sel.total * 100) : 0;
+  const lv = pluralPool().reduce((n, w) => n + pStreak(w), 0);
+  const pct = sel.total ? Math.round(lv / (sel.total * PLURAL_MASTER) * 100) : 0;
   document.getElementById("plural-stats-box").innerHTML = `
     <div class="plural-progress"><div class="plural-progress-fill" style="width:${pct}%"></div></div>
-    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gemeistert · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Lektion 1–13" : "Plurale aus dem Buch (Lektion 12–13)"}</small></div>
+    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Lektion 1–13" : "Plurale aus dem Buch (Lektion 12–13 inkl. Übung 1)"}</small></div>
     <div class="plural-chips">
       <span class="plural-chip gesund">Gesund ${g.mastered}/${g.total}</span>
       <span class="plural-chip gebrochen">Gebrochen ${b.mastered}/${b.total}</span>
-      <span class="plural-chip">Sitzung ${pluralSessionCorrect}/${pluralSessionTotal}</span>
     </div>`;
 }
 
@@ -988,7 +959,7 @@ function renderPluralView(){
   }
 }
 
-/* Übersicht: alle Plurale mit Status (✓ gemeistert · ● in Arbeit · ○ offen) */
+/* Übersicht: alle Plurale mit Status (✓ gekonnt · ○ offen) */
 function renderPluralOverview(){
   const ov = document.getElementById("plural-overview");
   const pool = pluralPool();
@@ -1007,16 +978,14 @@ function renderPluralOverview(){
         <span class="ar pl">${displayArabic(w.plural)}</span>
       </div>`;
     }).join("");
-    return `<div class="glossary-group"><div class="glossary-group-title">${title} <span class="count">(${c.mastered}/${c.total} gemeistert · ${c.open} offen)</span></div>${rows}</div>`;
+    return `<div class="glossary-group"><div class="glossary-group-title">${title} <span class="count">(${c.mastered}/${c.total} gekonnt · ${c.open} offen)</span></div>${rows}</div>`;
   };
   ov.innerHTML = group("gesund", "Gesunder Plural <span class='ar'>جمع سالم</span>") + group("gebrochen", "Gebrochener Plural <span class='ar'>جمع تكسير</span>") +
-    `<div class="plural-ov-legend">✓ gemeistert · ● in Arbeit · ○ noch nicht geübt/offen</div>
-     <button class="ghost-btn" id="plural-reset-btn" style="margin:.8rem auto 0;display:block;">Plural-Fortschritt zurücksetzen</button>`;
-  document.getElementById("plural-reset-btn").onclick = resetPluralProgress;
+    `<div class="plural-ov-legend">✓ gekonnt · ○ noch offen (nicht geübt oder zuletzt falsch)</div>`;
 }
 
 function resetPluralProgress(){
-  if(!confirm("Gesamten Plural-Fortschritt zurücksetzen?")) return;
+  if(!confirm("Gesamten Plural-Fortschritt zurücksetzen? Alle Plurale zählen danach wieder als offen.")) return;
   pluralProgress = {}; savePluralProgress();
   pluralSessionCorrect = 0; pluralSessionTotal = 0; pluralRetry = []; pluralLastKey = null;
   renderPluralView();
@@ -1027,7 +996,7 @@ function pickPluralWord(pool){
   pluralRetry.forEach(r => r.after--);
   const due = pluralRetry.findIndex(r => r.after <= 0 && pool.includes(r.word) && r.word.arabic !== pluralLastKey);
   if(due >= 0) return pluralRetry.splice(due, 1)[0].word;
-  // 2) gewichtet: ungeübt/falsch häufiger, gemeisterte (nur im Freimodus) selten
+  // 2) gewichtet: ungeübt/falsch häufiger, gekonnte (nur im Freimodus) selten
   let cand = pluralOnlyOpen ? pool.filter(w => !pMastered(w)) : pool;
   if(cand.length === 0) return null;
   if(cand.length > 1) cand = cand.filter(w => w.arabic !== pluralLastKey);
@@ -1052,7 +1021,7 @@ function nextPluralCard(){
   const w = pickPluralWord(pool);
   if(!w){
     const c = pluralCounts(pool);
-    cardWrap.innerHTML = `<div class="empty-state"><div class="big">🎉 Alle ${c.total} Plurale in dieser Auswahl gemeistert!</div>
+    cardWrap.innerHTML = `<div class="empty-state"><div class="big">🎉 Alle ${c.total} Plurale in dieser Auswahl gekonnt!</div>
       <div style="margin:.6rem 0 1rem">Du kannst trotzdem weiter üben oder in der Übersicht nachsehen.</div>
       <button class="next-btn" id="plural-practice-all" style="display:block;">Trotzdem weiter üben</button></div>`;
     document.getElementById("plural-practice-all").onclick = () => { pluralOnlyOpen = false; buildPluralFilters(); nextPluralCard(); };
@@ -1130,7 +1099,8 @@ function selectPlural(choice, btn, correctPlural, word){
 
   const e = pEntry(word);
   e.seen++;
-  if(correct){ e.streak++; } else { e.streak = 0; e.wrong++; }
+  /* richtig: eine Stufe hoch · falsch: eine Stufe runter (Fortschritt bricht nicht auf 0 ein) */
+  if(correct){ e.streak = Math.min(PLURAL_MASTER, (e.streak || 0) + 1); } else { e.streak = Math.max(0, Math.min(e.streak || 0, PLURAL_MASTER) - 1); e.wrong++; }
   savePluralProgress();
   pluralLastKey = word.arabic;
   if(!correct && !pluralRetry.some(r => r.word === word)) pluralRetry.push({ word, after: 3 });
@@ -1163,13 +1133,14 @@ function selectPlural(choice, btn, correctPlural, word){
   document.getElementById("plural-reveal-badge").innerHTML = badgeHtml;
   const left = Math.max(0, PLURAL_MASTER - e.streak);
   document.getElementById("plural-reveal-status").innerText =
-    e.streak >= PLURAL_MASTER ? "✓ Gemeistert" : (left === PLURAL_MASTER ? `Noch ${left}× richtig in Folge bis gemeistert` : `Noch ${left}× richtig bis gemeistert`);
+    e.streak >= PLURAL_MASTER ? "✓ Gekonnt" : "Zuletzt falsch — kommt gleich nochmal";
   reveal.style.display = "block";
 
   updatePluralStats();
   document.getElementById("plural-next-btn").style.display = "block";
 }
 
+document.getElementById("plural-reset-btn").addEventListener("click", () => { Sound.click(); resetPluralProgress(); });
 document.getElementById("plural-trainer-btn").addEventListener("click", () => { Sound.click(); openPluralTrainer(); });
 document.getElementById("plural-close").addEventListener("click", () => { Sound.click(); closePluralTrainer(); });
 document.getElementById("plural-overlay").addEventListener("click", e => {
