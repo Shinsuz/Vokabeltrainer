@@ -475,7 +475,7 @@ function buildLessonTabs(){
   allBtn.dataset.key = "alle";
   wrap.appendChild(allBtn);
 
-  /* Schlüssel wie "13a"/"13b": erst nach Zahl, dann nach Suffix sortieren; "Grammatik" ans Ende */
+  /* Schlüssel wie "9a"/"9b": erst nach Zahl, dann nach Suffix sortieren; "Grammatik" ans Ende */
   const lessonOrder = k => { const m = String(k).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [Infinity, String(k)]; };
   Object.keys(LESSONS).sort((a,b) => { const x = lessonOrder(a), y = lessonOrder(b); return x[0] !== y[0] ? (x[0] < y[0] ? -1 : 1) : x[1].localeCompare(y[1]); }).forEach(key => {
     const hasWords = LESSONS[key].length > 0;
@@ -872,7 +872,7 @@ let pluralLastKey = null;
 /* alle Plurale (jedes Wort nur einmal, auch wenn es in mehreren Lektionen steht) */
 /* Standard: nur Plurale, die im Buch vorkommen (ab Lektion 12). Die Plurale zu den
    Wörtern aus Lektion 1–11 sind eine Ergänzung und lassen sich per Knopf dazuschalten. */
-const PLURAL_BOOK_LESSONS = ["12", "13a", "13b"];
+const PLURAL_BOOK_LESSONS = ["12", "13"];
 let pluralIncludeOld = false;
 function pluralPoolAll(){
   const seen = new Set();

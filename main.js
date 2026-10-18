@@ -742,7 +742,7 @@ const SATZANALYSE = {
       { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"كِتَابُهَا", tags:{1:"Khabar"}}, {text:"هِيَ", tags:{}}], translation: "Das ist IHR Buch." }
     ]
   }  ,
-  "13a": {
+  "13": {
     concepts: [
       {
         term: "Plural von Nomen und Adjektiven",
@@ -778,12 +778,32 @@ const SATZANALYSE = {
       },
       {
         term: "ذَهَبُوا — sie gingen",
-        explanation: "Die Verbform für 'sie (Plural) gingen' ist ذَهَبُوا. Das Alif am Ende wird nicht ausgesprochen (stummes Alif). Aussprache: dhahabû. Alle Pronomen in diesem Teil der Lektion sind männlich; weibliche folgen in Teil B."
+        explanation: "Die Verbform für 'sie (Plural) gingen' ist ذَهَبُوا. Das Alif am Ende wird nicht ausgesprochen (stummes Alif). Aussprache: dhahabû. In Teil A sind alle Pronomen männlich; die weibliche Form (ذَهَبْنَ) und die weiblichen Pronomen folgen in Teil B."
       },
       {
         term: "بَعْضٌ — einige",
         explanation: "بَعْضٌ bedeutet 'einige': بَعْضُهُمْ مُدَرِّسُونَ وَبَعْضُهُمْ مُهَنْدِسُونَ (Einige von ihnen sind Lehrer und einige sind Ingenieure)."
-      }
+      },
+      {
+        term: "Teil B: هُنَّ — sie (Plural, weiblich)",
+        explanation: "Der Plural von هِيَ ('sie', Singular feminin) ist هُنَّ ('sie', Plural feminin): هُمْ إِخْوَتِي (Sie sind meine Brüder) und هُنَّ أَخَوَاتِي (und sie sind meine Schwestern). هَؤُلَاءِ gilt für männlich und weiblich gleichermaßen."
+      },
+      {
+        term: "Besitzendung ـهُنَّ — ihr (Plural, weiblich)",
+        explanation: "Der Plural der besitzanzeigenden Endung ـهَا (Singular feminin) ist ـهُنَّ ('ihr', besitzt Plural feminin). Das Personalpronomen für 'sie' (Pl. f.) und das besitzanzeigende Fürwort für 'ihr' (Pl. f.) sind gleich: هُنَّ زَمِيلَاتِي وَهَذَا بَيْتُهُنَّ (Das sind meine Klassenkameradinnen und dies ist ihr Haus)."
+      },
+      {
+        term: "ذَهَبْنَ — sie gingen (weiblich)",
+        explanation: "In Teil A haben wir ذَهَبُوا gelernt: 'sie gingen' (maskulin). 'Sie gingen' (feminin) heißt ذَهَبْنَ (dhahabna): ذَهَبُوا إِلَى الْجَامِعَةِ (Sie gingen zur Universität) — ذَهَبْنَ إِلَى الْمَكْتَبَةِ (Sie gingen zur Bücherei)."
+      },
+      {
+        term: "Unregelmäßige Plurale: بَنَاتٌ، أَخَوَاتٌ، فَتَيَاتٌ",
+        explanation: "Der gesunde weibliche Plural hängt ـَاتٌ an (die Ta marbûta ة wird zum offenen Ta ت, das kurze 'a' davor wird zum langen 'â'): مُسْلِمَةٌ ← مُسْلِمَاتٌ. Unregelmäßig sind: بِنْتٌ ← بَنَاتٌ, أُخْتٌ ← أَخَوَاتٌ, فَتَاةٌ ← فَتَيَاتٌ. Auch النِّسَاءُ ('die Frauen') ist der Plural von الْمَرْأَةُ, aber von einer anderen Wurzel."
+      },
+      {
+        term: "Teil C: أُولَئِكَ — jene (Plural von ذَلِكَ und تِلْكَ)",
+        explanation: "Der Plural von ذَلِكَ und تِلْكَ ist أُولَئِكَ ('jene'). Beachte: Das و in أُولَئِكَ wird nicht ausgesprochen; das Wort wird 'ulâ'ika' gesprochen."
+      },
     ],
     questions: [
       {
@@ -855,7 +875,70 @@ const SATZANALYSE = {
         question: "Was bedeutet <span class='ar'>بَعْضُهُمْ</span>?",
         choices: ["alle von ihnen", "einige von ihnen", "keiner von ihnen", "ihr Vater"],
         correct: "einige von ihnen"
-      }
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von <span class='ar'>هِيَ</span> („sie“, Singular feminin)?",
+        choices: ["<span class='ar'>هُوَ</span>", "<span class='ar'>هُمْ</span>", "<span class='ar'>هُنَّ</span>", "<span class='ar'>هَؤُلَاءِ</span>"],
+        correct: "<span class='ar'>هُنَّ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „ihr Haus“ (Plural „sie“, weiblich) auf Arabisch?",
+        choices: ["<span class='ar'>بَيْتُهُ</span>", "<span class='ar'>بَيْتُهَا</span>", "<span class='ar'>بَيْتُهُمْ</span>", "<span class='ar'>بَيْتُهُنَّ</span>"],
+        correct: "<span class='ar'>بَيْتُهُنَّ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „sie gingen“ (weiblich) auf Arabisch?",
+        choices: ["<span class='ar'>ذَهَبُوا</span>", "<span class='ar'>ذَهَبَتْ</span>", "<span class='ar'>ذَهَبْنَ</span>", "<span class='ar'>ذَهَبَ</span>"],
+        correct: "<span class='ar'>ذَهَبْنَ</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>هُنَّ</span> („sie“, Pl. f.) und <span class='ar'>ـهُنَّ</span> („ihr“, Pl. f.) haben dieselbe Form.",
+        correct: true
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>هَؤُلَاءِ</span> wird für männlich und weiblich gleichermaßen verwendet.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von <span class='ar'>بِنْتٌ</span>?",
+        choices: ["<span class='ar'>بِنْتَاتٌ</span>", "<span class='ar'>بَنَاتٌ</span>", "<span class='ar'>أَخَوَاتٌ</span>", "<span class='ar'>فَتَيَاتٌ</span>"],
+        correct: "<span class='ar'>بَنَاتٌ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von <span class='ar'>أُخْتٌ</span>?",
+        choices: ["<span class='ar'>أُخْتَاتٌ</span>", "<span class='ar'>بَنَاتٌ</span>", "<span class='ar'>إِخْوَةٌ</span>", "<span class='ar'>أَخَوَاتٌ</span>"],
+        correct: "<span class='ar'>أَخَوَاتٌ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von <span class='ar'>فَتَاةٌ</span>?",
+        choices: ["<span class='ar'>فَتَاتَاتٌ</span>", "<span class='ar'>فَتَيَاتٌ</span>", "<span class='ar'>بَنَاتٌ</span>", "<span class='ar'>أَخَوَاتٌ</span>"],
+        correct: "<span class='ar'>فَتَيَاتٌ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von <span class='ar'>الْمَرْأَةُ</span> („die Frau“)?",
+        choices: ["<span class='ar'>الْبَنَاتُ</span>", "<span class='ar'>الْأَخَوَاتُ</span>", "<span class='ar'>النِّسَاءُ</span>", "<span class='ar'>الْفَتَيَاتُ</span>"],
+        correct: "<span class='ar'>النِّسَاءُ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von <span class='ar'>ذَلِكَ</span> und <span class='ar'>تِلْكَ</span>?",
+        choices: ["<span class='ar'>هَؤُلَاءِ</span>", "<span class='ar'>أُولَئِكَ</span>", "<span class='ar'>هُمْ</span>", "<span class='ar'>هُنَّ</span>"],
+        correct: "<span class='ar'>أُولَئِكَ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Das <span class='ar'>و</span> in <span class='ar'>أُولَئِكَ</span> wird nicht ausgesprochen.",
+        correct: true
+      },
     ],
     sentences: [
       { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar"}, blank:{options:["مُدَرِّسُونَ","مُدَرِّسَاتٌ","مُدَرِّسٌ","مُدَرِّسَةٌ"]}}], translation: "Sie sind Lehrer. <small>(sie = mehrere Männer → هُمْ)</small>" },
@@ -893,7 +976,21 @@ const SATZANALYSE = {
       { words: [{text:"ذَهَبُوا", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Majrur"}}], translation: "Sie gingen zur Moschee. <small>(sie = mehrere Männer)</small>" },
       { words: [{text:"ذَهَبُوا", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَدْرَسَةِ", tags:{1:"Majrur"}}], translation: "Sie gingen zur Schule. <small>(sie = mehrere Männer)</small>" },
       { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"طَالِبٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"طُلَّابٌ", tags:{1:"Khabar",2:"Gebrochener Plural"}}], translation: "Dies ist ein Student und das sind Studenten." },
-      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist eine Lehrerin und das sind Lehrerinnen." }
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist eine Lehrerin und das sind Lehrerinnen." },
+      { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"إِخْوَتِي", tags:{1:"Khabar"}}], translation: "Sie sind meine Brüder. <small>(sie = mehrere Männer → هُمْ)</small>" },
+      { words: [{text:"هُنَّ", tags:{1:"Mubtada"}, blank:{options:["هُمْ","هُنَّ","هِيَ","هُوَ"]}}, {text:"أَخَوَاتِي", tags:{1:"Khabar"}}], translation: "Sie sind meine Schwestern. <small>(sie = mehrere Frauen → هُنَّ)</small>" },
+      { words: [{text:"هُنَّ", tags:{1:"Mubtada"}}, {text:"زَمِيلَاتِي", tags:{1:"Khabar"}}], translation: "Sie sind meine Klassenkameradinnen. <small>(sie = mehrere Frauen → هُنَّ)</small>" },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"بَيْتُهُنَّ", tags:{1:"Khabar"}, blank:{options:["بَيْتُهَا","بَيْتُهُمْ","بَيْتُهُنَّ","بَيْتُهُ"]}}], translation: "Dies ist ihr Haus. <small>(ihr = deren, mehrere Frauen → ـهُنَّ)</small>" },
+      { words: [{text:"أَيْنَ", tags:{1:"Khabar"}}, {text:"إِخْوَتُكَ", tags:{1:"Mubtada"}}], translation: "Wo sind deine Brüder?" },
+      { words: [{text:"وَ", tags:{}}, {text:"أَيْنَ", tags:{1:"Khabar"}}, {text:"أَخَوَاتُكَ", tags:{1:"Mubtada"}}], translation: "Und wo sind deine Schwestern?" },
+      { words: [{text:"ذَهَبُوا", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْجَامِعَةِ", tags:{1:"Majrur"}}], translation: "Sie gingen zur Universität. <small>(sie = mehrere Männer)</small>" },
+      { words: [{text:"ذَهَبْنَ", tags:{1:"Fi'l"}, blank:{options:["ذَهَبُوا","ذَهَبْنَ","ذَهَبَتْ","ذَهَبَ"]}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَكْتَبَةِ", tags:{1:"Majrur"}}], translation: "Sie gingen zur Bücherei. <small>(sie = mehrere Frauen → هُنَّ)</small>" },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"بِنْتٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"بَنَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist ein Mädchen und das sind Mädchen." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"أُخْتٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"أَخَوَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist eine Schwester und das sind Schwestern." },
+      { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"فَتَاةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"فَتَيَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist eine junge Frau und das sind junge Frauen." },
+      { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"طَالِبٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"أُولَئِكَ", tags:{1:"Mubtada"}, blank:{options:["هَؤُلَاءِ","أُولَئِكَ","ذَلِكَ","تِلْكَ"]}}, {text:"طُلَّابٌ", tags:{1:"Khabar",2:"Gebrochener Plural"}}], translation: "Jener ist ein Student und jene sind Studenten." },
+      { words: [{text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"أُولَئِكَ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Jene ist eine Lehrerin und jene sind Lehrerinnen." },
+      { words: [{text:"أُولَئِكَ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسُونَ", tags:{1:"Khabar"}}], translation: "Jene sind Ingenieure." }
     ]
   }
 
@@ -913,5 +1010,5 @@ const SATZANALYSE_LABELS = {
   "10": "Lektion 10",
   "11": "Lektion 11",
   "12": "Lektion 12",
-  "13a": "Lektion 13a"
+  "13": "Lektion 13"
 };

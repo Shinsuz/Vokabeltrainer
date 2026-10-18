@@ -156,7 +156,7 @@ const LESSONS = {
     ],
 
   7:[
-    { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)", categories: ["ismishara", "mabni"] },
+    { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)", plural: "أُولَئِكَ", pluralBook: true, categories: ["ismishara", "mabni"] },
     { arabic: "النَّاقَةُ", german: "die Kamelstute", plural: "النُّوقُ", categories: ["ism"] },
     { arabic: "الْبَيْضَةُ", german: "das Ei", plural: "الْبَيْضَاتُ", categories: ["ism"] },
     { arabic: "الْبَطَّةُ", german: "die Ente", plural: "الْبَطَّاتُ", categories: ["ism"] },
@@ -289,7 +289,9 @@ const LESSONS = {
       { arabic: "بَعْدَ", german: "nach (das folgende Substantiv steht im Genitiv)", categories: ["ism", "mudaf"] },
       { arabic: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ", german: "das Königreich Saudi-Arabien", categories: ["ism"] },
     ],
-    "13a": [
+    /* Lektion 13 = Teil A + Teil B + Teil C */
+    "13": [
+      /* ---- Teil A ---- */
       { arabic: "هُمْ", german: "sie (m. Pl.; Plural von هُوَ „er“; nur Menschen) — gleiche Form wie das besitzanzeigende ـهُمْ „ihr“", categories: ["pronomen", "mabni"] },
       { arabic: "ـهُ", german: "besitzanzeigende Endung 'sein' (m. s. besitz., z. B. بَيْتُهُ)", plural: "ـهُمْ", categories: ["pronomen", "mabni"] },
       { arabic: "ـهُمْ", german: "besitzanzeigende Endung 'ihr' (m. Pl. besitz., Plural von ـهُ, z. B. بَيْتُهُمْ); hat die gleiche Form wie 'sie' (m. Pl.)", categories: ["pronomen", "mabni"] },
@@ -353,9 +355,7 @@ const LESSONS = {
       { arabic: "عَمٌّ", german: "ein Onkel (väterlicherseits)", plural: "أَعْمَامٌ", categories: ["ism"] },
       { arabic: "فَلَّاحٌ", german: "ein Bauer", plural: "فَلَّاحُونَ", categories: ["ism"] },
 
-    ],
 
-    "13b": [
       /* ---- Teil B ---- */
       { arabic: "هِيَ", german: "sie (fem. Singular)", plural: "هُنَّ", categories: ["pronomen", "mabni"] },
       { arabic: "هُنَّ", german: "sie (f. Pl.; Plural von هِيَ „sie“, fem. Singular) — gleiche Form wie das besitzanzeigende ـهُنَّ „ihr“", categories: ["pronomen", "mabni"] },
@@ -372,6 +372,10 @@ const LESSONS = {
       { arabic: "عَمَّةٌ", german: "eine Tante (väterlicherseits)", plural: "عَمَّاتٌ", categories: ["ism"] },
       { arabic: "زَوْجٌ", german: "ein Ehemann", plural: "أَزْوَاجٌ", categories: ["ism"] },
       { arabic: "الْمَرْأَةُ", german: "die Frau", plural: "النِّسَاءُ", pluralType: "gebrochen", categories: ["ism"] },
+
+      /* ---- Teil C ---- */
+      { arabic: "ذَلِكَ", german: "das, jenes (maskulin)", plural: "أُولَئِكَ", pluralBook: true, categories: ["ismishara", "mabni"] },
+      { arabic: "أُولَئِكَ", german: "jene (Plural von ذَلِكَ und تِلْكَ; ulâ'ika) — das و wird nicht ausgesprochen", categories: ["ismishara", "mabni"] },
     ],
 
   Grammatik: [
@@ -455,8 +459,7 @@ const LESSON_LABELS = {
   10: "Lektion 10",
   11: "Lektion 11",
   12: "Lektion 12",
-  "13a": "Lektion 13a",
-  "13b": "Lektion 13b"
+  13: "Lektion 13"
 };
 
 /* ==========================================================================
