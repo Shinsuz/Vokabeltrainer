@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plural-Übung | Boycott-Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css?v=6">
+<script src="plural-saetze.js"></script>
+<style>
+.pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
+.word-static.chg{border-bottom:2px solid var(--primary-color,#e5ba73)}
+.word-static.slot-now{outline:2px dashed var(--primary-color,#e5ba73);outline-offset:2px}
+.word-static.ok{color:#7fd6c2}
+.word-static.bad{color:#ff8f8f}
+.pl-de{text-align:center;opacity:.85;margin:6px 0;font-style:italic}
+.word-row{direction:rtl}
+  /* ---- Plural-Trainer: nur das Nötigste, Rest erbt vom bestehenden Theme ---- */
+  .plural-modal{ max-width: 560px; }
+  .plural-stats{
+    display:flex; gap:1.2rem; justify-content:center; align-items:center;
+    margin:.2rem 0 1rem; color:#8d826c; font-size:.78rem; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase;
+  }
+  .plural-stats b{ color: var(--primary-color); font-weight:700; }
+  .plural-type-badge{
+    display:inline-flex; align-items:center; margin-left:.5rem;
+    padding:.18rem .6rem; border-radius:999px; font-size:.68rem; font-weight:700;
+    letter-spacing:.03em; white-space:nowrap; vertical-align:middle;
+    border:1px solid rgba(229,186,115,.4);
+  }
+  .plural-type-badge.gesund{
+    background:linear-gradient(135deg,rgba(244,194,111,.2),rgba(229,186,115,.07));
+    color:#f4dfb3;
+  }
+  .plural-type-badge.gebrochen{
+    background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    border-color:rgba(255,255,255,.25);
+    color:#d9d2c2;
+  }
+  .plural-reveal{
+    margin:.6rem auto 1.1rem; padding:1rem 1rem .9rem; max-width:360px;
+    border:1px solid rgba(229,186,115,.3); border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+    text-align:center;
+  }
+  .plural-reveal-label{
+    color:#8d826c; font-size:.68rem; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; margin-bottom:.35rem;
+  }
+  .plural-reveal-word{
+    font-size:2rem !important; line-height:1.3; margin:0 0 .5rem;
+  }
+  .plural-progress{ height:8px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden; margin:.2rem 0 .5rem; }
+  .plural-progress-fill{ height:100%; background:linear-gradient(90deg,#c9a66b,#e5ba73); transition:width .3s ease; }
+  .plural-progress-label{ text-align:center; color:#cbbfa6; font-size:.9rem; margin-bottom:.5rem; }
+  .plural-progress-label b{ color:var(--primary-color); }
+  .plural-progress-label b.open{ color:#f0935a; }
+  .plural-chips{ display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; margin-bottom:.8rem; }
+  .plural-chip{ padding:.18rem .65rem; border-radius:999px; font-size:.72rem; font-weight:700; letter-spacing:.03em; border:1px solid rgba(255,255,255,.2); color:#d9d2c2; }
+  .plural-chip.gesund{ border-color:rgba(229,186,115,.5); color:#f4dfb3; }
+  #plural-filter-row{ margin-bottom:.8rem; justify-content:center; flex-wrap:wrap; gap:.4rem; }
+  .plural-trans-row{ text-align:center; margin:.2rem 0 .6rem; min-height:2.2rem; }
+  .plural-trans-btn{ background:none; border:1px dashed rgba(229,186,115,.45); color:#e5ba73; border-radius:999px; padding:.3rem .9rem; font-size:.8rem; cursor:pointer; font-family:inherit; }
+  .plural-trans{ font-size:1.1rem; color:#ecdfc8; margin-top:.2rem; }
+  .plural-reveal-status{ margin-top:.5rem; font-size:.78rem; color:#8d826c; letter-spacing:.04em; }
+  .plural-overview{ max-height:55vh; overflow-y:auto; }
+  .plural-ov-row{ display:grid; grid-template-columns:1.6rem 1fr 1fr 1fr; gap:.5rem; align-items:baseline; padding:.4rem .2rem; border-bottom:1px solid rgba(201,166,107,.08); font-size:.95rem; }
+  .plural-ov-row .ar{ font-family:var(--font-arabic); font-size:1.2rem; direction:rtl; color:#ecdfc8; }
+  .plural-ov-row .ar.pl{ color:#e5ba73; }
+  .plural-ov-row .de{ color:#cbbfa6; font-size:.85rem; text-align:center; }
+  .plural-ov-row .de small{ color:#f0935a; }
+  .plural-ov-row.done .st{ color:#7fd6c2; } .plural-ov-row.prog .st{ color:#e5ba73; } .plural-ov-row.open .st{ color:#8d826c; }
+  .plural-ov-legend{ text-align:center; color:#8d826c; font-size:.75rem; margin-top:.6rem; }
+</style>
+</head>
+<body class="bb-trainer">
+
+  <nav class="tr-topbar" aria-label="Navigation">
+    <div class="nav-links">
+      <a href="index.html">Vokabeln</a>
+      <a href="satzanalyse.html">Grammatik</a>
+      <a href="plural-uebung.html" class="active">Plural-Übung</a>
+      <a href="index.html#glossar" class="nav-glossary">Glossar</a>
+    </div>
+  </nav>
+
+  <header>
+    <div class="ornament">◇ ✦ ◇</div>
+    <h1>Plural-Übung</h1>
+    <span class="ar-sub">الْجَمْعُ فِي الْجُمْلَةِ</span>
+    <p class="subtitle">Plurale lernen und in ganzen Sätzen anwenden</p>
+    <div class="tr-divider"></div>
+  </header>
+
+  <main>
+    <div class="pill-row">
+      <div class="pill-group" id="area-tabs">
+        <button class="lesson-pill active" data-area="plurale">🔁 Plurale trainieren</button>
+        <button class="lesson-pill" data-area="saetze">✍️ Übungssätze</button>
+      </div>
+    </div>
+    <div id="sec-plurale">
+      <div id="plural-stats-box"></div>
+      <div class="pill-row" id="plural-filter-row"></div>
+      <div class="card-outer">
+        <svg class="corner tl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/></svg>
+        <svg class="corner tr" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/></svg>
+        <svg class="corner bl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/></svg>
+        <svg class="corner br" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/></svg>
+        <div class="card plural-card" id="plural-card"></div>
+      </div>
+      <div class="plural-overview" id="plural-overview" style="display:none;"></div>
+      <div class="controls">
+        <button type="button" class="ghost-btn" id="plural-reset-btn">↺ Plural-Fortschritt zurücksetzen</button>
+      </div>
+    </div>
+
+    <div id="sec-saetze" style="display:none">
+    <div class="stats-row">
+      <div class="stats-pill">
+        <div>Gesamt <b id="stat-total">0</b></div>
+        <div class="mastered">Gekonnt <b id="stat-mastered">0</b></div>
+      </div>
+      <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
+    </div>
+
+    <div class="pill-row">
+      <div class="pill-group" id="lesson-tabs"></div>
+    </div>
+    <div class="scope-hint" id="scope-hint">Wähle bei jedem markierten Wort die richtige Pluralform — auch Pronomen und Verben müssen mit.</div>
+
+    <div class="card-outer">
+      <svg class="corner tl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <svg class="corner tr" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <svg class="corner bl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <svg class="corner br" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
+      <div class="card" id="card"></div>
+      <div id="end-overlay" class="end-overlay" aria-hidden="true">
+        <div class="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
+          <h2 id="end-title">Alles gekonnt!</h2>
+          <p id="end-message">Du hast alle Sätze in diesem Bereich im Plural gekonnt.</p>
+          <div class="end-actions">
+            <button class="btn-replay" id="end-replay">Nochmal üben</button>
+            <button class="btn-back" id="end-back">Zurück zur Übersicht</button>
+            <button class="btn-close" id="end-close">Schließen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-row">
+      <svg class="star-mark" viewBox="0 0 100 100"><polygon points="50,4 61,32 92,32 66,50 76,80 50,62 24,80 34,50 8,32 39,32" fill="var(--primary-color)"/></svg>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">0 % gekonnt</div>
+    </div>
+
+    <div class="controls">
+      <button class="ghost-btn" id="reset-progress-btn">Fortschritt zurücksetzen</button>
+      <button class="ghost-btn" id="shuffle-btn">🔀 Neu mischen</button>
+    </div>
+    </div><!-- /sec-saetze -->
+  </main>
+
+  <footer>
+    <div class="made-by">made by <a href="https://boycott-buddy.com/" target="_blank" rel="noopener">boycott-buddy.com</a></div>
+  </footer>
+
+<script src="vocab.js"></script>
+<script>
+/* ===== Plurale trainieren (aus dem Vokabeltrainer hierher verschoben) ===== */
+(() => {
+const displayArabic = t => t;           // Plurale immer mit Harakat zeigen
+function pShuffle(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+/* ---------- Plural-Trainer ----------
+   Eigener Modus (Reiter "Plurale trainieren" auf der Seite Plural-Übung): zeigt den Singular einer
+   Vokabel mit "plural"-Feld; man wählt die richtige Pluralform unter 3
+   Fake-Pluralen. Fortschritt wird pro Wort gespeichert (localStorage), sodass man
+   jederzeit sieht, wie viele Plurale noch fehlen — getrennt nach gesundem und
+   gebrochenem Plural. Ein Plural gilt als gekonnt, wenn er
+   PLURAL_MASTER-mal in Folge richtig war. Falsche Plurale kommen nach ein paar
+   Karten automatisch nochmal. */
+const PLURAL_PROGRESS_KEY = "plural_progress_v1";
+const PLURAL_MASTER = 1;   // gekonnt = letzte Antwort richtig; Fehler zieht es wieder ab
+let pluralProgress = (() => { try{ return JSON.parse(localStorage.getItem(PLURAL_PROGRESS_KEY)) || {}; }catch(e){ return {}; } })();
+function savePluralProgress(){ try{ localStorage.setItem(PLURAL_PROGRESS_KEY, JSON.stringify(pluralProgress)); }catch(e){} }
+function pEntry(w){ return pluralProgress[w.arabic] || (pluralProgress[w.arabic] = { streak: 0, wrong: 0, seen: 0 }); }
+function pStreak(w){ const e = pluralProgress[w.arabic]; return e ? Math.min(e.streak || 0, PLURAL_MASTER) : 0; }
+function pMastered(w){ return pStreak(w) >= PLURAL_MASTER; }
+
+let pluralSessionCorrect = 0, pluralSessionTotal = 0;
+let currentPluralWord = null;
+let pluralFilter = "alle";       // alle | gesund | gebrochen
+let pluralOnlyOpen = false;       // nur noch nicht gekonnte Plurale abfragen
+let pluralView = "trainer";      // trainer | overview
+let pluralRetry = [];            // [{word, after}] falsch beantwortete, kommen wieder
+let pluralLastKey = null;
+
+/* alle Plurale (jedes Wort nur einmal, auch wenn es in mehreren Lektionen steht) */
+/* Standard: nur Plurale, die im Buch vorkommen (ab Lektion 12). Die Plurale zu den
+   Wörtern aus Lektion 1–11 sind eine Ergänzung und lassen sich per Knopf dazuschalten. */
+const PLURAL_BOOK_LESSONS = ["12", "13"];
+let pluralIncludeOld = false;
+function pluralPoolAll(){
+  const seen = new Set();
+  return Object.entries(LESSONS)
+    .filter(([key]) => key !== "Grammatik")
+    .flatMap(([key, words]) => words.map(w => ({ w, inBook: PLURAL_BOOK_LESSONS.includes(key) })))
+    .filter(x => x.w.plural && (pluralIncludeOld || x.inBook || x.w.pluralBook))
+    .map(x => x.w)
+    .filter(w => !seen.has(w.arabic) && seen.add(w.arabic));
+}
+function pluralPool(){
+  return pluralPoolAll().filter(w => pluralFilter === "alle" || getPluralType(w) === pluralFilter);
+}
+function pluralCounts(list){
+  const mastered = list.filter(pMastered).length;
+  const inProgress = list.filter(w => !pMastered(w) && pStreak(w) > 0).length;
+  return { total: list.length, mastered, inProgress, open: list.length - mastered };
+}
+
+function updatePluralStats(){
+  const all = pluralPoolAll();
+  const g = pluralCounts(all.filter(w => getPluralType(w) === "gesund"));
+  const b = pluralCounts(all.filter(w => getPluralType(w) === "gebrochen"));
+  const sel = pluralCounts(pluralPool());
+  const lv = pluralPool().reduce((n, w) => n + pStreak(w), 0);
+  const pct = sel.total ? Math.round(lv / (sel.total * PLURAL_MASTER) * 100) : 0;
+  document.getElementById("plural-stats-box").innerHTML = `
+    <div class="plural-progress"><div class="plural-progress-fill" style="width:${pct}%"></div></div>
+    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Lektion 1–13" : "Plurale aus dem Buch (Lektion 12–13 inkl. Übung 1)"}</small></div>
+    <div class="plural-chips">
+      <span class="plural-chip gesund">Gesund ${g.mastered}/${g.total}</span>
+      <span class="plural-chip gebrochen">Gebrochen ${b.mastered}/${b.total}</span>
+    </div>`;
+}
+
+function buildPluralFilters(){
+  const row = document.getElementById("plural-filter-row");
+  const mk = (key, label, active) => `<button class="lesson-pill${active ? " active" : ""}" data-pf="${key}">${label}</button>`;
+  row.innerHTML =
+    mk("alle", "Alle", pluralFilter === "alle") +
+    mk("gesund", "Gesund", pluralFilter === "gesund") +
+    mk("gebrochen", "Gebrochen", pluralFilter === "gebrochen") +
+    `<button class="lesson-pill${pluralOnlyOpen ? " active" : ""}" data-pf="open">Nur offene</button>` +
+    `<button class="lesson-pill${pluralIncludeOld ? " active" : ""}" data-pf="old" title="Zusätzlich die Plurale zu den Wörtern aus Lektion 1–11">+ Lektion 1–11</button>` +
+    `<button class="lesson-pill${pluralView === "overview" ? " active" : ""}" data-pf="overview">Übersicht</button>`;
+  row.onclick = e => {
+    const btn = e.target.closest("[data-pf]");
+    if(!btn) return;
+    Sound.click();
+    const k = btn.dataset.pf;
+    if(k === "open") pluralOnlyOpen = !pluralOnlyOpen;
+    else if(k === "old"){ pluralIncludeOld = !pluralIncludeOld; pluralRetry = []; }
+    else if(k === "overview") pluralView = pluralView === "overview" ? "trainer" : "overview";
+    else { pluralFilter = k; pluralRetry = []; }
+    buildPluralFilters();
+    renderPluralView();
+  };
+}
+
+function openPluralTrainer(){
+  pluralSessionCorrect = 0; pluralSessionTotal = 0; pluralRetry = []; pluralView = "trainer";
+  buildPluralFilters();
+  renderPluralView();
+}
+
+function renderPluralView(){
+  updatePluralStats();
+  const card = document.getElementById("plural-card");
+  const ov = document.getElementById("plural-overview");
+  if(pluralView === "overview"){
+    card.style.display = "none"; ov.style.display = "block";
+    renderPluralOverview();
+  } else {
+    ov.style.display = "none"; card.style.display = "";
+    nextPluralCard();
+  }
+}
+
+/* Übersicht: alle Plurale mit Status (✓ gekonnt · ○ offen) */
+function renderPluralOverview(){
+  const ov = document.getElementById("plural-overview");
+  const pool = pluralPool();
+  if(pool.length === 0){ ov.innerHTML = `<div class="glossary-empty">Keine Plurale in dieser Auswahl.</div>`; return; }
+  const group = (type, title) => {
+    const list = pool.filter(w => getPluralType(w) === type);
+    if(!list.length) return "";
+    const c = pluralCounts(list);
+    const rows = list.map(w => {
+      const st = pMastered(w) ? ["done", "✓"] : (pStreak(w) > 0 ? ["prog", "●"] : ["open", "○"]);
+      const wr = (pluralProgress[w.arabic] || {}).wrong || 0;
+      return `<div class="plural-ov-row ${st[0]}">
+        <span class="st">${st[1]}</span>
+        <span class="ar">${displayArabic(w.arabic)}</span>
+        <span class="de">${w.german.replace(/\s*\([^)]*\)/g, "").trim()}${wr ? ` <small>✗${wr}</small>` : ""}</span>
+        <span class="ar pl">${displayArabic(w.plural)}</span>
+      </div>`;
+    }).join("");
+    return `<div class="glossary-group"><div class="glossary-group-title">${title} <span class="count">(${c.mastered}/${c.total} gekonnt · ${c.open} offen)</span></div>${rows}</div>`;
+  };
+  ov.innerHTML = group("gesund", "Gesunder Plural <span class='ar'>جمع سالم</span>") + group("gebrochen", "Gebrochener Plural <span class='ar'>جمع تكسير</span>") +
+    `<div class="plural-ov-legend">✓ gekonnt · ○ noch offen (nicht geübt oder zuletzt falsch)</div>`;
+}
+
+function resetPluralProgress(){
+  if(!confirm("Gesamten Plural-Fortschritt zurücksetzen? Alle Plurale zählen danach wieder als offen.")) return;
+  pluralProgress = {}; savePluralProgress();
+  pluralSessionCorrect = 0; pluralSessionTotal = 0; pluralRetry = []; pluralLastKey = null;
+  renderPluralView();
+}
+
+function pickPluralWord(pool){
+  // 1) falsch beantwortete Wörter kommen nach ein paar Karten wieder
+  pluralRetry.forEach(r => r.after--);
+  const due = pluralRetry.findIndex(r => r.after <= 0 && pool.includes(r.word) && r.word.arabic !== pluralLastKey);
+  if(due >= 0) return pluralRetry.splice(due, 1)[0].word;
+  // 2) gewichtet: ungeübt/falsch häufiger, gekonnte (nur im Freimodus) selten
+  let cand = pluralOnlyOpen ? pool.filter(w => !pMastered(w)) : pool;
+  if(cand.length === 0) return null;
+  if(cand.length > 1) cand = cand.filter(w => w.arabic !== pluralLastKey);
+  const weights = cand.map(w => {
+    const e = pluralProgress[w.arabic];
+    if(!e) return 4;
+    return Math.max(1, 2 + e.wrong * 2 - e.streak * 2 + (pMastered(w) ? -1 : 0));
+  });
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+  for(let i = 0; i < cand.length; i++){ r -= weights[i]; if(r <= 0) return cand[i]; }
+  return cand[cand.length - 1];
+}
+
+function nextPluralCard(){
+  const pool = pluralPool();
+  const cardWrap = document.getElementById("plural-card");
+  updatePluralStats();
+  if(pool.length === 0){
+    cardWrap.innerHTML = `<div class="empty-state"><div class="big">Noch keine Plurale hinterlegt.</div>Trage sie in <kbd>vocab.js</kbd> über das Feld <kbd>plural</kbd> ein.</div>`;
+    return;
+  }
+  const w = pickPluralWord(pool);
+  if(!w){
+    const c = pluralCounts(pool);
+    cardWrap.innerHTML = `<div class="empty-state"><div class="big">🎉 Alle ${c.total} Plurale in dieser Auswahl gekonnt!</div>
+      <div style="margin:.6rem 0 1rem">Du kannst trotzdem weiter üben oder in der Übersicht nachsehen.</div>
+      <button class="next-btn" id="plural-practice-all" style="display:block;">Trotzdem weiter üben</button></div>`;
+    document.getElementById("plural-practice-all").onclick = () => { pluralOnlyOpen = false; buildPluralFilters(); nextPluralCard(); };
+    return;
+  }
+  currentPluralWord = w;
+  renderPluralCard(pool);
+}
+
+function renderPluralCard(pool){
+  const word = currentPluralWord;
+  const correctPlural = word.plural.split("/")[0].trim();
+  const type = getPluralType(word);
+
+  /* Distraktoren: bevorzugt Plurale vom gleichen Typ, damit der Typ die Antwort nicht verrät */
+  const choices = [correctPlural];
+  const addDistractors = list => {
+    for(const w of pShuffle([...list])){
+      if(choices.length >= 4) break;
+      if(w === word || !w.plural) continue;
+      const c = w.plural.split("/")[0].trim();
+      if(!choices.includes(c)) choices.push(c);
+    }
+  };
+  const all = pluralPoolAll();
+  addDistractors(all.filter(w => getPluralType(w) === type));
+  addDistractors(all);
+  pShuffle(choices);
+
+  const shortDe = word.german.replace(/\s*\([^)]*\)/g, "").trim();
+  const cardWrap = document.getElementById("plural-card");
+  cardWrap.innerHTML = `
+    <div class="prompt-hint">Wie lautet der Plural von</div>
+    <div class="prompt-row-flex">
+      <div class="prompt-word">${displayArabic(word.arabic)}</div>
+    </div>
+    <div class="plural-trans-row">
+      <button type="button" class="plural-trans-btn" id="plural-trans-btn">Übersetzung anzeigen</button>
+      <div class="plural-trans" id="plural-trans" style="display:none;">${shortDe}</div>
+    </div>
+    <div class="feedback" id="plural-feedback"></div>
+    <div id="plural-reveal" class="plural-reveal" style="display:none;">
+      <div class="plural-reveal-label">Der Plural lautet</div>
+      <div class="prompt-word plural-reveal-word" id="plural-reveal-word"></div>
+      <div id="plural-reveal-badge"></div>
+      <div class="plural-reveal-status" id="plural-reveal-status"></div>
+    </div>
+    <div class="mc-grid" id="plural-grid"></div>
+    <button class="next-btn" id="plural-next-btn" style="display:none;">Nächstes Wort ➔</button>
+  `;
+  document.getElementById("plural-trans-btn").onclick = () => {
+    const t = document.getElementById("plural-trans");
+    const show = t.style.display === "none";
+    t.style.display = show ? "block" : "none";
+    document.getElementById("plural-trans-btn").innerText = show ? "Übersetzung ausblenden" : "Übersetzung anzeigen";
+  };
+
+  const grid = document.getElementById("plural-grid");
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.innerText = displayArabic(choice);
+    btn.onclick = () => selectPlural(choice, btn, correctPlural, word);
+    grid.appendChild(btn);
+  });
+  document.getElementById("plural-next-btn").onclick = nextPluralCard;
+}
+
+function selectPlural(choice, btn, correctPlural, word){
+  const buttons = document.querySelectorAll("#plural-grid .opt-btn");
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById("plural-feedback");
+  const correct = choice === correctPlural;
+  pluralSessionTotal++; if(correct) pluralSessionCorrect++;
+
+  const e = pEntry(word);
+  e.seen++;
+  /* richtig: eine Stufe hoch · falsch: eine Stufe runter (Fortschritt bricht nicht auf 0 ein) */
+  if(correct){ e.streak = Math.min(PLURAL_MASTER, (e.streak || 0) + 1); } else { e.streak = Math.max(0, Math.min(e.streak || 0, PLURAL_MASTER) - 1); e.wrong++; }
+  savePluralProgress();
+  pluralLastKey = word.arabic;
+  if(!correct && !pluralRetry.some(r => r.word === word)) pluralRetry.push({ word, after: 3 });
+  if(correct) pluralRetry = pluralRetry.filter(r => r.word !== word);
+
+  const type = getPluralType(word);
+  const typeLabel = type === "gesund" ? "Gesunder Plural" : "Gebrochener Plural";
+  const badgeHtml = `<span class="plural-type-badge ${type}">${typeLabel}</span>`;
+
+  try{
+    if(correct){ Sound.correct(); } else { Sound.wrong(); }
+  }catch(err){}
+  if(correct){
+    btn.classList.add("correct");
+    feedback.innerText = "Richtig! 🎉";
+    feedback.className = "feedback ok";
+  } else {
+    btn.classList.add("wrong");
+    feedback.innerText = "Falsch — das merk ich mir, kommt gleich nochmal";
+    feedback.className = "feedback bad";
+    buttons.forEach(b => { if(b.innerText === displayArabic(correctPlural)) b.classList.add("correct"); });
+  }
+
+  // Übersetzung nach der Antwort immer zeigen
+  const t = document.getElementById("plural-trans"); t.style.display = "block";
+  document.getElementById("plural-trans-btn").style.display = "none";
+
+  const reveal = document.getElementById("plural-reveal");
+  document.getElementById("plural-reveal-word").innerText = displayArabic(word.plural);
+  document.getElementById("plural-reveal-badge").innerHTML = badgeHtml;
+  const left = Math.max(0, PLURAL_MASTER - e.streak);
+  document.getElementById("plural-reveal-status").innerText =
+    e.streak >= PLURAL_MASTER ? "✓ Gekonnt" : "Zuletzt falsch — kommt gleich nochmal";
+  reveal.style.display = "block";
+
+  updatePluralStats();
+  document.getElementById("plural-next-btn").style.display = "block";
+}
+
+document.getElementById("plural-reset-btn").addEventListener("click", () => { Sound.click(); resetPluralProgress(); });
+window.PluralTrainer = { open: openPluralTrainer };
+})();
+</script>
+<script>
+/* Die Sätze stehen in plural-saetze.js (PLURAL_SAETZE) — dort kannst du neue ergänzen. */
+const STORAGE_KEY = "pluralsatz_progress_v1";
+const SOUND_KEY = "pluralsatz_sound_muted";
+/* "gekonnt" = zuletzt komplett richtig; ein Fehler zieht den Satz wieder ab */
+const MASTER_THRESHOLD = 1;
+
+let selectedGroup = "alle";
+let progress = {};
+try{ progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {}; }catch(e){ progress = {}; }
+function saveProgress(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){} }
+
+/* ---------- Daten ---------- */
+const isSlot = w => Array.isArray(w);
+const ALL_ITEMS = PLURAL_SAETZE.map(s => ({
+  key: "p:" + s.satz.map(w => isSlot(w) ? w[0] : w).join("|"),
+  gruppe: s.gruppe || "Weitere",
+  de: s.de, dePl: s.dePl, satz: s.satz
+}));
+/* Pool aller Pluralformen für automatische falsche Antworten */
+const PLURAL_POOL = [...new Set(ALL_ITEMS.flatMap(i => i.satz.filter(isSlot).map(w => w[1])))];
+function groupNames(){ return [...new Set(ALL_ITEMS.map(i => i.gruppe))]; }
+function currentDeck(){ return selectedGroup === "alle" ? ALL_ITEMS : ALL_ITEMS.filter(i => i.gruppe === selectedGroup); }
+
+/* ---------- Sound (nie blockierend) ---------- */
+const Sound = (() => {
+  let ctx = null, muted = false;
+  try{ muted = localStorage.getItem(SOUND_KEY) === "1"; }catch(e){}
+  function tone(f, d){
+    if(muted) return;
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      if(!ctx) ctx = new AC(); if(ctx.state === "suspended") ctx.resume();
+      const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+      o.frequency.value = f; o.type = "sine"; g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.12, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + d + 0.02);
+    }catch(e){}
+  }
+  return {
+    correct(){ tone(660, .15); setTimeout(() => tone(880, .2), 120); },
+    wrong(){ tone(220, .3); },
+    click(){ tone(440, .05); },
+    isMuted(){ return muted; },
+    toggle(){ muted = !muted; try{ localStorage.setItem(SOUND_KEY, muted ? "1" : "0"); }catch(e){} return muted; }
+  };
+})();
+
+/* ---------- Fortschritt ---------- */
+function isKnown(item){ const e = progress[item.key]; return !!e && (e.streak || 0) >= MASTER_THRESHOLD; }
+let lastKey = null, pickQueue = [], pickSig = "", retryList = [];
+function markResult(item, correct){
+  const e = progress[item.key] || (progress[item.key] = { streak: 0, wrong: 0 });
+  if(correct) e.streak = MASTER_THRESHOLD; else { e.streak = 0; e.wrong = (e.wrong || 0) + 1; }
+  saveProgress(); lastKey = item.key;
+  if(correct) retryList = retryList.filter(r => r.key !== item.key);
+  else if(!retryList.some(r => r.key === item.key)) retryList.push({ key: item.key, after: 3 });
+  updateStats();
+}
+function updateGroupCounts(){
+  document.querySelectorAll("#lesson-tabs .lesson-pill").forEach(btn => {
+    const key = btn.dataset.key;
+    const items = key === "alle" ? ALL_ITEMS : ALL_ITEMS.filter(i => i.gruppe === key);
+    const known = items.filter(isKnown).length;
+    btn.textContent = `${key === "alle" ? "Alle" : key} · ${known}/${items.length}`;
+  });
+}
+function updateStats(){
+  const deck = currentDeck(), known = deck.filter(isKnown).length;
+  const pct = deck.length ? Math.round(known / deck.length * 100) : 0;
+  document.getElementById("stat-total").innerText = deck.length;
+  document.getElementById("stat-mastered").innerText = `${known}/${deck.length}`;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  const sig = selectedGroup;
+  if(deck.length && known === deck.length){
+    document.getElementById("progress-label").innerText = "100 % — Alles gekonnt!";
+    if(window.__endShownFor !== sig){ window.__endShownFor = sig; showEnd(); }
+  } else {
+    window.__endShownFor = null;
+    document.getElementById("progress-label").innerText = `${known} von ${deck.length} gekonnt · noch ${deck.length - known} offen`;
+    hideEnd();
+  }
+  updateGroupCounts();
+}
+function showEnd(){ const o = document.getElementById("end-overlay"); o.classList.add("show"); o.setAttribute("aria-hidden","false"); }
+function hideEnd(){ const o = document.getElementById("end-overlay"); o.classList.remove("show"); o.setAttribute("aria-hidden","true"); }
+
+function shuffle(a){ a = [...a]; for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* Auswahl wie im Grammatiktrainer: offene Sätze gemischt, je einmal pro Runde;
+   Fehler kommen nach ~3 Karten wieder; jede 4. Karte wiederholt Gekonntes. */
+function pickNext(deck){
+  const sig = selectedGroup + "|" + deck.length;
+  if(sig !== pickSig){ pickSig = sig; pickQueue = []; retryList = []; }
+  const byKey = new Map(deck.map(i => [i.key, i]));
+  retryList = retryList.filter(r => byKey.has(r.key));
+  retryList.forEach(r => r.after--);
+  const due = retryList.findIndex(r => r.after <= 0 && r.key !== lastKey);
+  if(due >= 0) return byKey.get(retryList.splice(due, 1)[0].key);
+  const known = deck.filter(isKnown), unknown = deck.filter(i => !isKnown(i));
+  const notLast = l => l.length > 1 ? l.filter(i => i.key !== lastKey) : l;
+  if(unknown.length === 0 || (known.length && Math.random() < 0.25)){
+    const pool = notLast(known.length ? known : deck);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  pickQueue = pickQueue.filter(k => byKey.has(k) && !isKnown(byKey.get(k)));
+  if(!pickQueue.length) pickQueue = shuffle(unknown.map(i => i.key));
+  let idx = pickQueue.findIndex(k => k !== lastKey); if(idx < 0) idx = 0;
+  return byKey.get(pickQueue.splice(idx, 1)[0]);
+}
+
+/* ---------- Karte ---------- */
+const cardEl = document.getElementById("card");
+let cur = null, st = null;
+function optionsFor(w){
+  const [sing, plur, wrong] = w;
+  let wrongs;
+  if(wrong && wrong.length) wrongs = [sing, ...wrong];
+  else {
+    const art = /^ال/.test(plur.replace(/[ً-ْ]/g, ""));
+    const same = PLURAL_POOL.filter(p => p !== plur && p !== sing && /^ال/.test(p.replace(/[ً-ْ]/g, "")) === art);
+    wrongs = [sing, ...shuffle(same).slice(0, 2)];
+  }
+  wrongs = [...new Set(wrongs)].filter(x => x !== plur).slice(0, 3);
+  return shuffle([plur, ...wrongs]);
+}
+function nextCard(){
+  const deck = currentDeck();
+  if(!deck.length){ cardEl.innerHTML = '<div class="prompt-hint">Keine Sätze in diesem Bereich.</div>'; return; }
+  cur = pickNext(deck); lastKey = cur.key;
+  const slots = cur.satz.map((w, i) => isSlot(w) ? i : -1).filter(i => i >= 0);
+  st = { slots, n: 0, answers: {}, allRight: true, done: false };
+  renderCard();
+}
+function renderCard(){
+  const slotNow = st.slots[st.n];
+  const sing = cur.satz.map((w, i) => `<div class="word-static ${isSlot(w) ? "chg" : ""}">${isSlot(w) ? w[0] : w}</div>`).join("");
+  const plur = cur.satz.map((w, i) => {
+    if(!isSlot(w)) return `<div class="word-static">${w}</div>`;
+    if(st.answers[i] !== undefined){
+      const ok = st.answers[i] === w[1];
+      return `<div class="word-static ${ok ? "ok" : "bad"}">${w[1]}</div>`;
+    }
+    return `<div class="word-static ${i === slotNow && !st.done ? "slot-now" : ""}">……</div>`;
+  }).join("");
+  const w = cur.satz[slotNow];
+  cardEl.innerHTML = `
+    <div class="prompt-hint">Setze den Satz in den Plural</div>
+    <div class="pl-label">Singular</div>
+    <div class="pl-de">${cur.de}</div>
+    <div class="sentence-plaque"><div class="word-row">${sing}</div></div>
+    <div class="pl-label">Plural</div>
+    <div class="sentence-plaque"><div class="word-row">${plur}</div></div>
+    ${st.done ? `<div class="pl-de">${cur.dePl || ""}</div>` : `<div class="prompt-hint">Plural von <span class="ar">${w[0]}</span> ?</div>`}
+    <div class="feedback" id="feedback"></div>
+    <div class="mc-grid" id="grid" ${st.done ? 'style="display:none"' : ""}></div>
+    <button class="next-btn" id="next-btn" style="display:none;">Weiter ➔</button>`;
+  if(!st.done){
+    const grid = document.getElementById("grid");
+    optionsFor(w).forEach(opt => {
+      const b = document.createElement("button");
+      b.className = "opt-btn ar"; b.innerText = opt;
+      b.onclick = () => choose(opt, b, w);
+      grid.appendChild(b);
+    });
+  } else {
+    const fb = document.getElementById("feedback");
+    fb.innerText = st.allRight ? "Alles richtig! 🎉" : "Fertig — der Satz kommt gleich nochmal.";
+    fb.className = "feedback " + (st.allRight ? "ok" : "bad");
+    const nb = document.getElementById("next-btn"); nb.style.display = "block"; nb.innerText = "Nächster Satz ➔";
+    nb.onclick = () => { markResult(cur, st.allRight); nextCard(); };
+  }
+}
+function choose(opt, btn, w){
+  const buttons = document.querySelectorAll("#grid .opt-btn");
+  buttons.forEach(b => b.disabled = true);
+  const ok = opt === w[1];
+  if(!ok) st.allRight = false;
+  buttons.forEach(b => { if(b.innerText === w[1]) b.classList.add("correct"); });
+  if(!ok) btn.classList.add("wrong");
+  const fb = document.getElementById("feedback");
+  fb.innerText = ok ? "Richtig! 🎉" : `Falsch — richtig wäre: ${w[1]}`;
+  fb.className = "feedback " + (ok ? "ok" : "bad");
+  ok ? Sound.correct() : Sound.wrong();
+  st.answers[st.slots[st.n]] = opt;
+  const nb = document.getElementById("next-btn"); nb.style.display = "block"; nb.innerText = "Weiter ➔";
+  nb.onclick = () => {
+    st.n++;
+    if(st.n >= st.slots.length){ st.done = true; }
+    renderCard();
+  };
+}
+
+/* ---------- Reiter, Knöpfe ---------- */
+function buildTabs(){
+  const wrap = document.getElementById("lesson-tabs");
+  wrap.innerHTML = "";
+  ["alle", ...groupNames()].forEach(key => {
+    const b = document.createElement("button");
+    b.className = "lesson-pill" + (selectedGroup === key ? " active" : "");
+    b.dataset.key = key; b.textContent = key === "alle" ? "Alle" : key;
+    wrap.appendChild(b);
+  });
+  wrap.onclick = e => {
+    const btn = e.target.closest(".lesson-pill"); if(!btn) return;
+    Sound.click(); selectedGroup = btn.dataset.key;
+    [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
+    window.__endShownFor = null; updateStats(); nextCard();
+  };
+}
+document.addEventListener("click", e => {
+  const id = e.target && e.target.id;
+  if(id === "end-replay"){
+    currentDeck().forEach(i => { progress[i.key] = { streak: 0, wrong: 0 }; });
+    saveProgress(); pickQueue = []; retryList = []; lastKey = null; window.__endShownFor = null; hideEnd(); updateStats(); nextCard();
+  }
+  if(id === "end-back"){ selectedGroup = "alle"; buildTabs(); window.__endShownFor = null; hideEnd(); updateStats(); nextCard(); }
+  if(id === "end-close") hideEnd();
+});
+document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
+document.getElementById("reset-progress-btn").addEventListener("click", () => {
+  if(!confirm("Gesamten Plural-Fortschritt zurücksetzen? Alle Sätze zählen danach wieder als offen.")) return;
+  progress = {}; saveProgress(); pickQueue = []; retryList = []; lastKey = null; window.__endShownFor = null;
+  updateStats(); nextCard();
+});
+const soundBtn = document.getElementById("sound-toggle");
+soundBtn.textContent = Sound.isMuted() ? "🔇" : "🔊";
+soundBtn.addEventListener("click", () => { soundBtn.textContent = Sound.toggle() ? "🔇" : "🔊"; });
+
+buildTabs();
+
+/* ---------- Umschalter: Plurale trainieren <-> Übungssätze ---------- */
+function showArea(area){
+  const pl = area === "plurale";
+  document.getElementById("sec-plurale").style.display = pl ? "" : "none";
+  document.getElementById("sec-saetze").style.display = pl ? "none" : "";
+  document.querySelectorAll("#area-tabs .lesson-pill").forEach(b => b.classList.toggle("active", b.dataset.area === area));
+  try{ localStorage.setItem("plural_area", area); }catch(e){}
+  if(pl) window.PluralTrainer.open(); else { updateStats(); nextCard(); }
+}
+document.getElementById("area-tabs").addEventListener("click", e => {
+  const b = e.target.closest(".lesson-pill"); if(!b) return; Sound.click(); showArea(b.dataset.area);
+});
+let __area = "plurale"; try{ __area = localStorage.getItem("plural_area") || "plurale"; }catch(e){}
+showArea(__area === "saetze" ? "saetze" : "plurale");
+</script>
+</body>
+</html>
