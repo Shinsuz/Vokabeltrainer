@@ -60,6 +60,8 @@
   .plural-progress-label b.open{ color:#f0935a; }
   .plural-chips{ display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; margin-bottom:.8rem; }
   .plural-chip{ padding:.18rem .65rem; border-radius:999px; font-size:.72rem; font-weight:700; letter-spacing:.03em; border:1px solid rgba(255,255,255,.2); color:#d9d2c2; }
+  .plural-chip.pronomen{ border-color:rgba(127,214,194,.5); color:#bfeee2; }
+  .plural-type-badge.pronomen{ background:rgba(127,214,194,.12); color:#bfeee2; border-color:rgba(127,214,194,.45); }
   .plural-chip.gesund{ border-color:rgba(229,186,115,.5); color:#f4dfb3; }
   #plural-filter-row{ margin-bottom:.8rem; justify-content:center; flex-wrap:wrap; gap:.4rem; }
   .plural-trans-row{ text-align:center; margin:.2rem 0 .6rem; min-height:2.2rem; }
@@ -201,7 +203,7 @@ let pluralLastKey = null;
 /* alle Plurale (jedes Wort nur einmal, auch wenn es in mehreren Lektionen steht) */
 /* Standard: nur Plurale, die im Buch vorkommen (ab Lektion 12). Die Plurale zu den
    Wörtern aus Lektion 1–11 sind eine Ergänzung und lassen sich per Knopf dazuschalten. */
-const PLURAL_BOOK_LESSONS = ["12", "13"];
+const PLURAL_BOOK_LESSONS = ["12", "13", "14"];
 let pluralIncludeOld = false;
 function pluralPoolAll(){
   const seen = new Set();
@@ -225,15 +227,17 @@ function updatePluralStats(){
   const all = pluralPoolAll();
   const g = pluralCounts(all.filter(w => getPluralType(w) === "gesund"));
   const b = pluralCounts(all.filter(w => getPluralType(w) === "gebrochen"));
+  const pr = pluralCounts(all.filter(w => getPluralType(w) === "pronomen"));
   const sel = pluralCounts(pluralPool());
   const lv = pluralPool().reduce((n, w) => n + pStreak(w), 0);
   const pct = sel.total ? Math.round(lv / (sel.total * PLURAL_MASTER) * 100) : 0;
   document.getElementById("plural-stats-box").innerHTML = `
     <div class="plural-progress"><div class="plural-progress-fill" style="width:${pct}%"></div></div>
-    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Lektion 1–13" : "Plurale aus dem Buch (Lektion 12–13 inkl. Übung 1)"}</small></div>
+    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Lektion 1–14" : "Plurale aus dem Buch (Lektion 12–14 inkl. Übung 1)"}</small></div>
     <div class="plural-chips">
       <span class="plural-chip gesund">Gesund ${g.mastered}/${g.total}</span>
       <span class="plural-chip gebrochen">Gebrochen ${b.mastered}/${b.total}</span>
+      <span class="plural-chip pronomen">Pronomen &amp; Verben ${pr.mastered}/${pr.total}</span>
     </div>`;
 }
 
@@ -244,6 +248,7 @@ function buildPluralFilters(){
     mk("alle", "Alle", pluralFilter === "alle") +
     mk("gesund", "Gesund", pluralFilter === "gesund") +
     mk("gebrochen", "Gebrochen", pluralFilter === "gebrochen") +
+    mk("pronomen", "Pronomen &amp; Verben", pluralFilter === "pronomen") +
     `<button class="lesson-pill${pluralOnlyOpen ? " active" : ""}" data-pf="open">Nur offene</button>` +
     `<button class="lesson-pill${pluralIncludeOld ? " active" : ""}" data-pf="old" title="Zusätzlich die Plurale zu den Wörtern aus Lektion 1–11">+ Lektion 1–11</button>` +
     `<button class="lesson-pill${pluralView === "overview" ? " active" : ""}" data-pf="overview">Übersicht</button>`;
@@ -301,7 +306,7 @@ function renderPluralOverview(){
     }).join("");
     return `<div class="glossary-group"><div class="glossary-group-title">${title} <span class="count">(${c.mastered}/${c.total} gekonnt · ${c.open} offen)</span></div>${rows}</div>`;
   };
-  ov.innerHTML = group("gesund", "Gesunder Plural <span class='ar'>جمع سالم</span>") + group("gebrochen", "Gebrochener Plural <span class='ar'>جمع تكسير</span>") +
+  ov.innerHTML = group("gesund", "Gesunder Plural <span class='ar'>جمع سالم</span>") + group("gebrochen", "Gebrochener Plural <span class='ar'>جمع تكسير</span>") + group("pronomen", "Pronomen &amp; Verben <span class='ar'>ضمائر وأفعال</span>") +
     `<div class="plural-ov-legend">✓ gekonnt · ○ noch offen (nicht geübt oder zuletzt falsch)</div>`;
 }
 
@@ -428,7 +433,7 @@ function selectPlural(choice, btn, correctPlural, word){
   if(correct) pluralRetry = pluralRetry.filter(r => r.word !== word);
 
   const type = getPluralType(word);
-  const typeLabel = type === "gesund" ? "Gesunder Plural" : "Gebrochener Plural";
+  const typeLabel = type === "gesund" ? "Gesunder Plural" : (type === "pronomen" ? "Pronomen / Verb" : "Gebrochener Plural");
   const badgeHtml = `<span class="plural-type-badge ${type}">${typeLabel}</span>`;
 
   try{

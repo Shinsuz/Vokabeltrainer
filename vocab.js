@@ -95,7 +95,7 @@ const LESSONS = {
     { arabic: "الْهِنْدُ", german: "Indien", categories: ["ism"] },
     { arabic: "الْجَامِعَةُ", german: "die Universität", plural: "الْجَامِعَاتُ", categories: ["ism"] },
     { arabic: "الْمُدِيرُ", german: "der Direktor", plural: "الْمُدِيرُونَ", categories: ["ism"] },
-    { arabic: "ذَهَبَ", german: "Er ist gegangen", plural: "ذَهَبُوا", categories: ["fiil", "mabni"] },
+    { arabic: "ذَهَبَ", german: "Er ist gegangen", plural: "ذَهَبُوا", pluralType: "pronomen", categories: ["fiil", "mabni"] },
     { arabic: "خَرَجَ", german: "Er ist hinaus gegangen", categories: ["fiil", "mabni"] }
   ],
 
@@ -156,7 +156,7 @@ const LESSONS = {
     ],
 
   7:[
-    { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)", plural: "أُولَئِكَ", pluralBook: true, categories: ["ismishara", "mabni"] },
+    { arabic: "تِلْكَ", german: "das, jenes (weibliche Form von ذَلِكَ)", plural: "أُولَئِكَ", pluralBook: true, pluralType: "pronomen", categories: ["ismishara", "mabni"] },
     { arabic: "النَّاقَةُ", german: "die Kamelstute", plural: "النُّوقُ", categories: ["ism"] },
     { arabic: "الْبَيْضَةُ", german: "das Ei", plural: "الْبَيْضَاتُ", categories: ["ism"] },
     { arabic: "الْبَطَّةُ", german: "die Ente", plural: "الْبَطَّاتُ", categories: ["ism"] },
@@ -233,8 +233,8 @@ const LESSONS = {
       { arabic: "لَهُ", german: "gehört ihm", categories: ["praeposition", "pronomen", "mabni"] },
       { arabic: "لَهَا", german: "gehört ihr", categories: ["praeposition", "pronomen", "mabni"] },
       { arabic: "لِي", german: "gehört mir", categories: ["praeposition", "pronomen", "mabni"] },
-      { arabic: "ذَهَبْتُ", german: "ich ging", categories: ["fiil", "mabni"] },
-      { arabic: "ذَهَبْتَ", german: "du gingst", categories: ["fiil", "mabni"] },
+      { arabic: "ذَهَبْتُ", german: "ich ging", plural: "ذَهَبْنَا", pluralType: "pronomen", pluralBook: true, categories: ["fiil", "mabni"] },
+      { arabic: "ذَهَبْتَ", german: "du gingst (m.)", plural: "ذَهَبْتُمْ", pluralType: "pronomen", pluralBook: true, categories: ["fiil", "mabni"] },
       { arabic: "مَعَ", german: "mit", categories: ["ism", "mudaf"] },
       { arabic: "بِ", german: "an, in", categories: ["praeposition", "harf", "mabni"] },
       { arabic: "بِالْجَامِعَةِ", german: "an der Universität", categories: ["praeposition", "ism"] },
@@ -262,7 +262,9 @@ const LESSONS = {
       { arabic: "الْعَمَّةُ", german: "die Tante (väterlicherseits)", plural: "الْعَمَّاتُ", categories: ["ism"] },
       { arabic: "سُورِيَا", german: "Syrien", categories: ["ism"] },
       { arabic: "الْخَالُ", german: "der Onkel (mütterlicherseits)", plural: "الْأَخْوَالُ", categories: ["ism"] },
-      { arabic: "الْمَدْرَسَةُ الْمُتَوَسِّطَةُ", german: "die Mittelschule", categories: ["ism"] },
+      { arabic: "الْمَدْرَسَةُ الِابْتِدَائِيَّةُ", german: "die Grundschule, die Unterstufe", categories: ["ism"] },
+      { arabic: "الْمَدْرَسَةُ الْمُتَوَسِّطَةُ", german: "die Mittelschule, die Mittelstufe", categories: ["ism"] },
+      { arabic: "الْمَلْعَبُ", german: "der Spielplatz", categories: ["ism"] },
       { arabic: "الْخَالَةُ", german: "die Tante (mütterlicherseits)", plural: "الْخَالَاتُ", categories: ["ism"] },
       { arabic: "الْمُفَتِّشُ", german: "der Inspektor", plural: "الْمُفَتِّشُونَ", categories: ["ism"] },
       { arabic: "مُسْتَشْفَى الْوِلَادَةِ", german: "das Entbindungsheim", categories: ["ism"] },
@@ -293,12 +295,12 @@ const LESSONS = {
     "13": [
       /* ---- Teil A ---- */
       { arabic: "هُمْ", german: "sie (m. Pl.; Plural von هُوَ „er“; nur Menschen) — gleiche Form wie das besitzanzeigende ـهُمْ „ihr“", categories: ["pronomen", "mabni"] },
-      { arabic: "ـهُ", german: "besitzanzeigende Endung 'sein' (m. s. besitz., z. B. بَيْتُهُ)", plural: "ـهُمْ", categories: ["pronomen", "mabni"] },
+      { arabic: "ـهُ", german: "besitzanzeigende Endung 'sein' (m. s. besitz., z. B. بَيْتُهُ)", plural: "ـهُمْ", pluralType: "pronomen", categories: ["pronomen", "mabni"] },
       { arabic: "ـهُمْ", german: "besitzanzeigende Endung 'ihr' (m. Pl. besitz., Plural von ـهُ, z. B. بَيْتُهُمْ); hat die gleiche Form wie 'sie' (m. Pl.)", categories: ["pronomen", "mabni"] },
       { arabic: "هَؤُلَاءِ", german: "diese (Plural von هَذَا und هَذِهِ; hâ'ulâ'i) — wird meistens im Zusammenhang mit Personen verwendet, selten auch für nicht menschliche Lebewesen (siehe Lektion 16)", categories: ["ismishara", "mabni"] },
-      { arabic: "هَذَا", german: "dies, das (maskulin)", plural: "هَؤُلَاءِ", categories: ["ismishara", "mabni"] },
-      { arabic: "هَذِهِ", german: "dies, das (feminin)", plural: "هَؤُلَاءِ", categories: ["ismishara", "mabni"] },
-      { arabic: "هُوَ", german: "er", plural: "هُمْ", categories: ["pronomen", "mabni"] },
+      { arabic: "هَذَا", german: "dies, das (maskulin)", plural: "هَؤُلَاءِ", pluralType: "pronomen", categories: ["ismishara", "mabni"] },
+      { arabic: "هَذِهِ", german: "dies, das (feminin)", plural: "هَؤُلَاءِ", pluralType: "pronomen", categories: ["ismishara", "mabni"] },
+      { arabic: "هُوَ", german: "er", plural: "هُمْ", pluralType: "pronomen", categories: ["pronomen", "mabni"] },
       { arabic: "ذَهَبُوا", german: "sie gingen (Plural von ذَهَبَ „er ging“; dhahabû — das Alif am Ende wird nicht ausgesprochen)", categories: ["fiil", "mabni"] },
       { arabic: "بَعْضٌ", german: "einige (z. B. بَعْضُهُمْ مُدَرِّسُونَ وَبَعْضُهُمْ مُهَنْدِسُونَ — Einige von ihnen sind Lehrer und einige von ihnen sind Ingenieure)", categories: ["ism"] },
       { arabic: "مُسْلِمُونَ", german: "Muslime (gesunder Plural von مُسْلِمٌ)", categories: ["ism"] },
@@ -333,8 +335,8 @@ const LESSONS = {
       { arabic: "الْمَطْعَمُ", german: "das Restaurant", plural: "الْمَطَاعِمُ", categories: ["ism"] },
       { arabic: "زَمِيلٌ", german: "Kollege", plural: "زُمَلَاءُ", categories: ["ism"] },
       { arabic: "زُمَلَاءُ", german: "Kollegen (Plural von زَمِيلٌ)", categories: ["ism"] },
-      { arabic: "ابْنٌ", german: "Sohn", plural: "أَبْنَاءُ", categories: ["ism"] },
-      { arabic: "أَبْنَاءُ", german: "Söhne (Plural von ابْنٌ)", categories: ["ism"] },
+      { arabic: "ابْنٌ", german: "Sohn", plural: "أَبْنَاءٌ", categories: ["ism"] },
+      { arabic: "أَبْنَاءٌ", german: "Söhne (Plural von ابْنٌ)", categories: ["ism"] },
       { arabic: "مُجْتَهِدٌ", german: "fleißig", plural: "مُجْتَهِدُونَ", categories: ["ism"] },
       { arabic: "مُجْتَهِدُونَ", german: "fleißig (gesunder Plural von مُجْتَهِدٌ)", categories: ["ism"] },
       { arabic: "شَيْخٌ", german: "alter Mann, Gelehrter", plural: "شُيُوخٌ", categories: ["ism"] },
@@ -357,11 +359,11 @@ const LESSONS = {
 
 
       /* ---- Teil B ---- */
-      { arabic: "هِيَ", german: "sie (fem. Singular)", plural: "هُنَّ", categories: ["pronomen", "mabni"] },
+      { arabic: "هِيَ", german: "sie (fem. Singular)", plural: "هُنَّ", pluralType: "pronomen", categories: ["pronomen", "mabni"] },
       { arabic: "هُنَّ", german: "sie (f. Pl.; Plural von هِيَ „sie“, fem. Singular) — gleiche Form wie das besitzanzeigende ـهُنَّ „ihr“", categories: ["pronomen", "mabni"] },
-      { arabic: "ـهَا", german: "besitzanzeigende Endung 'ihr' (fem. Sing. besitz., z. B. بَيْتُهَا)", plural: "ـهُنَّ", categories: ["pronomen", "mabni"] },
+      { arabic: "ـهَا", german: "besitzanzeigende Endung 'ihr' (fem. Sing. besitz., z. B. بَيْتُهَا)", plural: "ـهُنَّ", pluralType: "pronomen", categories: ["pronomen", "mabni"] },
       { arabic: "ـهُنَّ", german: "besitzanzeigende Endung 'ihr' (f. Pl. besitz., Plural von ـهَا, z. B. بَيْتُهُنَّ); hat die gleiche Form wie 'sie' (f. Pl.)", categories: ["pronomen", "mabni"] },
-      { arabic: "ذَهَبَتْ", german: "sie ging (fem. Singular)", plural: "ذَهَبْنَ", categories: ["fiil", "mabni"] },
+      { arabic: "ذَهَبَتْ", german: "sie ging (fem. Singular)", plural: "ذَهَبْنَ", pluralType: "pronomen", categories: ["fiil", "mabni"] },
       { arabic: "ذَهَبْنَ", german: "sie gingen (fem.; gesunder Plural von ذَهَبَتْ „sie ging“)", categories: ["fiil", "mabni"] },
       { arabic: "بِنْتٌ", german: "ein Mädchen, eine Tochter (unregelmäßiger/gesunder Plural)", plural: "بَنَاتٌ", categories: ["ism"] },
       { arabic: "أُخْتٌ", german: "eine Schwester (unregelmäßiger/gesunder Plural)", plural: "أَخَوَاتٌ", categories: ["ism"] },
@@ -374,8 +376,49 @@ const LESSONS = {
       { arabic: "الْمَرْأَةُ", german: "die Frau", plural: "النِّسَاءُ", pluralType: "gebrochen", categories: ["ism"] },
 
       /* ---- Teil C ---- */
-      { arabic: "ذَلِكَ", german: "das, jenes (maskulin)", plural: "أُولَئِكَ", pluralBook: true, categories: ["ismishara", "mabni"] },
+      { arabic: "ذَلِكَ", german: "das, jenes (maskulin)", plural: "أُولَئِكَ", pluralBook: true, pluralType: "pronomen", categories: ["ismishara", "mabni"] },
       { arabic: "أُولَئِكَ", german: "jene (Plural von ذَلِكَ und تِلْكَ; ulâ'ika) — das و wird nicht ausgesprochen", categories: ["ismishara", "mabni"] },
+    ],
+
+    /* Lektion 14 */
+    "14": [
+      /* ---- Pronomen & Endungen ---- */
+      { arabic: "أَنْتَ", german: "du (maskulin)", plural: "أَنْتُمْ", pluralType: "pronomen", pluralBook: true, categories: ["pronomen", "mabni"] },
+      { arabic: "أَنْتُمْ", german: "ihr (m. Pl.; Plural von أَنْتَ „du“, maskulin)", categories: ["pronomen", "mabni"] },
+      { arabic: "ـكَ", german: "besitzanzeigende Endung 'dein' (m. s. besitz., z. B. بَيْتُكَ)", plural: "ـكُمْ", pluralType: "pronomen", pluralBook: true, categories: ["pronomen", "mabni"] },
+      { arabic: "ـكُمْ", german: "besitzanzeigende Endung 'euer/eure' (Plural von ـكَ, z. B. بَيْتُكُمْ)", categories: ["pronomen", "mabni"] },
+      { arabic: "أَنَا", german: "ich", plural: "نَحْنُ", pluralType: "pronomen", pluralBook: true, categories: ["pronomen", "mabni"] },
+      { arabic: "نَحْنُ", german: "wir (Plural von أَنَا „ich“; für maskulin und feminin)", categories: ["pronomen", "mabni"] },
+      { arabic: "ـي", german: "besitzanzeigende Endung 'mein' (z. B. بَيْتِي)", plural: "ـنَا", pluralType: "pronomen", pluralBook: true, categories: ["pronomen", "mabni"] },
+      { arabic: "ـنَا", german: "besitzanzeigende Endung 'unser/unsere' (z. B. بَيْتُنَا — bait-u-nâ „unser Haus“)", categories: ["pronomen", "mabni"] },
+      { arabic: "ذَهَبْتُمْ", german: "ihr gingt (m. Pl.; Plural von ذَهَبْتَ „du gingst“, m. s.)", categories: ["fiil", "mabni"] },
+      { arabic: "ذَهَبْنَا", german: "wir gingen (dhahabnâ — das „a“ am Ende ist lang; bei ذَهَبْنَ „sie gingen“, f. Pl., ist es kurz)", categories: ["fiil", "mabni"] },
+      { arabic: "أَيُّ", german: "welcher, welche, welches (wird als Mudâf verwendet; nach einer Präposition im Genitiv: مِنْ أَيِّ بَلَدٍ؟)", categories: ["ismistifham", "mudaf"] },
+      { arabic: "أَهْلًا وَسَهْلًا وَمَرْحَبًا", german: "Herzlich willkommen!", categories: ["ism"] },
+      { arabic: "شَفَاهُ اللَّهُ", german: "Möge Allah ihm Gesundheit geben!", categories: ["fiil"] },
+
+      /* ---- Wörter ---- */
+      { arabic: "الدُّسْتُورُ", german: "die Verfassung", categories: ["ism"] },
+      { arabic: "طِفْلَةٌ", german: "ein (weibliches) Kind", categories: ["ism"] },
+      { arabic: "الْقِبْلَةُ", german: "die Gebetsrichtung", categories: ["ism"] },
+      { arabic: "الْمَطَارُ", german: "der Flughafen", categories: ["ism"] },
+      { arabic: "الْمَحْكَمَةُ", german: "das (Straf-)Gericht", categories: ["ism"] },
+      { arabic: "الْكُلِّيَّةُ", german: "die Fakultät, das Kolleg", categories: ["ism"] },
+      { arabic: "حَفِيدٌ", german: "ein Enkel", plural: "حَفَدَةٌ", pluralType: "gebrochen", categories: ["ism"] },
+      { arabic: "كُلِّيَّةُ الطِّبِّ", german: "die medizinische Fakultät", categories: ["ism", "mudaf"] },
+      { arabic: "الْحَدِيقَةُ", german: "der Garten", categories: ["ism"] },
+      { arabic: "كُلِّيَّةُ الْهَنْدَسَةِ", german: "die Fakultät für Ingenieurwesen", categories: ["ism", "mudaf"] },
+      { arabic: "الرَّبُّ", german: "der Herr", categories: ["ism"] },
+      { arabic: "كُلِّيَّةُ التِّجَارَةِ", german: "die Wirtschaftsfakultät", categories: ["ism", "mudaf"] },
+      { arabic: "يَوْمُ السَّبْتِ", german: "der Samstag", categories: ["ism", "mudaf"] },
+      { arabic: "كُلِّيَّةُ الشَّرِيعَةِ", german: "die Fakultät für islamisches Recht", categories: ["ism", "mudaf"] },
+      { arabic: "الشَّهْرُ", german: "der Monat", categories: ["ism"] },
+      { arabic: "نَصْرَانِيٌّ", german: "christlich (ein Christ)", plural: "نَصَارَى", pluralType: "gebrochen", pluralBook: true, categories: ["ism"] },
+      { arabic: "رَجَبٌ", german: "Rajab (islamischer Monat)", categories: ["ism"] },
+      { arabic: "النَّبِيُّ", german: "der Prophet", categories: ["ism"] },
+      { arabic: "الْيُونَانُ", german: "Griechenland", categories: ["ism"] },
+      { arabic: "الدِّينُ", german: "die Religion", categories: ["ism"] },
+      { arabic: "إِخْوَةٌ", german: "Brüder (Plural von أَخٌ)", categories: ["ism"] },
     ],
 
   Grammatik: [
@@ -459,7 +502,8 @@ const LESSON_LABELS = {
   10: "Lektion 10",
   11: "Lektion 11",
   12: "Lektion 12",
-  13: "Lektion 13"
+  13: "Lektion 13",
+  14: "Lektion 14"
 };
 
 /* ==========================================================================
@@ -486,7 +530,7 @@ function stripArabicDiacritics(text){
 
 function getPluralType(word){
   if(!word || !word.plural) return null;
-  if(word.pluralType === "gesund" || word.pluralType === "gebrochen") return word.pluralType;
+  if(word.pluralType === "gesund" || word.pluralType === "gebrochen" || word.pluralType === "pronomen") return word.pluralType;
   const firstForm = word.plural.split("/")[0].trim();
   const bare = stripArabicDiacritics(firstForm);
   if(/(ون|ين)$/.test(bare)) return "gesund";   // جمع مذكر سالم

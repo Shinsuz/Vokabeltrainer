@@ -581,7 +581,9 @@ const ROLE_COLORS = {
   "Mahallan Mansub": "#4acfa0",
   "Singular": "#9ec1d9",
   "Gesunder Plural": "#ffd27a",
-  "Gebrochener Plural": "#e07fa0"
+  "Gebrochener Plural": "#e07fa0",
+  "Badal": "#7fe0a8",
+  "Mubdal minhu": "#e0b07f"
 };
 /* Anzeigename inkl. arabischem Original — wird für Rollen-Buttons und
    zugewiesene Wort-Badges verwendet. Der kurze Schlüssel (links) bleibt
@@ -611,7 +613,9 @@ const ROLE_LABELS = {
   "Mahallan Mansub": "Mahallan mansûb (في محل نصب)",
   "Singular": "Singular (مفرد)",
   "Gesunder Plural": "Gesunder Plural (جمع سالم)",
-  "Gebrochener Plural": "Gebrochener Plural (جمع تكسير)"
+  "Gebrochener Plural": "Gebrochener Plural (جمع تكسير)",
+  "Badal": "Badal (بَدَل)",
+  "Mubdal minhu": "Mubdal minhu (مُبْدَلٌ مِنْهُ)"
 };
 const ROLE_FALLBACK_PALETTE = ["#e5ba73", "#7fd6c2", "#7fa8e8", "#c98af0", "#f0a8c9", "#9ee87a", "#f0935a", "#f0e07a"];
 function roleColor(role, idx){
@@ -621,8 +625,8 @@ function roleLabel(role){
   return ROLE_LABELS[role] || role;
 }
 const ROLE_HINTS = {
-  "Mubtada": "Das Satzthema: das, worüber etwas ausgesagt wird (steht im Nominalsatz meist vorn).",
-  "Khabar": "Die Aussage über das Mubtada (was ausgesagt wird).",
+  "Mubtada": "Das Satzthema: ein Satz, der mit einem Ism beginnt, beginnt mit dem Mubtada.",
+  "Khabar": "Die Aussage über das Mubtada. Besteht der Rest des Satzes aus Harf Jarr + Majrûr, ist er zusammen das Khabar.",
   "Mudaf": "Das erste Wort einer Besitz-Verbindung (die besessene Sache) – ohne Tanwîn und ohne Artikel.",
   "Mudaf ilaihi": "Das zweite Wort einer Besitz-Verbindung (der Besitzer) – steht im Majrûr.",
   "Na't": "Das Adjektiv, das ein Nomen näher beschreibt.",
@@ -645,7 +649,9 @@ const ROLE_HINTS = {
   "Relativpronomen": "Verbindet einen Nebensatz mit dem Bezugswort (der/die/das …).",
   "Singular": "Einzahl (ein Mann / eine Frau / eine Sache).",
   "Gesunder Plural": "Mehrzahl durch angehängte Endung: ـُونَ (männlich) oder ـَاتٌ (weiblich).",
-  "Gebrochener Plural": "Mehrzahl, bei der sich das Wortgerüst ändert (z. B. تَاجِرٌ ← تُجَّارٌ)."
+  "Gebrochener Plural": "Mehrzahl, bei der sich das Wortgerüst ändert (z. B. تَاجِرٌ ← تُجَّارٌ).",
+  "Badal": "Das Wort, das für ein anderes steht und dessen I'rab (Fall) übernimmt.",
+  "Mubdal minhu": "Das Wort, für das das Badal steht."
 };
 function roleHelpHtml(roles){
   const items = roles.filter(r => ROLE_HINTS[r]).map(r => `<li><b style="color:${roleColor(r)}">${roleLabel(r)}</b> – ${ROLE_HINTS[r]}</li>`);

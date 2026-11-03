@@ -733,3 +733,19 @@ kbd { background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); border-rad
   .stats-pill div:last-child { border-bottom: none; }
   .prompt-word { font-size: 2.1rem; }
 }
+
+/* Plural-Zeile (Vokabeln/Glossar) */
+.plural-line { display: block; margin-top: 6px; font-size: 0.62em; color: var(--gold, #c9a66b); font-weight: 400; letter-spacing: 0.02em; }
+.plural-line .ar { font-size: 1.3em; margin-left: 4px; color: var(--cream, #ecdfc8); }
+.glossary-word-row .de { text-align: right; }
+.glossary-word-row .plural-line { font-size: 0.85em; margin-top: 2px; }
+
+/* ---------- Dezente, themenpassende Scrollleisten ---------- */
+:root { color-scheme: dark; }
+* { scrollbar-width: thin; scrollbar-color: rgba(212, 175, 105, 0.35) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: rgba(212, 175, 105, 0.3); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 105, 0.55); background-clip: padding-box; }
+*::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+*::-webkit-scrollbar-corner { background: transparent; }

@@ -803,7 +803,15 @@ const SATZANALYSE = {
       {
         term: "Teil C: أُولَئِكَ — jene (Plural von ذَلِكَ und تِلْكَ)",
         explanation: "Der Plural von ذَلِكَ und تِلْكَ ist أُولَئِكَ ('jene'). Beachte: Das و in أُولَئِكَ wird nicht ausgesprochen; das Wort wird 'ulâ'ika' gesprochen."
+      },,
+      {
+        term: "Regel: Satz beginnt mit einem Ism ⇒ Mubtada",
+        explanation: "Wenn ein Satz mit einem Ism (Nomen) beginnt, ist dieses Wort das Mubtada (مُبْتَدَأ). Besteht der Rest des Satzes aus einem Harf Jarr und einem Majrûr (z. B. فِي الْقَرْيَةِ), dann gilt dieser Rest zusammen als Khabar (nach einer Meinung): الشُّيُوخُ فِي الْقَرْيَةِ — Mubtada: الشُّيُوخُ, Khabar: فِي الْقَرْيَةِ. Diese Regel wird in der Satzanalyse immer angewendet; sie macht die Analyse einfacher."
       },
+      {
+        term: "Badal (بَدَل) — folgt dem I'rab",
+        explanation: "Das Badal (بَدَل) folgt dem Wort, für das es steht (Mubdal minhu, مُبْدَلٌ مِنْهُ), im I'rab, d. h. es hat denselben Fall (Marfû', Mansûb oder Majrûr). Beispiel (eigenes Beispiel zur Veranschaulichung): هَذَا صَدِيقِي مُحَمَّدٌ — Mubdal minhu: صَدِيقِي, Badal: مُحَمَّدٌ; beide stehen im Marfû'."
+      }
     ],
     questions: [
       {
@@ -938,7 +946,40 @@ const SATZANALYSE = {
         type: "tf",
         statement: "Das <span class='ar'>و</span> in <span class='ar'>أُولَئِكَ</span> wird nicht ausgesprochen.",
         correct: true
+      },,
+      {
+        type: "tf",
+        statement: "Beginnt ein Satz mit einem Ism, ist dieses Wort das Mubtada.",
+        correct: true
       },
+      {
+        type: "mc",
+        question: "Im Satz الشُّيُوخُ فِي الْقَرْيَةِ — was ist das Khabar?",
+        choices: ["الشُّيُوخُ", "فِي الْقَرْيَةِ (Harf Jarr + Majrûr zusammen)", "nur فِي", "nur الْقَرْيَةِ"],
+        correct: "فِي الْقَرْيَةِ (Harf Jarr + Majrûr zusammen)"
+      },
+      {
+        type: "tf",
+        statement: "Besteht der Rest eines Satzes aus Harf Jarr + Majrûr, gilt er (nach einer Meinung) als Khabar.",
+        correct: true
+      },
+      {
+        type: "tf",
+        statement: "Ein Badal folgt dem Wort, für das es steht, im I'rab.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Wie heißt das Wort, für das ein Badal steht?",
+        choices: ["Mubtada", "Mubdal minhu", "Khabar", "Mudâf ilaihi"],
+        correct: "Mubdal minhu"
+      },
+      {
+        type: "mc",
+        question: "Im Satz <span class='ar'>هَذَا صَدِيقِي مُحَمَّدٌ</span> — welches Wort ist das Badal?",
+        choices: ["<span class='ar'>هَذَا</span>", "<span class='ar'>صَدِيقِي</span>", "<span class='ar'>مُحَمَّدٌ</span>", "keines"],
+        correct: "<span class='ar'>مُحَمَّدٌ</span>"
+      }
     ],
     sentences: [
       { words: [{text:"هُمْ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar"}, blank:{options:["مُدَرِّسُونَ","مُدَرِّسَاتٌ","مُدَرِّسٌ","مُدَرِّسَةٌ"]}}], translation: "Sie sind Lehrer. <small>(sie = mehrere Männer → هُمْ)</small>" },
@@ -990,7 +1031,187 @@ const SATZANALYSE = {
       { words: [{text:"هَذِهِ", tags:{1:"Mubtada"}}, {text:"فَتَاةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"هَؤُلَاءِ", tags:{1:"Mubtada"}}, {text:"فَتَيَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Dies ist eine junge Frau und das sind junge Frauen." },
       { words: [{text:"ذَلِكَ", tags:{1:"Mubtada"}}, {text:"طَالِبٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"أُولَئِكَ", tags:{1:"Mubtada"}, blank:{options:["هَؤُلَاءِ","أُولَئِكَ","ذَلِكَ","تِلْكَ"]}}, {text:"طُلَّابٌ", tags:{1:"Khabar",2:"Gebrochener Plural"}}], translation: "Jener ist ein Student und jene sind Studenten." },
       { words: [{text:"تِلْكَ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَةٌ", tags:{1:"Khabar",2:"Singular"}}, {text:"وَ", tags:{}}, {text:"أُولَئِكَ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسَاتٌ", tags:{1:"Khabar",2:"Gesunder Plural"}}], translation: "Jene ist eine Lehrerin und jene sind Lehrerinnen." },
-      { words: [{text:"أُولَئِكَ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسُونَ", tags:{1:"Khabar"}}], translation: "Jene sind Ingenieure." }
+      { words: [{text:"أُولَئِكَ", tags:{1:"Mubtada"}}, {text:"مُهَنْدِسُونَ", tags:{1:"Khabar"}}], translation: "Jene sind Ingenieure." },
+      { words: [{text:"الطُّلَّابُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْمَكْتَبَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die Studenten sind in der Bücherei." },
+      { words: [{text:"التُّجَّارُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"السُّوقِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die Händler sind auf dem Markt." },
+      { words: [{text:"الْحُجَّاجُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die Pilger sind in der Moschee." },
+      { words: [{text:"الْفَلَّاحُونَ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْحَقْلِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die Bauern sind auf dem Feld." },
+      { words: [{text:"بَعْضُهُمْ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْجَامِعَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Einige von ihnen sind an der Universität." },
+      { words: [{text:"الْمُدَرِّسُ", tags:{1:"Mubtada"}}, {text:"عِنْدَ", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْمُدِيرِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Der Lehrer ist beim Direktor." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"صَدِيقِي", tags:{1:"Khabar",2:"Mubdal minhu"}}, {text:"مُحَمَّدٌ", tags:{1:"Khabar",2:"Badal"}}], translation: "Das ist mein Freund Muhammad." },
+      { words: [{text:"هَذَا", tags:{1:"Mubtada"}}, {text:"أَخِي", tags:{1:"Khabar",2:"Mubdal minhu"}}, {text:"أَحْمَدُ", tags:{1:"Khabar",2:"Badal"}}], translation: "Das ist mein Bruder Ahmad." }
+    ]
+  },
+
+  "14": {
+    concepts: [
+      {
+        term: "أَنْتُمْ — ihr (m. Pl.)",
+        explanation: "Der Plural von أَنْتَ ('du', maskulin Singular) ist أَنْتُمْ ('ihr', m. Pl.): مَنْ أَنْتُمْ؟ (Wer seid ihr?)"
+      },
+      {
+        term: "ـكُمْ — euer / eure",
+        explanation: "Der Plural von ـكَ ('dein') ist ـكُمْ ('euer/eure'): أَيْنَ بَيْتُكُمْ يَا إِخْوَانُ؟ (Brüder, wo ist euer Haus?)"
+      },
+      {
+        term: "نَحْنُ — wir",
+        explanation: "Der Plural von أَنَا ('ich') ist نَحْنُ ('wir'). Wie أَنَا wird auch نَحْنُ sowohl für maskulin als auch für feminin verwendet: نَحْنُ مُسْلِمُونَ (Wir sind Muslime, maskulin) und نَحْنُ مُسْلِمَاتٌ (Wir sind Musliminnen, feminin)."
+      },
+      {
+        term: "ـنَا — unser / unsere",
+        explanation: "Wir haben gelernt, dass بَيْتِي 'mein Haus' bedeutet. Jetzt lernen wir 'unser Haus': بَيْتُنَا (bait-u-nâ). Beispiele: اللَّهُ رَبُّنَا (Allah ist unser Herr), الْإِسْلَامُ دِينُنَا (Der Islam ist unsere Religion), مُحَمَّدٌ — صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ — نَبِيُّنَا (Muhammad — Gottes Segen und Heil auf ihm — ist unser Prophet)."
+      },
+      {
+        term: "ذَهَبْتَ ← ذَهَبْتُمْ",
+        explanation: "ذَهَبْتَ bedeutet 'du gingst' (m. s.). 'Ihr gingt' (m. pl.) heißt ذَهَبْتُمْ: أَيْنَ ذَهَبْتُمْ يَا أَبْنَائِي؟ (Wohin seid ihr gegangen, meine Söhne?)"
+      },
+      {
+        term: "ذَهَبْتُ ← ذَهَبْنَا",
+        explanation: "ذَهَبْتُ bedeutet 'ich ging'; 'wir gingen' heißt ذَهَبْنَا (dhahabnâ). Beachte: 'sie gingen' (f. Pl.) ist ذَهَبْنَ (dhahabna). Der Unterschied: In ذَهَبْنَ ist das 'a' am Ende kurz, in ذَهَبْنَا ist es lang."
+      },
+      {
+        term: "Eigennamen ohne Tanwîn",
+        explanation: "Weibliche Eigennamen haben kein Tanwîn: آمِنَةُ، مَرْيَمُ، خَدِيجَةُ. Auch nicht-arabische Eigennamen haben kein Tanwîn: وِلْيَمُ، لَنْدَنُ، بَاكِسْتَانُ. Die Namen der meisten Propheten sind nicht-arabischen Ursprungs und haben daher kein Tanwîn: آدَمُ، إِبْرَاهِيمُ، إِسْحَاقُ، إِسْمَاعِيلُ، يَعْقُوبُ. Ausnahme: Ist der nicht-arabische Eigenname männlich und hat nur drei Buchstaben, von denen der zweite ein Sukûn hat, hat er Tanwîn: نُوحٌ، لُوطٌ، جُرْجٌ، خَانٌ."
+      },
+      {
+        term: "Mudâf + Adjektiv: bestimmte Form",
+        explanation: "Ein Mudâf ist durch seine Position (innerhalb der Idâfa-Konstruktion) als bestimmt definiert. Wird ein Mudâf durch ein Adjektiv näher beschrieben, muss das Adjektiv in seiner bestimmten Form stehen: بَيْتُ الْإِمَامِ الْجَدِيدُ (Das neue Haus des Imam). Hier ist بَيْتُ Mudâf und durch seine Position als bestimmt zu erkennen. Das Gleiche gilt, wenn der Mudâf ilaihi ein besitzanzeigendes Pronomen ist: بَيْتُهُ الْجَدِيدُ (sein neues Haus). Beachte den Unterschied: بَيْتُ الْإِمَامِ الْجَدِيدُ (das neue Haus des Imam) und بَيْتُ الْإِمَامِ الْجَدِيدِ (das Haus des neuen Imam)."
+      },
+      {
+        term: "أَيُّ — welcher, welche, welches",
+        explanation: "أَيُّ bedeutet 'welcher, welche, welches' und wird als Mudâf verwendet: أَيُّ بَيْتٍ هَذَا؟ (Welches Haus ist dies?), أَيُّ طَالِبٍ خَرَجَ؟ (Welcher Student ging hinaus?). Steht davor eine Präposition, steht es im Genitiv: مِنْ أَيِّ بَلَدٍ أَنْتَ؟ (Aus welchem Land kommst du?), فِي أَيِّ فَصْلٍ جَلَسْتَ؟ (In welchem Klassenzimmer saßest du?). Es kann auch im Akkusativ stehen: أَيَّ لُغَةٍ تُحِبُّ؟ (Welche Sprache magst du?)."
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von أَنْتَ („du“, maskulin)?",
+        choices: ["<span class='ar'>أَنْتُمْ</span>", "<span class='ar'>نَحْنُ</span>", "<span class='ar'>هُمْ</span>", "<span class='ar'>أَنْتِ</span>"],
+        correct: "<span class='ar'>أَنْتُمْ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von أَنَا („ich“)?",
+        choices: ["<span class='ar'>هُمْ</span>", "<span class='ar'>نَحْنُ</span>", "<span class='ar'>أَنْتُمْ</span>", "<span class='ar'>هُنَّ</span>"],
+        correct: "<span class='ar'>نَحْنُ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „euer Haus“ auf Arabisch?",
+        choices: ["<span class='ar'>بَيْتُكَ</span>", "<span class='ar'>بَيْتُنَا</span>", "<span class='ar'>بَيْتُكُمْ</span>", "<span class='ar'>بَيْتُهُمْ</span>"],
+        correct: "<span class='ar'>بَيْتُكُمْ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „unser Haus“ auf Arabisch?",
+        choices: ["<span class='ar'>بَيْتِي</span>", "<span class='ar'>بَيْتُكُمْ</span>", "<span class='ar'>بَيْتُنَا</span>", "<span class='ar'>بَيْتُهُمْ</span>"],
+        correct: "<span class='ar'>بَيْتُنَا</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „ihr gingt“ (m. Pl.) auf Arabisch?",
+        choices: ["<span class='ar'>ذَهَبْتَ</span>", "<span class='ar'>ذَهَبْنَا</span>", "<span class='ar'>ذَهَبْتُمْ</span>", "<span class='ar'>ذَهَبُوا</span>"],
+        correct: "<span class='ar'>ذَهَبْتُمْ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „wir gingen“ auf Arabisch?",
+        choices: ["<span class='ar'>ذَهَبْنَ</span>", "<span class='ar'>ذَهَبْنَا</span>", "<span class='ar'>ذَهَبْتُ</span>", "<span class='ar'>ذَهَبْتُمْ</span>"],
+        correct: "<span class='ar'>ذَهَبْنَا</span>"
+      },
+      {
+        type: "tf",
+        statement: "<span class='ar'>نَحْنُ</span> wird nur für Männer verwendet.",
+        correct: false
+      },
+      {
+        type: "tf",
+        statement: "In <span class='ar'>ذَهَبْنَ</span> (sie gingen, f. Pl.) ist das „a“ am Ende kurz, in <span class='ar'>ذَهَبْنَا</span> (wir gingen) ist es lang.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Welcher Name hat Tanwîn?",
+        choices: ["<span class='ar'>نُوحٌ</span>", "<span class='ar'>إِبْرَاهِيمُ</span>", "<span class='ar'>خَدِيجَةُ</span>", "<span class='ar'>لَنْدَنُ</span>"],
+        correct: "<span class='ar'>نُوحٌ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Weibliche Eigennamen haben kein Tanwîn.",
+        correct: true
+      },
+      {
+        type: "tf",
+        statement: "Die Namen der meisten Propheten haben kein Tanwîn, weil sie nicht-arabischen Ursprungs sind.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „das neue Haus des Imam“?",
+        choices: ["<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدُ</span>", "<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدِ</span>", "<span class='ar'>بَيْتُ الْإِمَامِ جَدِيدٌ</span>", "<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدَ</span>"],
+        correct: "<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدُ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „das Haus des neuen Imam“?",
+        choices: ["<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدُ</span>", "<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدِ</span>", "<span class='ar'>بَيْتُ إِمَامٍ جَدِيدٌ</span>", "<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدَ</span>"],
+        correct: "<span class='ar'>بَيْتُ الْإِمَامِ الْجَدِيدِ</span>"
+      },
+      {
+        type: "tf",
+        statement: "Ein Mudâf ist durch seine Position bestimmt; ein Adjektiv dazu steht deshalb in der bestimmten Form.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Was bedeutet <span class='ar'>أَيُّ</span>?",
+        choices: ["welcher, welche, welches", "alle", "niemand", "wer"],
+        correct: "welcher, welche, welches"
+      },
+      {
+        type: "tf",
+        statement: "Steht vor <span class='ar'>أَيُّ</span> eine Präposition, steht es im Genitiv.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „Aus welchem Land kommst du?“",
+        choices: ["<span class='ar'>مِنْ أَيِّ بَلَدٍ أَنْتَ؟</span>", "<span class='ar'>مِنْ أَيُّ بَلَدٍ أَنْتَ؟</span>", "<span class='ar'>مِنْ أَيَّ بَلَدٍ أَنْتَ؟</span>", "<span class='ar'>أَيُّ بَلَدٍ مِنْ أَنْتَ؟</span>"],
+        correct: "<span class='ar'>مِنْ أَيِّ بَلَدٍ أَنْتَ؟</span>"
+      }
+    ],
+    sentences: [
+      { words: [{text:"مَنْ", tags:{1:"Khabar"}}, {text:"أَنْتُمْ", tags:{1:"Mubtada"}, blank:{options:["أَنْتَ","أَنْتُمْ","نَحْنُ","هُمْ"]}}], translation: "Wer seid ihr?" },
+      { words: [{text:"أَيْنَ", tags:{1:"Khabar"}}, {text:"بَيْتُكُمْ", tags:{1:"Mubtada"}, blank:{options:["بَيْتُكَ","بَيْتُكُمْ","بَيْتُنَا","بَيْتُهُمْ"]}}, {text:"يَا", tags:{}}, {text:"إِخْوَانُ", tags:{}}], translation: "Brüder, wo ist euer Haus?" },
+      { words: [{text:"نَحْنُ", tags:{1:"Mubtada"}, blank:{options:["أَنَا","نَحْنُ","أَنْتُمْ","هُمْ"]}}, {text:"مُسْلِمُونَ", tags:{1:"Khabar"}}], translation: "Wir sind Muslime. (maskulin)" },
+      { words: [{text:"نَحْنُ", tags:{1:"Mubtada"}}, {text:"مُسْلِمَاتٌ", tags:{1:"Khabar"}}], translation: "Wir sind Musliminnen. (feminin)" },
+      { words: [{text:"اللَّهُ", tags:{1:"Mubtada"}}, {text:"رَبُّنَا", tags:{1:"Khabar"}, blank:{options:["رَبِّي","رَبُّكَ","رَبُّهُ","رَبُّنَا"]}}], translation: "Allah ist unser Herr." },
+      { words: [{text:"الْإِسْلَامُ", tags:{1:"Mubtada"}}, {text:"دِينُنَا", tags:{1:"Khabar"}, blank:{options:["دِينِي","دِينُكُمْ","دِينُهُ","دِينُنَا"]}}], translation: "Der Islam ist unsere Religion." },
+      { words: [{text:"مُحَمَّدٌ", tags:{1:"Mubtada"}}, {text:"صَلَّى", tags:{}}, {text:"اللَّهُ", tags:{}}, {text:"عَلَيْهِ", tags:{}}, {text:"وَسَلَّمَ", tags:{}}, {text:"نَبِيُّنَا", tags:{1:"Khabar"}}], translation: "Muhammad — Gottes Segen und Heil auf ihm — ist unser Prophet." },
+      { words: [{text:"أَيْنَ", tags:{1:"Mabni"}}, {text:"ذَهَبْتُمْ", tags:{1:"Mabni"}, blank:{options:["ذَهَبْتَ","ذَهَبْتُمْ","ذَهَبْنَا","ذَهَبُوا"]}}, {text:"يَا", tags:{1:"Mabni"}}, {text:"أَبْنَائِي", tags:{1:"Mu'rab"}}], translation: "Wohin seid ihr gegangen, meine Söhne?" },
+      { words: [{text:"ذَهَبْنَا", tags:{1:"Fi'l"}, blank:{options:["ذَهَبْتُ","ذَهَبْنَا","ذَهَبْتُمْ","ذَهَبْنَ"]}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْجَامِعَةِ", tags:{1:"Majrur"}}], translation: "Wir gingen zur Universität." },
+      { words: [{text:"ذَهَبْتُ", tags:{1:"Fi'l"}, blank:{options:["ذَهَبْتَ","ذَهَبْتُ","ذَهَبْنَا","ذَهَبَ"]}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَكْتَبَةِ", tags:{1:"Majrur"}}], translation: "Ich ging zur Bücherei." },
+      { words: [{text:"ذَهَبْتَ", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"السُّوقِ", tags:{1:"Majrur"}}], translation: "Du gingst zum Markt. (m.)" },
+      { words: [{text:"ذَهَبْتُمْ", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Majrur"}}], translation: "Ihr gingt zur Moschee." },
+      { words: [{text:"نَحْنُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْفَصْلِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Wir sind im Klassenzimmer." },
+      { words: [{text:"أَنْتُمْ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْمَطْعَمِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Ihr seid im Restaurant." },
+      { words: [{text:"بَيْتُنَا", tags:{1:"Mubtada"}, blank:{options:["بَيْتِي","بَيْتُكُمْ","بَيْتُنَا","بَيْتُهُمْ"]}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْقَرْيَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Unser Haus ist im Dorf." },
+      { words: [{text:"بَيْتُ", tags:{1:"Mudaf",2:"Man'ut"}}, {text:"الْإِمَامِ", tags:{1:"Mudaf ilaihi"}}, {text:"الْجَدِيدُ", tags:{1:"Na't",2:"Na't"}}], translation: "Das neue Haus des Imam." },
+      { words: [{text:"بَيْتُ", tags:{1:"Mudaf"}}, {text:"الْإِمَامِ", tags:{1:"Mudaf ilaihi",2:"Man'ut"}}, {text:"الْجَدِيدِ", tags:{1:"Na't",2:"Na't"}}], translation: "Das Haus des neuen Imam." },
+      { words: [{text:"بَيْتُ", tags:{1:"Mudaf",2:"Man'ut"}}, {text:"هُ", tags:{1:"Mudaf ilaihi"}}, {text:"الْجَدِيدُ", tags:{1:"Na't",2:"Na't"}}], translation: "Sein neues Haus." },
+      { words: [{text:"أَيُّ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"بَيْتٍ", tags:{1:"Khabar",2:"Mudaf ilaihi"}}, {text:"هَذَا", tags:{1:"Mubtada"}}], translation: "Welches Haus ist dies?" },
+      { words: [{text:"أَيُّ", tags:{1:"Mubtada",2:"Mudaf"}}, {text:"طَالِبٍ", tags:{1:"Mubtada",2:"Mudaf ilaihi"}}, {text:"خَرَجَ", tags:{1:"Khabar"}}], translation: "Welcher Student ging hinaus?" },
+      { words: [{text:"مِنْ", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"أَيِّ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"بَلَدٍ", tags:{1:"Khabar",2:"Mudaf ilaihi"}}, {text:"أَنْتَ", tags:{1:"Mubtada"}}], translation: "Aus welchem Land kommst du?" },
+      { words: [{text:"فِي", tags:{1:"Harful Jarr"}}, {text:"أَيِّ", tags:{1:"Majrur",2:"Mudaf"}}, {text:"فَصْلٍ", tags:{1:"Majrur",2:"Mudaf ilaihi"}}, {text:"جَلَسْتَ", tags:{1:"Fi'l"}}], translation: "In welchem Klassenzimmer saßest du? (m.)" },
+      { words: [{text:"أَيَّ", tags:{1:"Mansub",2:"Mudaf"}}, {text:"لُغَةٍ", tags:{1:"Majrur",2:"Mudaf ilaihi"}}, {text:"تُحِبُّ", tags:{1:"Fi'l"}}], translation: "Welche Sprache magst du?" },
+      { words: [{text:"آدَمُ", tags:{1:"Mubtada"}}, {text:"نَبِيٌّ", tags:{1:"Khabar"}}], translation: "Adam ist ein Prophet. <small>(Eigenname ohne Tanwîn)</small>" },
+      { words: [{text:"نُوحٌ", tags:{1:"Mubtada"}}, {text:"نَبِيٌّ", tags:{1:"Khabar"}}], translation: "Noah ist ein Prophet. <small>(männlich, 3 Buchstaben, 2. mit Sukûn → Tanwîn)</small>" },
+      { words: [{text:"مَرْيَمُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْحَدِيقَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Maryam ist im Garten. <small>(weiblicher Eigenname ohne Tanwîn)</small>" },
+      { words: [{text:"كُلِّيَّةُ", tags:{1:"Mubtada",2:"Mudaf",3:"Marfu"}}, {text:"الطِّبِّ", tags:{1:"Mubtada",2:"Mudaf ilaihi",3:"Majrur"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْجَامِعَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die medizinische Fakultät ist an der Universität." },
+      { words: [{text:"الْمَطَارُ", tags:{1:"Mubtada"}}, {text:"كَبِيرٌ", tags:{1:"Khabar"}}], translation: "Der Flughafen ist groß." },
+      { words: [{text:"الْحَفَدَةُ", tags:{1:"Mubtada"}}, {text:"فِي", tags:{1:"Khabar",2:"Harful Jarr"}}, {text:"الْحَدِيقَةِ", tags:{1:"Khabar",2:"Majrur"}}], translation: "Die Enkel sind im Garten." },
+      { words: [{text:"أَنْتُمْ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar"}}], translation: "Ihr seid Lehrer." },
+      { words: [{text:"نَحْنُ", tags:{1:"Mubtada"}}, {text:"طُلَّابٌ", tags:{1:"Khabar"}}], translation: "Wir sind Studenten." }
     ]
   }
 
@@ -1010,5 +1231,6 @@ const SATZANALYSE_LABELS = {
   "10": "Lektion 10",
   "11": "Lektion 11",
   "12": "Lektion 12",
-  "13": "Lektion 13"
+  "13": "Lektion 13",
+  "14": "Lektion 14"
 };
