@@ -372,7 +372,7 @@ const LESSONS = {
       { arabic: "النِّسَاءُ", german: "die Frauen (Plural von اِمْرَأَةٌ/الْمَرْأَةُ „Frau“ — von anderer Wurzel, gebrochener Plural)", pluralType: "gebrochen", categories: ["ism"] },
       { arabic: "زَوْجَةٌ", german: "eine Ehefrau", plural: "زَوْجَاتٌ", categories: ["ism"] },
       { arabic: "عَمَّةٌ", german: "eine Tante (väterlicherseits)", plural: "عَمَّاتٌ", categories: ["ism"] },
-      { arabic: "زَوْجٌ", german: "ein Ehemann", plural: "أَزْوَاجٌ", categories: ["ism"] },
+      { arabic: "زَوْجٌ", german: "ein Ehepartner (Ehemann / Ehefrau)", plural: "أَزْوَاجٌ", categories: ["ism"] },
       { arabic: "الْمَرْأَةُ", german: "die Frau", plural: "النِّسَاءُ", pluralType: "gebrochen", categories: ["ism"] },
 
       /* ---- Teil C ---- */
