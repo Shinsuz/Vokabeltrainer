@@ -204,6 +204,7 @@ let lastItemKey = null;
 let cardEl = document.getElementById("card");
 let pickQueue = [];          // gemischte Reihenfolge der noch nicht gekonnten Punkte
 let pickSig = "";
+let recentKeys = [];         // zuletzt gezeigte Karten (werden nicht sofort wieder gezogen)
 let retryList = [];          // [{key, after}] falsch beantwortete Punkte kommen nach ein paar Karten wieder
 
 function loadProgress(){
@@ -234,7 +235,7 @@ function markResult(item, correct){
   lastItemKey = item.key;
 
   if(correct) retryList = retryList.filter(r => r.key !== item.key);
-  else if(!retryList.some(r => r.key === item.key)) retryList.push({ key: item.key, after: 3 });
+  else if(!retryList.some(r => r.key === item.key)) retryList.push({ key: item.key, after: 6 });
 
   try{
     if(correct && !wasMastered) Sound.mastered();
@@ -291,7 +292,7 @@ function hideEndOverlay(){
 function replayLesson(){
   currentDeck().forEach(item => { const e = getEntry(item); e.streak = 0; e.wrong = 0; });
   saveProgress();
-  pickQueue = []; retryList = []; lastItemKey = null;
+  pickQueue = []; retryList = []; recentKeys = []; lastItemKey = null;
   window.__endShownFor = null;
   hideEndOverlay();
   updateStats();
@@ -315,30 +316,45 @@ document.addEventListener("click", e => {
 /* Gezielte Auswahl statt Zufall:
    - Noch nicht gekonnte Punkte kommen in gemischter Reihenfolge, jeder genau einmal pro
      Runde (keine ständigen Wiederholungen).
-   - Falsch beantwortete Punkte kommen nach ca. 3 Karten nochmal.
-   - Etwa jede 4. Karte ist eine Wiederholung eines schon gekonnten Punktes
+   - Falsch beantwortete Punkte kommen nach ca. 6 Karten nochmal.
+   - Erst ab 8 gekonnten Punkten ist ca. jede 7. Karte eine Wiederholung (der am längsten nicht gesehene)
      (bei einem Fehler wird dort der Punkt wieder abgezogen). */
 function pickNext(deck){
   const sig = selectedLesson + "|" + mode + "|" + deck.length;
-  if(sig !== pickSig){ pickSig = sig; pickQueue = []; retryList = []; }
+  if(sig !== pickSig){ pickSig = sig; pickQueue = []; retryList = []; recentKeys = []; }
   const byKey = new Map(deck.map(i => [i.key, i]));
   retryList = retryList.filter(r => byKey.has(r.key));
   retryList.forEach(r => r.after--);
+  /* Zuletzt gesehene Karten werden eine Weile gar nicht gezogen
+     (so viele, wie das Deck hergibt, höchstens 12). */
+  const recentLimit = Math.min(12, Math.floor(deck.length / 2));
+  const isRecent = k => recentKeys.slice(-recentLimit).includes(k);
+  const remember = item => { recentKeys.push(item.key); if(recentKeys.length > 40) recentKeys.shift(); return item; };
+
   const due = retryList.findIndex(r => r.after <= 0 && r.key !== lastItemKey);
-  if(due >= 0) return byKey.get(retryList.splice(due, 1)[0].key);
+  if(due >= 0) return remember(byKey.get(retryList.splice(due, 1)[0].key));
 
   const known = deck.filter(isMastered);
   const unknown = deck.filter(i => !isMastered(i));
-  const notLast = list => (list.length > 1 ? list.filter(i => i.key !== lastItemKey) : list);
-  if(unknown.length === 0 || (known.length > 0 && Math.random() < 0.25)){
-    const pool = notLast(known.length ? known : deck);
-    return pool[Math.floor(Math.random() * pool.length)];
+  /* Wiederholung gekonnter Punkte: erst ab 8 gekonnten, seltener (ca. jede 7. Karte),
+     und immer der am längsten nicht gesehene. */
+  const wantReview = known.length >= 8 && Math.random() < 0.15;
+  if(unknown.length === 0 || wantReview){
+    let pool = (known.length ? known : deck).filter(i => !isRecent(i.key) && i.key !== lastItemKey);
+    if(pool.length === 0) pool = (known.length ? known : deck).filter(i => i.key !== lastItemKey);
+    if(pool.length === 0) pool = known.length ? known : deck;
+    pool.sort((x, y) => {
+      const ix = recentKeys.lastIndexOf(x.key), iy = recentKeys.lastIndexOf(y.key);
+      return ix - iy || Math.random() - 0.5;
+    });
+    return remember(pool[Math.min(pool.length - 1, Math.floor(Math.random() * Math.min(4, pool.length)))]);
   }
   pickQueue = pickQueue.filter(k => byKey.has(k) && !isMastered(byKey.get(k)));
   if(pickQueue.length === 0) pickQueue = shuffle(unknown.map(i => i.key));
-  let idx = pickQueue.findIndex(k => k !== lastItemKey);
+  let idx = pickQueue.findIndex(k => k !== lastItemKey && !isRecent(k));
+  if(idx < 0) idx = pickQueue.findIndex(k => k !== lastItemKey);
   if(idx < 0) idx = 0;
-  return byKey.get(pickQueue.splice(idx, 1)[0]);
+  return remember(byKey.get(pickQueue.splice(idx, 1)[0]));
 }
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){
@@ -935,7 +951,7 @@ document.getElementById("reset-progress-btn").addEventListener("click", () => {
   if(confirm("Gesamten Grammatik-Fortschritt zurücksetzen? Alles zählt danach wieder als offen.")){
     progress = {};
     saveProgress();
-    pickQueue = []; retryList = []; lastItemKey = null; window.__endShownFor = null;
+    pickQueue = []; retryList = []; recentKeys = []; lastItemKey = null; window.__endShownFor = null;
     updateStats();
     nextCard();
   }
