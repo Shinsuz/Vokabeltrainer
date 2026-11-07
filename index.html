@@ -456,11 +456,11 @@ function frontBack(word){
 function renderFlash(){
   const {front, back, frontIsArabic} = frontBack(currentWord);
   cardEl.innerHTML = `
-    <div class="prompt-hint">Karteikarte — antippen zum Umdrehen</div>
+    <div class="prompt-hint">Karteikarte — antippen zum Umdrehen (und wieder zurück)</div>
     <div class="prompt-row-flex">
       <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
     </div>
-    <div class="tap-hint">Leertaste, Enter oder Klick auf die Karte zum Umdrehen</div>
+    <div class="tap-hint">Leertaste, Enter oder Klick auf die Karte zum Umdrehen — nochmal klicken dreht zurück</div>
     <button type="button" class="next-btn" id="flash-flip-btn" style="display:block;">Umdrehen</button>
     <div id="flash-actions" class="flash-actions" style="display:none;">
       <button class="btn-again" id="btn-again">✗ Nochmal</button>
@@ -470,30 +470,39 @@ function renderFlash(){
   const face = document.getElementById("flash-face");
   const actions = document.getElementById("flash-actions");
 
+  let flipped = false;
+  const flipBtn = document.getElementById("flash-flip-btn");
   function flip(){
-    face.innerHTML = back + pluralHtml(currentWord);
-    face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
-    actions.style.display = "flex";
-    document.removeEventListener("keydown", flipHandler);
-    cardEl.onclick = null;
-    cardEl.style.cursor = "";
-    const fb = document.getElementById("flash-flip-btn"); if(fb) fb.style.display = "none";
+    flipped = !flipped;
+    if(flipped){
+      face.innerHTML = back + pluralHtml(currentWord);
+      face.className = frontIsArabic ? "prompt-word is-german" : "prompt-word";
+      actions.style.display = "flex";
+    } else {
+      face.innerHTML = front;
+      face.className = frontIsArabic ? "prompt-word" : "prompt-word is-german";
+      actions.style.display = "none";
+    }
+    if(flipBtn) flipBtn.textContent = flipped ? "Zurückdrehen" : "Umdrehen";
     try{ Sound.flip(); }catch(e){}
   }
-  function flipHandler(e){ if(e.code === "Space" || e.code === "Enter"){ e.preventDefault(); flip(); } }
-  /* ganze Karte (nicht nur das Wort) + Button zum Umdrehen */
-  face.onclick = flip;
+  /* Wird in nextCard() entfernt, sobald die Karte wechselt */
+  function flipHandler(e){
+    if(!document.getElementById("flash-face")){ document.removeEventListener("keydown", flipHandler); return; }
+    if(e.code === "Space" || e.code === "Enter"){ e.preventDefault(); flip(); }
+  }
+  /* ganze Karte (nicht nur das Wort) + Button: hin und zurück umdrehen */
+  face.onclick = e => { e.stopPropagation(); flip(); };
   cardEl.style.cursor = "pointer";
   cardEl.onclick = e => { if(e.target.closest("#flash-actions")) return; flip(); };
-  const flipBtn = document.getElementById("flash-flip-btn");
   if(flipBtn) flipBtn.onclick = e => { e.stopPropagation(); flip(); };
   document.addEventListener("keydown", flipHandler);
 
   setTimeout(() => {
     const again = document.getElementById("btn-again");
     const know = document.getElementById("btn-know");
-    if(again) again.onclick = () => { if(actions.style.display !== "none"){ markResult(currentWord, false); nextCard(); } };
-    if(know) know.onclick = () => { if(actions.style.display !== "none"){ markResult(currentWord, true); nextCard(); } };
+    if(again) again.onclick = () => { if(actions.style.display !== "none"){ document.removeEventListener("keydown", flipHandler); markResult(currentWord, false); nextCard(); } };
+    if(know) know.onclick = () => { if(actions.style.display !== "none"){ document.removeEventListener("keydown", flipHandler); markResult(currentWord, true); nextCard(); } };
   }, 0);
 }
 
