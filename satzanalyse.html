@@ -2,12 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#110e0b">
 <title>Satzanalyse | Boycott-Buddy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=6">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css?v=7">
 <script src="main.js"></script>
 <style>
 .role-help{margin:10px 0 0;font-size:.92rem;opacity:.95}
@@ -20,49 +21,49 @@
 <body class="bb-trainer">
 
   <nav class="tr-topbar" aria-label="Navigation">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">ع</span><span class="brand-text">Arabisch-Trainer<small>Boycott-Buddy</small></span></a>
     <div class="nav-links">
-      <a href="index.html">Vokabeln</a>
-      <a href="satzanalyse.html" class="active">Grammatik</a>
-      <a href="plural-uebung.html">Plural-Übung</a>
-      <a href="index.html#glossar" class="nav-glossary">Glossar</a>
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2.5"/><path d="M7 3h11.5A2.5 2.5 0 0 1 21 5.5V17"/></svg><span>Vokabeln</span></a>
+      <a href="satzanalyse.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3"/></svg><span>Grammatik</span></a>
+      <a href="plural-uebung.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Plural</span></a>
+      <a href="index.html#glossar" class="nav-glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H19"/><path d="M9 7h6"/></svg><span>Glossar</span></a>
     </div>
   </nav>
 
   <header>
-    <div class="ornament">◇ ✦ ◇</div>
-    <h1>Satzanalyse</h1>
-    <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
+    <div class="head-row">
+      <h1>Satzanalyse</h1>
+      <span class="ar-sub">تَحْلِيلُ الْجُمْلَةِ</span>
+      <button id="sound-toggle" class="icon-btn" title="Sound an/aus" aria-label="Sound an/aus">🔊</button>
+    </div>
     <p class="subtitle">Wörtern ihre Rolle im Satz zuweisen</p>
-    <div class="tr-divider"></div>
   </header>
 
   <main>
-    <div class="stats-row">
-      <div class="stats-pill">
+    <section class="panel" aria-label="Einstellungen">
+      <div class="pill-group seg" id="mode-tabs" aria-label="Übungsart">
+        <button class="pill-btn" data-mode="satzbau"><span class="lbl-long">Sätze analysieren</span><span class="lbl-short">Sätze</span></button>
+        <button class="pill-btn" data-mode="concept">Begriffe</button>
+        <button class="pill-btn" data-mode="fragen">Fragen</button>
+        <button class="pill-btn" data-mode="mix"><span class="lbl-long">Alles gemischt</span><span class="lbl-short">Mix</span></button>
+      </div>
+      <div class="tool-row">
+        <div data-picker-for="lesson-tabs"></div>
+      </div>
+      <div class="pill-group" id="lesson-tabs" data-picker data-picker-label="Lektion" data-picker-title="Lektion wählen"></div>
+      <div class="stats-pill" hidden>
         <div>Gesamt <b id="stat-total">0</b></div>
         <div class="mastered">Gekonnt <b id="stat-mastered">0</b></div>
       </div>
-      <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
-    </div>
-
-    <div class="pill-row">
-      <div class="pill-group" id="mode-tabs">
-        <button class="pill-btn" data-mode="satzbau">Sätze analysieren</button>
-        <button class="pill-btn" data-mode="concept">Begriffe</button>
-        <button class="pill-btn" data-mode="fragen">Fragen</button>
-        <button class="pill-btn" data-mode="mix">Alles gemischt</button>
-      </div>
-    </div>
-    <div class="pill-row">
-      <div class="pill-group" id="lesson-tabs"></div>
-    </div>
+    </section>
     <div class="scope-hint" id="scope-hint"></div>
 
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">0 % gekonnt</div>
+    </div>
+
     <div class="card-outer">
-      <svg class="corner tl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
-      <svg class="corner tr" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
-      <svg class="corner bl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
-      <svg class="corner br" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
       <div class="card" id="card"></div>
       <div id="end-overlay" class="end-overlay" aria-hidden="true">
         <div class="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
@@ -77,15 +78,9 @@
       </div>
     </div>
 
-    <div class="progress-row">
-      <svg class="star-mark" viewBox="0 0 100 100"><polygon points="50,4 61,32 92,32 66,50 76,80 50,62 24,80 34,50 8,32 39,32" fill="var(--primary-color)"/></svg>
-      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      <div class="progress-label" id="progress-label">0 % gekonnt</div>
-    </div>
-
     <div class="controls">
-      <button class="ghost-btn" id="reset-progress-btn">Fortschritt zurücksetzen</button>
-      <button class="ghost-btn" id="shuffle-btn">🔀 Neu mischen</button>
+      <button class="ghost-btn" id="shuffle-btn">🔀 Andere Aufgabe</button>
+      <button class="ghost-btn danger" id="reset-progress-btn">Fortschritt zurücksetzen</button>
     </div>
   </main>
 
@@ -975,5 +970,6 @@ if (typeof SATZANALYSE === "undefined") {
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
+<script src="ui.js?v=1"></script>
 </body>
 </html>

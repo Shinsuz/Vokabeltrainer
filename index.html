@@ -2,80 +2,70 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#110e0b">
 <title>Vokabeltrainer | Boycott-Buddy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=6">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css?v=7">
 <script src="vocab.js"></script>
 </head>
 <body class="bb-trainer">
 
   <nav class="tr-topbar" aria-label="Navigation">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">ع</span><span class="brand-text">Arabisch-Trainer<small>Boycott-Buddy</small></span></a>
     <div class="nav-links">
-      <a href="index.html" class="active">Vokabeln</a>
-      <a href="satzanalyse.html">Grammatik</a>
-      <a href="plural-uebung.html">Plural-Übung</a>
-      <button type="button" class="nav-glossary" data-open-glossary>Glossar</button>
+      <a href="index.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2.5"/><path d="M7 3h11.5A2.5 2.5 0 0 1 21 5.5V17"/></svg><span>Vokabeln</span></a>
+      <a href="satzanalyse.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3"/></svg><span>Grammatik</span></a>
+      <a href="plural-uebung.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Plural</span></a>
+      <button type="button" class="nav-glossary" data-open-glossary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H19"/><path d="M9 7h6"/></svg><span>Glossar</span></button>
     </div>
   </nav>
 
   <header>
-    <div class="ornament">◇ ✦ ◇</div>
-    <h1>Vokabeltrainer</h1>
-    <span class="ar-sub">المُفرَدات</span>
-    <p class="subtitle">عربي ⇄ Deutsch</p>
-    <div class="tr-divider"></div>
+    <div class="head-row">
+      <h1>Vokabeltrainer</h1>
+      <span class="ar-sub">المُفرَدات</span>
+      <button id="sound-toggle" class="icon-btn" title="Sound an/aus" aria-label="Sound an/aus">🔊</button>
+    </div>
   </header>
 
   <main>
-    <div class="stats-row">
-      <div class="stats-pill">
+    <section class="panel" aria-label="Einstellungen">
+      <div class="pill-group seg" id="tabs" aria-label="Übungsart">
+        <button class="pill-btn" data-mode="flash"><span class="lbl-long">Karteikarten</span><span class="lbl-short">Karten</span></button>
+        <button class="pill-btn" data-mode="mc"><span class="lbl-long">Multiple Choice</span><span class="lbl-short">Auswahl</span></button>
+        <button class="pill-btn" data-mode="write">Schreiben</button>
+        <button class="pill-btn" data-mode="mix"><span class="lbl-long">Gemischt</span><span class="lbl-short">Mix</span></button>
+      </div>
+      <div class="tool-row stack">
+        <div data-picker-for="lesson-tabs"></div>
+        <button class="toggle-pill" id="dir-toggle" title="Abfragerichtung umschalten">
+          <span id="dir-label"><b>عربي</b> → Deutsch</span> <span class="swap" aria-hidden="true">⇄</span>
+        </button>
+        <label class="toggle-pill" id="harakat-toggle-wrap" title="Vokalzeichen (Haraket) anzeigen">
+          <span>Haraket</span>
+          <span class="switch">
+            <input type="checkbox" id="harakat-checkbox" checked>
+            <span class="slider"></span>
+          </span>
+          <b id="harakat-state" hidden>an</b>
+        </label>
+      </div>
+      <div class="pill-group" id="lesson-tabs" data-picker data-picker-label="Lektion" data-picker-title="Lektion wählen"></div>
+    </section>
+
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">0 % gekonnt</div>
+      <div class="stats-pill" hidden>
         <div>Gesamt <b id="stat-total">0</b></div>
         <div class="mastered">Gekonnt <b id="stat-mastered">0</b></div>
       </div>
-      <button id="sound-toggle" class="icon-btn" title="Sound an/aus">🔊</button>
-    </div>
-
-    <button type="button" class="glossary-banner" data-open-glossary>
-      <span class="gb-ar">المعجم</span>
-      <span class="gb-text">
-        <b>Glossar</b>
-        <small>Alle <span id="glossary-count">…</span> Vokabeln nach Wortart – Verb, Präposition, Pronomen, Mudâf u. a.</small>
-      </span>
-      <span class="gb-go">Öffnen →</span>
-    </button>
-
-    <div class="pill-row">
-      <div class="pill-group" id="tabs">
-        <button class="pill-btn" data-mode="flash">Karteikarten</button>
-        <button class="pill-btn" data-mode="mc">Multiple Choice</button>
-        <button class="pill-btn" data-mode="write">Schreiben</button>
-        <button class="pill-btn" data-mode="mix">Mix-Modus</button>
-      </div>
-      <button class="toggle-pill" id="dir-toggle" title="Abfragerichtung umschalten">
-        <span id="dir-label"><b>عربي</b> → Deutsch</span> ⇄
-      </button>
-    </div>
-
-    <div class="pill-row">
-      <div class="pill-group" id="lesson-tabs"></div>
-      <label class="toggle-pill" id="harakat-toggle-wrap">
-        <span>Haraket</span>
-        <span class="switch">
-          <input type="checkbox" id="harakat-checkbox" checked>
-          <span class="slider"></span>
-        </span>
-        <b id="harakat-state">an</b>
-      </label>
     </div>
 
     <div class="card-outer">
-      <svg class="corner tl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
-      <svg class="corner tr" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
-      <svg class="corner bl" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
-      <svg class="corner br" viewBox="0 0 30 30"><path d="M2 28 V10 Q2 2 10 2 H28" fill="none" stroke="var(--primary-color)" stroke-width="2"/><circle cx="2" cy="28" r="2.2" fill="var(--primary-color)"/></svg>
       <div class="card" id="card"></div>
       <div id="end-overlay" class="end-overlay" aria-hidden="true">
         <div class="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
@@ -91,24 +81,22 @@
       <div id="glossary-overlay" class="end-overlay" aria-hidden="true">
         <div class="end-modal glossary-modal" role="dialog" aria-modal="true" aria-labelledby="glossary-title">
           <div class="glossary-header">
-            <h2 id="glossary-title">Glossar</h2>
-            <button class="icon-btn" id="glossary-close" title="Schließen">✕</button>
+            <h2 id="glossary-title">Glossar <small id="glossary-count" class="glossary-total"></small></h2>
+            <button class="icon-btn" id="glossary-close" title="Schließen" aria-label="Glossar schließen">✕</button>
           </div>
-          <div class="pill-row" id="glossary-cat-tabs"></div>
+          <div class="glossary-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="search" id="glossary-search" placeholder="Suchen – Deutsch oder عربي" aria-label="Glossar durchsuchen" autocomplete="off" enterkeyhint="search">
+          </div>
+          <div class="pill-row chip-scroll" id="glossary-cat-tabs"></div>
           <div class="glossary-list" id="glossary-list"></div>
         </div>
       </div>
     </div>
 
-    <div class="progress-row">
-      <svg class="star-mark" viewBox="0 0 100 100"><polygon points="50,4 61,32 92,32 66,50 76,80 50,62 24,80 34,50 8,32 39,32" fill="var(--primary-color)"/></svg>
-      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      <div class="progress-label" id="progress-label">0 % gekonnt</div>
-    </div>
-
     <div class="controls">
-      <button class="ghost-btn" id="reset-progress-btn">Fortschritt zurücksetzen</button>
-      <button class="ghost-btn" id="shuffle-btn">🔀 Neu mischen</button>
+      <button class="ghost-btn" id="shuffle-btn">🔀 Andere Vokabel</button>
+      <button class="ghost-btn danger" id="reset-progress-btn">Fortschritt zurücksetzen</button>
     </div>
   </main>
 
@@ -456,16 +444,16 @@ function frontBack(word){
 function renderFlash(){
   const {front, back, frontIsArabic} = frontBack(currentWord);
   cardEl.innerHTML = `
-    <div class="prompt-hint">Karteikarte — antippen zum Umdrehen (und wieder zurück)</div>
+    <div class="prompt-hint">Karteikarte</div>
     <div class="prompt-row-flex">
       <div id="flash-face" class="${frontIsArabic ? 'prompt-word' : 'prompt-word is-german'}" style="cursor:pointer;">${front}</div>
     </div>
-    <div class="tap-hint">Leertaste, Enter oder Klick auf die Karte zum Umdrehen — nochmal klicken dreht zurück</div>
-    <button type="button" class="next-btn" id="flash-flip-btn" style="display:block;">Umdrehen</button>
+    <div class="tap-hint" id="flash-hint">Tippe auf die Karte zum Umdrehen<span class="only-desktop"> · oder Leertaste</span></div>
     <div id="flash-actions" class="flash-actions" style="display:none;">
       <button class="btn-again" id="btn-again">✗ Nochmal</button>
       <button class="btn-know" id="btn-know">✓ Kenn ich</button>
     </div>
+    <button type="button" class="next-btn" id="flash-flip-btn">Umdrehen</button>
   `;
   const face = document.getElementById("flash-face");
   const actions = document.getElementById("flash-actions");
@@ -483,7 +471,12 @@ function renderFlash(){
       face.className = frontIsArabic ? "prompt-word" : "prompt-word is-german";
       actions.style.display = "none";
     }
-    if(flipBtn) flipBtn.textContent = flipped ? "Zurückdrehen" : "Umdrehen";
+    if(flipBtn){
+      flipBtn.textContent = flipped ? "Zurückdrehen" : "Umdrehen";
+      flipBtn.classList.toggle("secondary", flipped);
+    }
+    const hint = document.getElementById("flash-hint");
+    if(hint) hint.style.display = flipped ? "none" : "";
     try{ Sound.flip(); }catch(e){}
   }
   /* Wird in nextCard() entfernt, sobald die Karte wechselt */
@@ -690,11 +683,23 @@ harakatCheckbox.addEventListener("change", e => {
    mehrere Schlüssel enthält. Wörter ohne (oder mit leerem) "categories"-
    Feld landen unter "Nicht zugeordnet". */
 let glossaryFilter = "alle";
+let glossaryQuery = "";
 
 function allVocabWords(){
   return Object.entries(LESSONS)
     .filter(([key]) => key !== "Grammatik")
     .flatMap(([, words]) => words);
+}
+
+/* Suche: Deutsch ohne Groß/Klein und Umlaut-Akzente, Arabisch ohne Haraket */
+function glossaryNorm(t){
+  return stripHarakat(String(t || "")).toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/ـ/g, "").trim();
+}
+function matchesGlossaryQuery(w){
+  if(!glossaryQuery) return true;
+  return glossaryNorm(w.arabic).includes(glossaryQuery)
+      || glossaryNorm(w.german).includes(glossaryQuery)
+      || (w.plural && glossaryNorm(w.plural).includes(glossaryQuery));
 }
 
 function buildGlossaryTabs(){
@@ -726,7 +731,8 @@ function buildGlossaryTabs(){
 
 function glossaryGroupHtml(key){
   const cat = CATEGORIES[key];
-  const words = allVocabWords().filter(w => Array.isArray(w.categories) && w.categories.includes(key));
+  const words = allVocabWords().filter(w => Array.isArray(w.categories) && w.categories.includes(key) && matchesGlossaryQuery(w));
+  if(glossaryQuery && words.length === 0) return "";
   let html = `<div class="glossary-group">
       <div class="glossary-group-title">${cat.de} <span class="ar">${cat.ar}</span><span class="count">(${words.length})</span></div>`;
   if(words.length === 0){
@@ -744,7 +750,15 @@ function renderGlossaryList(){
   const listEl = document.getElementById("glossary-list");
   if(glossaryFilter === "alle"){
     let html = Object.keys(CATEGORIES).map(glossaryGroupHtml).join("");
-    const uncategorized = allVocabWords().filter(w => !w.categories || w.categories.length === 0);
+    const uncategorized = allVocabWords().filter(w => (!w.categories || w.categories.length === 0) && matchesGlossaryQuery(w));
+    if(glossaryQuery){
+      if(uncategorized.length){
+        html += `<div class="glossary-group"><div class="glossary-group-title">Weitere <span class="count">(${uncategorized.length})</span></div>` +
+          uncategorized.map(w => `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`).join("") + `</div>`;
+      }
+      listEl.innerHTML = html || `<div class="glossary-empty">Nichts gefunden für „${escapeHtml(glossaryQuery)}“.</div>`;
+      return;
+    }
     html += `<div class="glossary-group">
         <div class="glossary-group-title">Nicht zugeordnet <span class="count">(${uncategorized.length})</span></div>`;
     if(uncategorized.length === 0){
@@ -758,12 +772,22 @@ function renderGlossaryList(){
     html += `</div>`;
     listEl.innerHTML = html;
   } else {
-    listEl.innerHTML = glossaryGroupHtml(glossaryFilter);
+    listEl.innerHTML = glossaryGroupHtml(glossaryFilter) || `<div class="glossary-empty">Nichts gefunden für „${escapeHtml(glossaryQuery)}“ in dieser Kategorie.</div>`;
   }
 }
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]); }
+
+const glossarySearchEl = document.getElementById("glossary-search");
+glossarySearchEl.addEventListener("input", () => {
+  glossaryQuery = glossaryNorm(glossarySearchEl.value);
+  renderGlossaryList();
+  document.getElementById("glossary-list").scrollTop = 0;
+});
 
 function openGlossary(){
   glossaryFilter = "alle";
+  glossaryQuery = "";
+  glossarySearchEl.value = "";
   buildGlossaryTabs();
   renderGlossaryList();
   const overlay = document.getElementById("glossary-overlay");
@@ -787,11 +811,12 @@ buildLessonTabs();
 setMode("flash");
 updateStats();
 const glossaryCountEl = document.getElementById("glossary-count");
-if(glossaryCountEl) glossaryCountEl.textContent = allVocabWords().length;
+if(glossaryCountEl) glossaryCountEl.textContent = allVocabWords().length + " Wörter";
 if(location.hash === "#glossar") openGlossary();   // Direktlink, z. B. aus dem Grammatiktrainer
 
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
+<script src="ui.js?v=1"></script>
 </body>
 </html>
