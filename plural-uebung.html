@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=10">
+<link rel="stylesheet" href="theme.css?v=11">
 <script src="plural-saetze.js"></script>
 <style>
 .pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
@@ -112,6 +112,10 @@
       <div class="pill-row chip-scroll" id="plural-filter-row"></div>
       <div class="card-outer">
         <div class="card plural-card" id="plural-card"></div>
+      </div>
+      <div class="glossary-search plural-search" id="plural-search-wrap" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="plural-search" placeholder="Suchen – Deutsch, Singular oder Plural" aria-label="Plural-Liste durchsuchen" autocomplete="off" enterkeyhint="search">
       </div>
       <div class="plural-overview" id="plural-overview" style="display:none;"></div>
       <div class="controls">
@@ -267,20 +271,33 @@ function renderPluralView(){
   updatePluralStats();
   const card = document.getElementById("plural-card");
   const ov = document.getElementById("plural-overview");
+  const search = document.getElementById("plural-search-wrap");
   if(pluralView === "overview"){
-    card.style.display = "none"; ov.style.display = "block";
+    card.style.display = "none"; ov.style.display = "block"; search.style.display = "";
     renderPluralOverview();
   } else {
-    ov.style.display = "none"; card.style.display = "";
+    ov.style.display = "none"; search.style.display = "none"; card.style.display = "";
     nextPluralCard();
   }
 }
 
 /* Übersicht: alle Plurale mit Status (✓ gekonnt · ○ offen) */
+/* Suche in der Liste: Deutsch (ohne Groß/Klein, Akzente) oder Arabisch (ohne Haraket),
+   findet Singular und Plural */
+const P_HARAKAT = /[ً-ْٖ-ٰٟۖ-ۭـ]/g;
+const pNorm = t => String(t || "").replace(P_HARAKAT, "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").trim();
+function pluralSearchQuery(){ const el = document.getElementById("plural-search"); return el ? pNorm(el.value) : ""; }
 function renderPluralOverview(){
   const ov = document.getElementById("plural-overview");
-  const pool = pluralPool();
-  if(pool.length === 0){ ov.innerHTML = `<div class="glossary-empty">Keine Plurale in dieser Auswahl.</div>`; return; }
+  const q = pluralSearchQuery();
+  const pool = pluralPool().filter(w => !q || pNorm(w.arabic).includes(q) || pNorm(w.plural).includes(q) || pNorm(w.german).includes(q));
+  if(pool.length === 0){
+    const raw = document.getElementById("plural-search").value.trim().replace(/[&<>"]/g, "");
+    ov.innerHTML = q
+      ? `<div class="glossary-empty big-empty">Nichts gefunden für „${raw}“.<br>Tipp: Filter oben auf „Alle“ stellen oder „+ Lektion 1–11“ dazuschalten.</div>`
+      : `<div class="glossary-empty">Keine Plurale in dieser Auswahl.</div>`;
+    return;
+  }
   const group = (type, title) => {
     const list = pool.filter(w => getPluralType(w) === type);
     if(!list.length) return "";
@@ -459,6 +476,7 @@ function selectPlural(choice, btn, correctPlural, word){
   document.getElementById("plural-next-btn").style.display = "block";
 }
 
+document.getElementById("plural-search").addEventListener("input", () => { if(pluralView === "overview") renderPluralOverview(); });
 document.getElementById("plural-reset-btn").addEventListener("click", () => { Sound.click(); resetPluralProgress(); });
 window.PluralTrainer = { open: openPluralTrainer };
 })();
