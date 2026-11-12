@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#110e0b">
+<title>Glossar | Boycott-Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css?v=9">
+<script src="vocab.js"></script>
+</head>
+<body class="bb-trainer page-glossar">
+
+  <nav class="tr-topbar" aria-label="Navigation">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">ع</span><span class="brand-text">Arabisch-Trainer<small>Boycott-Buddy</small></span></a>
+    <div class="nav-links">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2.5"/><path d="M7 3h11.5A2.5 2.5 0 0 1 21 5.5V17"/></svg><span>Vokabeln</span></a>
+      <a href="satzanalyse.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3"/></svg><span>Grammatik</span></a>
+      <a href="plural-uebung.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Plural</span></a>
+      <a href="glossar.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H19"/><path d="M9 7h6"/></svg><span>Glossar</span></a>
+    </div>
+  </nav>
+
+  <header>
+    <div class="head-row">
+      <h1>Glossar</h1>
+      <span class="ar-sub">المُعجَم</span>
+      <label class="toggle-pill head-toggle" title="Vokalzeichen (Haraket) anzeigen">
+        <span>Haraket</span>
+        <span class="switch"><input type="checkbox" id="harakat-checkbox" checked><span class="slider"></span></span>
+      </label>
+    </div>
+    <p class="subtitle" id="glossary-count">Alle Vokabeln nach Wortart</p>
+  </header>
+
+  <main>
+    <section class="panel glossary-tools" aria-label="Suche und Filter">
+      <div class="glossary-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="glossary-search" placeholder="Suchen – Deutsch oder عربي" aria-label="Glossar durchsuchen" autocomplete="off" enterkeyhint="search">
+      </div>
+      <div class="pill-row chip-scroll" id="glossary-cat-tabs" aria-label="Wortart"></div>
+    </section>
+
+    <div class="glossary-result" id="glossary-result" aria-live="polite"></div>
+    <div class="glossary-list" id="glossary-list"></div>
+  </main>
+
+  <footer>
+    <div class="made-by">made by <a href="https://boycott-buddy.com/" target="_blank" rel="noopener">boycott-buddy.com</a></div>
+  </footer>
+
+<script>
+/* Glossar — zeigt alle Vokabeln (außer dem Sonderblock "Grammatik") gruppiert
+   nach den Kategorien aus CATEGORIES (vocab.js). Ein Wort kann in mehreren
+   Kategorien gleichzeitig auftauchen, wenn sein "categories"-Array mehrere
+   Schlüssel enthält. Wörter ohne "categories" landen unter "Nicht zugeordnet". */
+const HARAKAT_REGEX = /[ً-ْٖ-ٰٟۖ-ۭ]/g;
+function stripHarakat(text){ return String(text || "").replace(HARAKAT_REGEX, ""); }
+let showHarakat = true;
+function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
+function pluralHtml(w){
+  return w && w.plural ? `<span class="plural-line">Plural: <span class="ar">${displayArabic(w.plural)}</span></span>` : "";
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]); }
+
+let glossaryFilter = "alle";
+let glossaryQuery = "";
+
+function allVocabWords(){
+  return Object.entries(LESSONS)
+    .filter(([key]) => key !== "Grammatik")
+    .flatMap(([, words]) => words);
+}
+/* Suche: Deutsch ohne Groß/Klein und Akzente, Arabisch ohne Haraket */
+function glossaryNorm(t){
+  return stripHarakat(t).toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/ـ/g, "").trim();
+}
+function matchesQuery(w){
+  if(!glossaryQuery) return true;
+  return glossaryNorm(w.arabic).includes(glossaryQuery)
+      || glossaryNorm(w.german).includes(glossaryQuery)
+      || (w.plural && glossaryNorm(w.plural).includes(glossaryQuery));
+}
+function wordsOf(key){
+  return allVocabWords().filter(w => key === "_none"
+    ? (!w.categories || w.categories.length === 0)
+    : (Array.isArray(w.categories) && w.categories.includes(key)));
+}
+
+function rowHtml(w){
+  return `<div class="glossary-word-row"><span class="ar" lang="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`;
+}
+
+function buildTabs(){
+  const wrap = document.getElementById("glossary-cat-tabs");
+  const keys = ["alle", ...Object.keys(CATEGORIES)];
+  wrap.innerHTML = keys.map(k => {
+    const label = k === "alle" ? "Alle" : CATEGORIES[k].de.replace(/\s*\(.*\)$/, "");
+    const n = k === "alle" ? allVocabWords().length : wordsOf(k).length;
+    return `<button type="button" class="lesson-pill${glossaryFilter === k ? " active" : ""}" data-key="${k}">${label} <span class="chip-count">${n}</span></button>`;
+  }).join("");
+  wrap.onclick = e => {
+    const btn = e.target.closest(".lesson-pill");
+    if(!btn) return;
+    glossaryFilter = btn.dataset.key;
+    [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
+    render();
+    window.scrollTo({ top: 0 });
+  };
+}
+
+function groupHtml(key, title, arTitle){
+  const words = wordsOf(key).filter(matchesQuery);
+  if(words.length === 0) return glossaryQuery ? "" :
+    `<section class="glossary-group"><h2 class="glossary-group-title">${title}${arTitle ? ` <span class="ar">${arTitle}</span>` : ""}<span class="count">0</span></h2><div class="glossary-empty">Noch keine Vokabeln zugeordnet.</div></section>`;
+  return `<section class="glossary-group">
+    <h2 class="glossary-group-title">${title}${arTitle ? ` <span class="ar">${arTitle}</span>` : ""}<span class="count">${words.length}</span></h2>
+    ${words.map(rowHtml).join("")}
+  </section>`;
+}
+
+function render(){
+  const listEl = document.getElementById("glossary-list");
+  const keys = glossaryFilter === "alle" ? Object.keys(CATEGORIES) : [glossaryFilter];
+  let html = keys.map(k => groupHtml(k, CATEGORIES[k].de, CATEGORIES[k].ar)).join("");
+  if(glossaryFilter === "alle" && wordsOf("_none").length) html += groupHtml("_none", "Nicht zugeordnet", "");
+
+  const result = document.getElementById("glossary-result");
+  if(glossaryQuery){
+    const hits = new Set(allVocabWords().filter(matchesQuery).filter(w => glossaryFilter === "alle" || wordsOf(glossaryFilter).includes(w))).size;
+    result.textContent = hits ? `${hits} Treffer für „${glossarySearch.value.trim()}“` : "";
+  } else result.textContent = "";
+
+  listEl.innerHTML = html || `<div class="glossary-empty big-empty">Nichts gefunden für „${escapeHtml(glossarySearch.value.trim())}“.<br>Tipp: Arabisch geht auch ohne Haraket.</div>`;
+}
+
+const glossarySearch = document.getElementById("glossary-search");
+glossarySearch.addEventListener("input", () => {
+  glossaryQuery = glossaryNorm(glossarySearch.value);
+  render();
+});
+document.getElementById("harakat-checkbox").addEventListener("change", e => {
+  showHarakat = e.target.checked;
+  render();
+});
+
+const total = allVocabWords().length;
+document.getElementById("glossary-count").textContent = `Alle ${total} Vokabeln nach Wortart – Verb, Präposition, Pronomen u. a.`;
+/* Direktlink auf eine Kategorie möglich, z. B. glossar.html#fiil */
+const hashKey = decodeURIComponent(location.hash.slice(1));
+if(CATEGORIES[hashKey]) glossaryFilter = hashKey;
+buildTabs();
+render();
+</script>
+</body>
+</html>

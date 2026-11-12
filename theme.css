@@ -60,6 +60,7 @@
   --shadow:     0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 10px 30px rgba(0, 0, 0, 0.35);
   --nav-h:      64px;   /* Höhe der Navigationsleiste unten (Handy) */
   --tap:        44px;   /* Mindesthöhe für antippbare Elemente */
+  --topbar-h:   59px;   /* Höhe der oberen Leiste am PC */
 
   color-scheme: dark;
 }
@@ -133,7 +134,7 @@ body::before {
 
 /* ---------- Obere Leiste / Navigation ---------- */
 .tr-topbar {
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 40;
   display: flex;
@@ -781,6 +782,77 @@ kbd { background: var(--bg); border: 1px solid var(--line-strong); border-radius
 .glossary-word-row .de { color: var(--text); text-align: right; flex-shrink: 1; max-width: 60%; }
 .glossary-empty { color: var(--text-dim); font-size: 0.92rem; padding: 0.5rem 0.1rem; line-height: 1.55; }
 
+/* ---------- Glossar als eigene Seite (glossar.html) ---------- */
+.page-glossar .glossary-tools {
+  position: sticky;
+  top: 0.5rem;
+  z-index: 30;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.glossary-tools .glossary-search { margin-bottom: 0.5rem; }
+.glossary-tools .chip-scroll { margin: 0 -0.6rem; padding: 2px 0.6rem; scroll-padding: 0 0.6rem; }
+.page-glossar header .head-row { padding-right: 8.2rem; }
+header .head-row .head-toggle { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+.chip-count { font-size: 0.78em; font-weight: 600; color: var(--text-dim); margin-left: 0.15rem; }
+.lesson-pill.active .chip-count { color: var(--gold); }
+.glossary-result { font-size: 0.88rem; color: var(--text-dim); margin: 0 0.2rem 0.6rem; }
+.glossary-result:empty { display: none; }
+.page-glossar .glossary-list { overflow: visible; }
+.page-glossar .glossary-group {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 0.2rem 1rem 0.4rem;
+  margin-bottom: 0.9rem;
+}
+.page-glossar .glossary-group-title { position: static; background: none; margin: 0; font-size: 1.05rem; }
+.glossary-group-title .count { margin-left: auto; }
+.big-empty { text-align: center; padding: 2rem 1rem; font-size: 1rem; }
+
+/* ---------- Plural-Liste (plural-uebung.html, Reiter "Liste") ---------- */
+.plural-overview { margin-bottom: 1rem; }
+.plural-ov-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; justify-content: center; font-size: 0.85rem; color: var(--text-dim); margin: 0.2rem 0 0.9rem; }
+.plural-ov-legend .lg.done { color: var(--ok); }
+.plural-ov-legend .lg.prog { color: var(--gold); }
+.ov-group {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 0.3rem 1rem 0.5rem;
+  margin-bottom: 0.9rem;
+}
+.ov-group-title {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.6rem;
+  margin: 0; padding: 0.6rem 0 0.5rem;
+  font-size: 1.05rem; font-weight: 700; color: var(--gold-bright);
+  border-bottom: 1px solid var(--line-strong);
+}
+.ov-group-title .ar { font-family: var(--font-arabic); font-weight: 500; font-size: 1.1rem; color: var(--gold); }
+.ov-group-title .count { margin-left: auto; font-size: 0.85rem; font-weight: 600; color: var(--text-dim); }
+.ov-head { display: none; }
+/* Handy: Status | arabisches Paar, darunter Deutsch */
+.plural-ov-row {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  grid-template-areas: "st pair" "st de";
+  align-items: center;
+  gap: 0 0.6rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.plural-ov-row:last-child { border-bottom: 0; }
+.plural-ov-row .st { grid-area: st; font-size: 1.05rem; text-align: center; font-weight: 700; }
+.plural-ov-row.done .st { color: var(--ok); }
+.plural-ov-row.prog .st { color: var(--gold); }
+.plural-ov-row.open .st { color: var(--text-dim); }
+.ov-pair { grid-area: pair; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 0.1rem 0.55rem; direction: rtl; }
+.ov-pair .ar { font-family: var(--font-arabic); font-size: 1.3rem; line-height: 1.6; color: var(--cream); }
+.ov-pair .ar.pl { color: var(--gold-bright); }
+.ov-arrow { color: var(--text-dim); font-size: 0.9rem; }
+.plural-ov-row .de { grid-area: de; font-size: 0.9rem; color: var(--text); }
+.plural-ov-row .de small { color: var(--wrong); font-weight: 600; }
+
 /* Plural-Zeile (Vokabeln/Glossar) */
 .plural-line { display: block; margin-top: 4px; font-size: 0.6em; color: var(--gold); font-family: var(--font-main); font-weight: 500; }
 .plural-line .ar { font-family: var(--font-arabic); font-size: 1.35em; margin-left: 4px; color: var(--cream); }
@@ -814,7 +886,10 @@ body.has-overlay { overflow: hidden; }
 @media (min-width: 760px) {
   body { padding-bottom: 2rem; }
 
-  .tr-topbar { padding: 0.75rem max(1.5rem, calc((100vw - 1100px) / 2)); }
+  html body.bb-trainer > .tr-topbar { top: 0; }
+  .tr-topbar { position: sticky; padding: 0.75rem max(1.5rem, calc((100vw - 1100px) / 2)); }
+  .page-glossar .glossary-tools { top: calc(var(--topbar-h) + 0.5rem); }
+  .glossary-tools .chip-scroll { margin: 0; padding: 0; }
   .brand-text { font-size: 1.05rem; }
 
   /* Navigation wandert nach oben rechts in die Leiste */
@@ -888,6 +963,14 @@ body.has-overlay { overflow: hidden; }
   .glossary-modal { height: auto; max-height: 86vh; text-align: left; }
   .glossary-word-row { font-size: 1.02rem; }
   .sheet-body .pill-group, .sheet-body #lesson-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Plural-Liste am PC als Tabelle */
+  .ov-head, .plural-ov-row { grid-template-columns: 2rem minmax(0, 1.2fr) minmax(0, 1fr); grid-template-areas: "st pair de"; }
+  .ov-head { display: grid; gap: 0 1rem; padding: 0.5rem 0 0.3rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+  .ov-pair-head { display: flex; gap: 0.5rem; direction: rtl; }
+  .plural-ov-row { gap: 0 1rem; }
+  .ov-pair { justify-content: flex-start; }
+  .plural-ov-row .de { font-size: 0.95rem; }
 }
 
 /* ---------- Bewegung reduzieren, wenn im System so eingestellt ---------- */

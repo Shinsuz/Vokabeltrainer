@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=8">
+<link rel="stylesheet" href="theme.css?v=9">
+<script>if(location.hash === "#glossar") location.replace("glossar.html");  /* alte Links aufs Glossar */</script>
 <script src="vocab.js"></script>
 </head>
 <body class="bb-trainer">
@@ -19,7 +20,7 @@
       <a href="index.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2.5"/><path d="M7 3h11.5A2.5 2.5 0 0 1 21 5.5V17"/></svg><span>Vokabeln</span></a>
       <a href="satzanalyse.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3"/></svg><span>Grammatik</span></a>
       <a href="plural-uebung.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Plural</span></a>
-      <button type="button" class="nav-glossary" data-open-glossary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H19"/><path d="M9 7h6"/></svg><span>Glossar</span></button>
+      <a href="glossar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H19"/><path d="M9 7h6"/></svg><span>Glossar</span></a>
     </div>
   </nav>
 
@@ -76,20 +77,6 @@
             <button class="btn-back" id="end-back">Zurück zur Übersicht</button>
             <button class="btn-close" id="end-close">Schließen</button>
           </div>
-        </div>
-      </div>
-      <div id="glossary-overlay" class="end-overlay" aria-hidden="true">
-        <div class="end-modal glossary-modal" role="dialog" aria-modal="true" aria-labelledby="glossary-title">
-          <div class="glossary-header">
-            <h2 id="glossary-title">Glossar <small id="glossary-count" class="glossary-total"></small></h2>
-            <button class="icon-btn" id="glossary-close" title="Schließen" aria-label="Glossar schließen">✕</button>
-          </div>
-          <div class="glossary-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input type="search" id="glossary-search" placeholder="Suchen – Deutsch oder عربي" aria-label="Glossar durchsuchen" autocomplete="off" enterkeyhint="search">
-          </div>
-          <div class="pill-row chip-scroll" id="glossary-cat-tabs"></div>
-          <div class="glossary-list" id="glossary-list"></div>
         </div>
       </div>
     </div>
@@ -676,143 +663,10 @@ harakatCheckbox.addEventListener("change", e => {
   nextCard();
 });
 
-/* ---------- Glossar ----------
-   Zeigt alle Vokabeln (außer dem Sonderblock "Grammatik") gruppiert nach
-   den Kategorien aus CATEGORIES (vocab.js). Ein Wort kann in mehreren
-   Kategorien gleichzeitig auftauchen, wenn sein "categories"-Array
-   mehrere Schlüssel enthält. Wörter ohne (oder mit leerem) "categories"-
-   Feld landen unter "Nicht zugeordnet". */
-let glossaryFilter = "alle";
-let glossaryQuery = "";
-
-function allVocabWords(){
-  return Object.entries(LESSONS)
-    .filter(([key]) => key !== "Grammatik")
-    .flatMap(([, words]) => words);
-}
-
-/* Suche: Deutsch ohne Groß/Klein und Umlaut-Akzente, Arabisch ohne Haraket */
-function glossaryNorm(t){
-  return stripHarakat(String(t || "")).toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/ـ/g, "").trim();
-}
-function matchesGlossaryQuery(w){
-  if(!glossaryQuery) return true;
-  return glossaryNorm(w.arabic).includes(glossaryQuery)
-      || glossaryNorm(w.german).includes(glossaryQuery)
-      || (w.plural && glossaryNorm(w.plural).includes(glossaryQuery));
-}
-
-function buildGlossaryTabs(){
-  const wrap = document.getElementById("glossary-cat-tabs");
-  wrap.innerHTML = "";
-  const allBtn = document.createElement("button");
-  allBtn.className = "lesson-pill" + (glossaryFilter === "alle" ? " active" : "");
-  allBtn.textContent = "Alle";
-  allBtn.dataset.key = "alle";
-  wrap.appendChild(allBtn);
-
-  Object.keys(CATEGORIES).forEach(key => {
-    const btn = document.createElement("button");
-    btn.className = "lesson-pill" + (glossaryFilter === key ? " active" : "");
-    btn.textContent = CATEGORIES[key].de;
-    btn.dataset.key = key;
-    wrap.appendChild(btn);
-  });
-
-  wrap.onclick = e => {
-    const btn = e.target.closest(".lesson-pill");
-    if(!btn) return;
-    Sound.click();
-    glossaryFilter = btn.dataset.key;
-    [...wrap.children].forEach(b => b.classList.toggle("active", b === btn));
-    renderGlossaryList();
-  };
-}
-
-function glossaryGroupHtml(key){
-  const cat = CATEGORIES[key];
-  const words = allVocabWords().filter(w => Array.isArray(w.categories) && w.categories.includes(key) && matchesGlossaryQuery(w));
-  if(glossaryQuery && words.length === 0) return "";
-  let html = `<div class="glossary-group">
-      <div class="glossary-group-title">${cat.de} <span class="ar">${cat.ar}</span><span class="count">(${words.length})</span></div>`;
-  if(words.length === 0){
-    html += `<div class="glossary-empty">Noch keine Vokabeln zugeordnet.</div>`;
-  } else {
-    words.forEach(w => {
-      html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`;
-    });
-  }
-  html += `</div>`;
-  return html;
-}
-
-function renderGlossaryList(){
-  const listEl = document.getElementById("glossary-list");
-  if(glossaryFilter === "alle"){
-    let html = Object.keys(CATEGORIES).map(glossaryGroupHtml).join("");
-    const uncategorized = allVocabWords().filter(w => (!w.categories || w.categories.length === 0) && matchesGlossaryQuery(w));
-    if(glossaryQuery){
-      if(uncategorized.length){
-        html += `<div class="glossary-group"><div class="glossary-group-title">Weitere <span class="count">(${uncategorized.length})</span></div>` +
-          uncategorized.map(w => `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`).join("") + `</div>`;
-      }
-      listEl.innerHTML = html || `<div class="glossary-empty">Nichts gefunden für „${escapeHtml(glossaryQuery)}“.</div>`;
-      return;
-    }
-    html += `<div class="glossary-group">
-        <div class="glossary-group-title">Nicht zugeordnet <span class="count">(${uncategorized.length})</span></div>`;
-    if(uncategorized.length === 0){
-      html += `<div class="glossary-empty">Alle Vokabeln sind einer Kategorie zugeordnet.</div>`;
-    } else {
-      uncategorized.forEach(w => {
-        html += `<div class="glossary-word-row"><span class="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`;
-      });
-      html += `<div class="glossary-empty">Zum Einordnen in <kbd>vocab.js</kbd> ein Feld <kbd>categories: ["..."]</kbd> ergänzen — ein Wort kann mehrere Kategorien gleichzeitig haben.</div>`;
-    }
-    html += `</div>`;
-    listEl.innerHTML = html;
-  } else {
-    listEl.innerHTML = glossaryGroupHtml(glossaryFilter) || `<div class="glossary-empty">Nichts gefunden für „${escapeHtml(glossaryQuery)}“ in dieser Kategorie.</div>`;
-  }
-}
-function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]); }
-
-const glossarySearchEl = document.getElementById("glossary-search");
-glossarySearchEl.addEventListener("input", () => {
-  glossaryQuery = glossaryNorm(glossarySearchEl.value);
-  renderGlossaryList();
-  document.getElementById("glossary-list").scrollTop = 0;
-});
-
-function openGlossary(){
-  glossaryFilter = "alle";
-  glossaryQuery = "";
-  glossarySearchEl.value = "";
-  buildGlossaryTabs();
-  renderGlossaryList();
-  const overlay = document.getElementById("glossary-overlay");
-  overlay.classList.add("show");
-  overlay.setAttribute("aria-hidden", "false");
-}
-function closeGlossary(){
-  const overlay = document.getElementById("glossary-overlay");
-  overlay.classList.remove("show");
-  overlay.setAttribute("aria-hidden", "true");
-}
-document.querySelectorAll("[data-open-glossary]").forEach(el => el.addEventListener("click", () => { Sound.click(); openGlossary(); }));
-document.addEventListener("keydown", e => { if(e.key === "Escape") closeGlossary(); });
-document.getElementById("glossary-close").addEventListener("click", () => { Sound.click(); closeGlossary(); });
-document.getElementById("glossary-overlay").addEventListener("click", e => {
-  if(e.target.id === "glossary-overlay") closeGlossary();
-});
-
 // Init
 buildLessonTabs();
 setMode("flash");
 updateStats();
-const glossaryCountEl = document.getElementById("glossary-count");
-if(glossaryCountEl) glossaryCountEl.textContent = allVocabWords().length + " Wörter";
-if(location.hash === "#glossar") openGlossary();   // Direktlink, z. B. aus dem Grammatiktrainer
 
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
