@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=11">
+<link rel="stylesheet" href="theme.css?v=12">
 <script src="main.js"></script>
 <style>
 .role-help{margin:10px 0 0;font-size:.92rem;opacity:.95}
@@ -530,7 +530,10 @@ function selectMC(choice, btn, correctAnswer, explanation){
     buttons.forEach(b => { if(b.dataset.choice === correctAnswer) b.classList.add("correct"); });
   }
   if(explanation){ explainEl.innerText = explanation; explainEl.style.display = "block"; }
-  document.getElementById("next-btn").style.display = "block";
+  const nb = document.getElementById("next-btn");
+  nb.style.display = "block";
+  /* mit Erklärung länger stehen lassen, damit man sie lesen kann */
+  if(window.autoAdvance) autoAdvance(nb, (correct ? AUTO_DELAY.ok : AUTO_DELAY.wrong) + (explanation ? Math.min(7000, explanation.length * 45) : 0));
 }
 
 function renderTrueFalse(){
@@ -569,7 +572,10 @@ function selectTF(choice, btn, correctAnswer, explanation){
     document.getElementById(correctAnswer ? "tf-true" : "tf-false").classList.add("correct");
   }
   if(explanation){ explainEl.innerText = explanation; explainEl.style.display = "block"; }
-  document.getElementById("next-btn").style.display = "block";
+  const nb = document.getElementById("next-btn");
+  nb.style.display = "block";
+  /* mit Erklärung länger stehen lassen, damit man sie lesen kann */
+  if(window.autoAdvance) autoAdvance(nb, (correct ? AUTO_DELAY.ok : AUTO_DELAY.wrong) + (explanation ? Math.min(7000, explanation.length * 45) : 0));
 }
 
 /* ---------- Satzbau-Modus: mehrstufige Satzanalyse ---------- */
@@ -805,7 +811,9 @@ function selectBlank(choice, btn, correctText){
     buttons.forEach(b => { if(b.innerText === correctText) b.classList.add("correct"); });
     Sound.wrong();
   }
-  document.getElementById("blank-next-btn").style.display = "block";
+  const nb = document.getElementById("blank-next-btn");
+  nb.style.display = "block";
+  if(window.autoAdvance) autoAdvance(nb, correct ? AUTO_DELAY.ok : AUTO_DELAY.wrong);
 }
 
 function renderSatzbauLevel(){
@@ -957,6 +965,8 @@ function checkSatzbau(){
   const checkBtn = document.getElementById("check-btn");
   checkBtn.innerText = satzbauState.levelIndex < satzbauState.levels.length - 1 ? "Nächste Ebene ➔" : "Nächste Frage ➔";
   checkBtn.disabled = false;
+  /* Bei Fehlern länger stehen lassen: die richtige Zuordnung ist dann markiert */
+  if(window.autoAdvance) autoAdvance(checkBtn, levelCorrect ? AUTO_DELAY.ok : AUTO_DELAY.long);
 }
 
 document.getElementById("shuffle-btn").addEventListener("click", () => { Sound.click(); nextCard(); });
@@ -988,6 +998,6 @@ if (typeof SATZANALYSE === "undefined") {
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
-<script src="ui.js?v=2"></script>
+<script src="ui.js?v=4"></script>
 </body>
 </html>

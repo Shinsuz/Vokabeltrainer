@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=11">
+<link rel="stylesheet" href="theme.css?v=12">
 <script>if(location.hash === "#glossar") location.replace("glossar.html");  /* alte Links aufs Glossar */</script>
 <script src="vocab.js"></script>
 </head>
@@ -563,7 +563,9 @@ function selectMC(choice, btn, correctAnswer){
     feedback.innerText = `Falsch — richtig wäre: ${correctAnswer}`;
     feedback.className = "feedback bad";
     buttons.forEach(b => { if(b.innerText === correctAnswer) b.classList.add("correct"); });
-    document.getElementById("next-btn").style.display = "block";
+    const nb = document.getElementById("next-btn");
+    nb.style.display = "block";
+    if(window.autoAdvance) autoAdvance(nb, AUTO_DELAY.wrong);
   }
 }
 
@@ -641,7 +643,9 @@ function renderWrite(){
     } else {
       feedback.innerText = `Falsch — richtig wäre: ${word.german}`;
       feedback.className = "feedback bad";
-      document.getElementById("next-btn").style.display = "block";
+      const nb = document.getElementById("next-btn");
+      nb.style.display = "block";
+      if(window.autoAdvance) autoAdvance(nb, AUTO_DELAY.long);   // etwas länger: richtige Schreibweise lesen
     }
   }
   document.getElementById("write-submit").onclick = submit;
@@ -686,6 +690,6 @@ updateStats();
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
-<script src="ui.js?v=2"></script>
+<script src="ui.js?v=4"></script>
 </body>
 </html>

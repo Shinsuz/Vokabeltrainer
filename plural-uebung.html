@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=11">
+<link rel="stylesheet" href="theme.css?v=12">
 <script src="plural-saetze.js"></script>
 <style>
 .pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
@@ -473,7 +473,9 @@ function selectPlural(choice, btn, correctPlural, word){
   reveal.style.display = "block";
 
   updatePluralStats();
-  document.getElementById("plural-next-btn").style.display = "block";
+  const nb = document.getElementById("plural-next-btn");
+  nb.style.display = "block";
+  if(window.autoAdvance) autoAdvance(nb, correct ? AUTO_DELAY.ok + 400 : AUTO_DELAY.wrong);
 }
 
 document.getElementById("plural-search").addEventListener("input", () => { if(pluralView === "overview") renderPluralOverview(); });
@@ -655,6 +657,8 @@ function renderCard(){
        Überspringen / Gruppenwechsel verloren) */
     if(!st.recorded){ st.recorded = true; markResult(cur, st.allRight); }
     nb.onclick = () => nextCard();
+    /* fertiger Satz: kurz den ganzen Plural-Satz zeigen, dann von selbst weiter */
+    if(window.autoAdvance) autoAdvance(nb, st.allRight ? 1600 : AUTO_DELAY.long);
   }
 }
 function choose(opt, btn, w){
@@ -675,6 +679,7 @@ function choose(opt, btn, w){
     if(st.n >= st.slots.length){ st.done = true; }
     renderCard();
   };
+  if(window.autoAdvance) autoAdvance(nb, ok ? 900 : AUTO_DELAY.wrong);
 }
 
 /* ---------- Reiter, Knöpfe ---------- */
@@ -730,6 +735,6 @@ document.getElementById("area-tabs").addEventListener("click", e => {
 let __area = "plurale"; try{ __area = localStorage.getItem("plural_area") || "plurale"; }catch(e){}
 showArea(["saetze", "liste"].includes(__area) ? __area : "plurale");
 </script>
-<script src="ui.js?v=2"></script>
+<script src="ui.js?v=4"></script>
 </body>
 </html>

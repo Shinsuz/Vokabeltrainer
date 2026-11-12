@@ -102,6 +102,29 @@
   document.querySelectorAll(".end-overlay").forEach(watchOverlay);
   syncScrollLock();
 
+  /* ---------- Auto-Weiter ----------
+     Nach einer Antwort geht es von selbst weiter. Der Weiter-Knopf füllt sich dabei
+     sichtbar (Countdown); wer schneller will, tippt ihn einfach an.
+     Aufruf aus den Seiten: autoAdvance(knopf, millisekunden) */
+  let autoTimer = null;
+  window.AUTO_DELAY = { ok: 1000, wrong: 2400, long: 3600 };
+  window.autoAdvance = function(btn, ms){
+    clearTimeout(autoTimer);
+    if(!btn) return;
+    btn.style.setProperty("--auto-ms", ms + "ms");
+    btn.classList.remove("auto-run");
+    void btn.offsetWidth;                 // Animation neu starten
+    btn.classList.add("auto-run");
+    const id = setTimeout(() => {
+      /* nur auslösen, wenn der Knopf noch angezeigt wird (Karte nicht gewechselt) */
+      if(btn.isConnected && btn.offsetParent !== null && !btn.disabled) btn.click();
+    }, ms);
+    autoTimer = id;
+    /* nur DIESEN Countdown stoppen — der Klick kann schon einen neuen gestartet haben */
+    btn.addEventListener("click", () => { clearTimeout(id); btn.classList.remove("auto-run"); }, { once: true });
+  };
+  window.cancelAutoAdvance = function(){ clearTimeout(autoTimer); };
+
   /* ---------- 3) Web-App installieren ---------- */
   if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")){
     window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });

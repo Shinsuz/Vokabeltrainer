@@ -578,6 +578,15 @@ html body.bb-trainer > main { display: block; position: relative; width: 100%; m
 .next-btn.secondary { background: var(--surface-2); color: var(--cream); border: 1px solid var(--line-strong); box-shadow: none; }
 .next-btn.secondary:hover { background: var(--surface-3); }
 
+/* Auto-Weiter: Knopf füllt sich als Countdown */
+.next-btn.auto-run {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  animation: autoFill var(--auto-ms, 2000ms) linear forwards;
+}
+@keyframes autoFill { to { background-size: 100% 100%; } }
+
 /* ---------- Satzbau (Grammatik) ---------- */
 .satzbau-translation { font-style: italic; font-size: 1.05rem; color: var(--text); max-width: 520px; position: relative; padding: 0 1.4rem; }
 .satzbau-translation::before, .satzbau-translation::after { font-family: var(--font-heading); color: var(--gold); opacity: 0.8; font-size: 1.7rem; position: absolute; line-height: 1; }
