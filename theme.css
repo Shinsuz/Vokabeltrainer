@@ -14,9 +14,10 @@
 :root {
   /* Flächen */
   --bg:            #0e0a07;
-  --surface:       #1b1612;
-  --surface-2:     #241e18;
-  --surface-3:     #2e261e;
+  --surface:       rgba(22, 17, 14, 0.82);   /* durchscheinend wie früher: Ornament bleibt überall sichtbar */
+  --surface-solid: #1b1612;                  /* nur für Overlays/Menüs */
+  --surface-2:     rgba(255, 255, 255, 0.04);
+  --surface-3:     rgba(255, 255, 255, 0.08);
 
   /* Gold (Markenfarbe) */
   --gold:          #d4b072;
@@ -60,7 +61,6 @@
   --shadow:     0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 10px 30px rgba(0, 0, 0, 0.35);
   --nav-h:      64px;   /* Höhe der Navigationsleiste unten (Handy) */
   --tap:        44px;   /* Mindesthöhe für antippbare Elemente */
-  --topbar-h:   59px;   /* Höhe der oberen Leiste am PC */
 
   color-scheme: dark;
 }
@@ -143,8 +143,7 @@ body::before {
   gap: 1rem;
   padding: 0.6rem 1rem;
   padding-top: calc(0.6rem + env(safe-area-inset-top, 0px));
-  background: rgba(17, 14, 11, 0.96);
-  border-bottom: 1px solid var(--line);
+  background: transparent;
 }
 /* Achtung: kein backdrop-filter an .tr-topbar — sonst klebt die (fixe) Handy-Navigation nicht mehr unten */
 .brand {
@@ -689,6 +688,7 @@ kbd { background: var(--bg); border: 1px solid var(--line-strong); border-radius
   background: var(--surface);
   border: 1px solid var(--line);
   border-bottom: 0;
+  background: var(--surface-solid);
   border-radius: 22px 22px 0 0;
   color: var(--cream);
   padding: 0.6rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom, 0px));
@@ -784,6 +784,7 @@ kbd { background: var(--bg); border: 1px solid var(--line-strong); border-radius
 
 /* ---------- Glossar als eigene Seite (glossar.html) ---------- */
 .page-glossar .glossary-tools {
+  background: rgba(22, 17, 14, 0.96);
   position: sticky;
   top: 0.5rem;
   z-index: 30;
@@ -853,6 +854,12 @@ header .head-row .head-toggle { position: absolute; right: 0; top: 50%; transfor
 .plural-ov-row .de { grid-area: de; font-size: 0.9rem; color: var(--text); }
 .plural-ov-row .de small { color: var(--wrong); font-weight: 600; }
 
+/* Leichte Unschärfe hinter den Flächen — wie im ursprünglichen Design */
+.panel, .card, .ov-group, .page-glossar .glossary-group {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
 /* Plural-Zeile (Vokabeln/Glossar) */
 .plural-line { display: block; margin-top: 4px; font-size: 0.6em; color: var(--gold); font-family: var(--font-main); font-weight: 500; }
 .plural-line .ar { font-family: var(--font-arabic); font-size: 1.35em; margin-left: 4px; color: var(--cream); }
@@ -868,6 +875,41 @@ body.has-overlay { overflow: hidden; }
 *::-webkit-scrollbar-thumb { background: rgba(212, 176, 114, 0.3); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
 *::-webkit-scrollbar-thumb:hover { background: rgba(212, 176, 114, 0.55); background-clip: padding-box; }
 *::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+
+/* ---------- Hinweis "App installieren" ---------- */
+.install-banner {
+  position: fixed;
+  left: 0.75rem; right: 0.75rem;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px) + 0.75rem);
+  z-index: 60;
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  padding: 0.8rem 0.9rem;
+  background: var(--surface-solid);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.install-banner.show { opacity: 1; transform: none; }
+.install-banner img { border-radius: 10px; flex-shrink: 0; }
+.ib-text { flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 0.88rem; color: var(--text); line-height: 1.4; }
+.ib-text > b { color: var(--cream); font-size: 0.98rem; }
+.ib-text span b { color: var(--gold-bright); }
+.ib-actions { display: flex; gap: 0.5rem; margin-left: auto; }
+.ib-actions button { min-height: 40px; padding: 0.4rem 0.9rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: 1px solid var(--line); }
+.ib-install { background: var(--gold); color: var(--gold-ink); border-color: var(--gold) !important; }
+.ib-install:hover { background: var(--gold-bright); }
+.ib-close { background: transparent; color: var(--text-dim); }
+.ib-close:hover { color: var(--cream); }
+.install-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  margin: 0 auto 0.6rem;
+  min-height: 40px; padding: 0.4rem 1rem;
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px;
+  color: var(--gold-bright); font-weight: 700; font-size: 0.88rem; cursor: pointer;
+}
+.install-link img { border-radius: 4px; }
 
 /* ==========================================================================
    Sehr kleine Handys
@@ -886,9 +928,7 @@ body.has-overlay { overflow: hidden; }
 @media (min-width: 760px) {
   body { padding-bottom: 2rem; }
 
-  html body.bb-trainer > .tr-topbar { top: 0; }
-  .tr-topbar { position: sticky; padding: 0.75rem max(1.5rem, calc((100vw - 1100px) / 2)); }
-  .page-glossar .glossary-tools { top: calc(var(--topbar-h) + 0.5rem); }
+  .tr-topbar { padding: 0.75rem max(1.5rem, calc((100vw - 1100px) / 2)); }
   .glossary-tools .chip-scroll { margin: 0; padding: 0; }
   .brand-text { font-size: 1.05rem; }
 
@@ -956,6 +996,7 @@ body.has-overlay { overflow: hidden; }
     transform: translateY(10px) scale(0.98);
   }
   .end-modal::before, .sheet::before { display: none; }
+  .install-banner { left: auto; right: 1.5rem; bottom: 1.5rem; max-width: 440px; }
   .end-modal { max-width: 460px; text-align: center; }
   .end-modal h2 { font-size: 1.6rem; }
   .end-modal .end-actions { flex-direction: row; flex-wrap: wrap; justify-content: center; }

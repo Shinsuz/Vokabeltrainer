@@ -3,12 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#110e0b">
+<meta name="theme-color" content="#0e0a07">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arabisch">
 <title>Plural-Übung | Boycott-Buddy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=9">
+<link rel="stylesheet" href="theme.css?v=10">
 <script src="plural-saetze.js"></script>
 <style>
 .pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
@@ -343,6 +350,9 @@ function nextPluralCard(){
 function renderPluralCard(pool){
   const word = currentPluralWord;
   const correctPlural = word.plural.split("/")[0].trim();
+  /* Alle erlaubten Pluralformen dieses Wortes (z. B. "أَعْمَامٌ / عُمُومَةٌ") — keine davon
+     darf als "falsche" Antwort auftauchen */
+  const correctAlts = word.plural.split("/").map(p => p.trim());
   const type = getPluralType(word);
 
   /* Distraktoren: bevorzugt Plurale vom gleichen Typ, damit der Typ die Antwort nicht verrät */
@@ -352,7 +362,7 @@ function renderPluralCard(pool){
       if(choices.length >= 4) break;
       if(w === word || !w.plural) continue;
       const c = w.plural.split("/")[0].trim();
-      if(!choices.includes(c)) choices.push(c);
+      if(!choices.includes(c) && !correctAlts.includes(c)) choices.push(c);
     }
   };
   const all = pluralPoolAll();
@@ -623,7 +633,10 @@ function renderCard(){
     fb.innerText = st.allRight ? "Alles richtig! 🎉" : "Fertig — der Satz kommt gleich nochmal.";
     fb.className = "feedback " + (st.allRight ? "ok" : "bad");
     const nb = document.getElementById("next-btn"); nb.style.display = "block"; nb.innerText = "Nächster Satz ➔";
-    nb.onclick = () => { markResult(cur, st.allRight); nextCard(); };
+    /* sofort zählen — nicht erst beim Weiterklicken (sonst ging das Ergebnis beim
+       Überspringen / Gruppenwechsel verloren) */
+    if(!st.recorded){ st.recorded = true; markResult(cur, st.allRight); }
+    nb.onclick = () => nextCard();
   }
 }
 function choose(opt, btn, w){
@@ -699,6 +712,6 @@ document.getElementById("area-tabs").addEventListener("click", e => {
 let __area = "plurale"; try{ __area = localStorage.getItem("plural_area") || "plurale"; }catch(e){}
 showArea(["saetze", "liste"].includes(__area) ? __area : "plurale");
 </script>
-<script src="ui.js?v=1"></script>
+<script src="ui.js?v=2"></script>
 </body>
 </html>

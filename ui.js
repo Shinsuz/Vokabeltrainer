@@ -13,6 +13,11 @@
       an dem der Knopf erscheinen soll.
 
    2) Solange irgendein Overlay offen ist, scrollt die Seite dahinter nicht.
+
+   3) Web-App: registriert den Service Worker (sw.js) und zeigt einen Hinweis
+      "App installieren" — auf Android/PC mit echtem Installieren-Knopf, auf dem
+      iPhone mit kurzer Anleitung (Teilen → Zum Home-Bildschirm). Wer den Hinweis
+      schließt, sieht ihn 14 Tage nicht mehr; im Seitenfuß bleibt ein Link.
    ========================================================================== */
 (function(){
   "use strict";
@@ -96,4 +101,91 @@
   document.querySelectorAll("[data-picker]").forEach(makePicker);
   document.querySelectorAll(".end-overlay").forEach(watchOverlay);
   syncScrollLock();
+
+  /* ---------- 3) Web-App installieren ---------- */
+  if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")){
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  }
+
+  const DISMISS_KEY = "app_install_dismissed_at";
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const ua = navigator.userAgent || "";
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  let deferredPrompt = null;
+
+  function recentlyDismissed(){
+    try{ const t = Number(localStorage.getItem(DISMISS_KEY) || 0); return Date.now() - t < 14 * 864e5; }catch(e){ return false; }
+  }
+  const SHARE_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Teilen" style="vertical-align:-3px"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+
+  function showInstallBanner(force){
+    if(isStandalone || (!force && recentlyDismissed()) || document.getElementById("install-banner")) return;
+    if(!deferredPrompt && !isIOS) return;
+    const el = document.createElement("div");
+    el.id = "install-banner";
+    el.className = "install-banner";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-label", "App installieren");
+    const text = deferredPrompt
+      ? "<b>Als App installieren</b><span>Mit eigenem Icon auf dem Startbildschirm – schneller da, funktioniert auch offline.</span>"
+      : "<b>Als App aufs iPhone holen</b><span>Tippe unten in Safari auf " + SHARE_ICON + " <b>Teilen</b> und dann auf <b>„Zum Home-Bildschirm“</b>.</span>";
+    el.innerHTML =
+      '<img src="icons/icon-192.png" alt="" width="44" height="44">' +
+      '<div class="ib-text">' + text + "</div>" +
+      '<div class="ib-actions">' +
+        (deferredPrompt ? '<button type="button" class="ib-install">Installieren</button>' : "") +
+        '<button type="button" class="ib-close" aria-label="Hinweis schließen">' + (deferredPrompt ? "Später" : "OK") + "</button>" +
+      "</div>";
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add("show"));
+    const close = () => {
+      try{ localStorage.setItem(DISMISS_KEY, String(Date.now())); }catch(e){}
+      el.classList.remove("show");
+      setTimeout(() => el.remove(), 250);
+    };
+    el.querySelector(".ib-close").addEventListener("click", close);
+    const inst = el.querySelector(".ib-install");
+    if(inst) inst.addEventListener("click", async () => {
+      if(!deferredPrompt) return close();
+      deferredPrompt.prompt();
+      try{ await deferredPrompt.userChoice; }catch(e){}
+      deferredPrompt = null;
+      el.remove();
+      refreshFooterLink();
+    });
+  }
+
+  /* dauerhafter Link im Seitenfuß, damit man es auch später noch findet */
+  function refreshFooterLink(){
+    const footer = document.querySelector("footer");
+    if(!footer) return;
+    let link = document.getElementById("install-link");
+    const available = !isStandalone && (deferredPrompt || isIOS);
+    if(!available){ if(link) link.remove(); return; }
+    if(!link){
+      link = document.createElement("button");
+      link.type = "button";
+      link.id = "install-link";
+      link.className = "install-link";
+      link.innerHTML = '<img src="icons/favicon-32.png" alt="" width="18" height="18"> App installieren';
+      link.addEventListener("click", () => showInstallBanner(true));
+      footer.insertBefore(link, footer.firstChild);
+    }
+  }
+
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    refreshFooterLink();
+    setTimeout(() => showInstallBanner(false), 1500);
+  });
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    const b = document.getElementById("install-banner"); if(b) b.remove();
+    refreshFooterLink();
+  });
+  if(isIOS && !isStandalone){
+    refreshFooterLink();
+    setTimeout(() => showInstallBanner(false), 2500);
+  }
 })();

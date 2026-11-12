@@ -3,12 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#110e0b">
+<meta name="theme-color" content="#0e0a07">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arabisch">
 <title>Vokabeltrainer | Boycott-Buddy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=9">
+<link rel="stylesheet" href="theme.css?v=10">
 <script>if(location.hash === "#glossar") location.replace("glossar.html");  /* alte Links aufs Glossar */</script>
 <script src="vocab.js"></script>
 </head>
@@ -466,9 +473,12 @@ function renderFlash(){
     if(hint) hint.style.display = flipped ? "none" : "";
     try{ Sound.flip(); }catch(e){}
   }
-  /* Wird in nextCard() entfernt, sobald die Karte wechselt */
+  /* Entfernt sich selbst, sobald diese Karte nicht mehr angezeigt wird. Vorher wurde nur
+     auf "irgendeine" Karteikarte geprüft — beim Überspringen ("Andere Vokabel") blieben
+     alte Handler aktiv und sammelten sich an. */
   function flipHandler(e){
-    if(!document.getElementById("flash-face")){ document.removeEventListener("keydown", flipHandler); return; }
+    if(!face.isConnected){ document.removeEventListener("keydown", flipHandler); return; }
+    if(e.target && e.target.closest && e.target.closest("button, input, a")) return;   // Tastatur auf Knöpfen nicht abfangen
     if(e.code === "Space" || e.code === "Enter"){ e.preventDefault(); flip(); }
   }
   /* ganze Karte (nicht nur das Wort) + Button: hin und zurück umdrehen */
@@ -493,9 +503,14 @@ function renderMC(){
      verschiedene Wörter (z. B. nur 3), wird aus allen Lektionen aufgefüllt —
      jede Liste wird nur einmal durchlaufen, damit es nie in eine Endlosschleife läuft. */
   const choices = [back];
+  /* Wörter mit derselben arabischen Schreibung (z. B. مَا in Lektion 1 und 10) haben
+     teils andere Übersetzungen — die wären als "falsche" Antwort eigentlich auch richtig
+     und würden ungerecht als Fehler gezählt. Deshalb nie als Distraktor verwenden. */
+  const sameArabic = w => stripHarakat(w.arabic.trim()) === stripHarakat(currentWord.arabic.trim());
   const addDistractors = list => {
     for(const w of shuffle([...list])){
       if(choices.length >= 4) break;
+      if(sameArabic(w)) continue;
       const c = pickBackOf(w);
       if(!choices.includes(c)) choices.push(c);
     }
@@ -671,6 +686,6 @@ updateStats();
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
-<script src="ui.js?v=1"></script>
+<script src="ui.js?v=2"></script>
 </body>
 </html>
