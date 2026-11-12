@@ -5,7 +5,7 @@
    Dateien, die zusammengehören (im selben Ordner):
      theme.css          <- diese Datei (Aussehen)
      ui.js              <- Lektions-Auswahlmenü (Bottom-Sheet) für alle Seiten
-     bg-ornament.jpg    <- dezentes Hintergrundmuster
+     bg-ornament.jpg    <- Hintergrundmuster (nahtlose Spiegelkachel)
 
    Zum Anpassen reicht meist der :root-Block (Farben/Schriften/Abstände).
    Aufbau: Handy zuerst; ab 760px Breite gelten die Desktop-Regeln unten.
@@ -13,7 +13,7 @@
 
 :root {
   /* Flächen */
-  --bg:            #110e0b;
+  --bg:            #0e0a07;
   --surface:       #1b1612;
   --surface-2:     #241e18;
   --surface-3:     #2e261e;
@@ -111,16 +111,24 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
 }
-/* Hintergrundmuster nur ganz dezent, damit es nicht vom Inhalt ablenkt */
+/* Hintergrund wie bisher: Ornament-Kachel + sanfte Vignette zur Mitte */
+body {
+  background-color: var(--bg);
+  background-image: url('bg-ornament.jpg?v=5');
+  background-size: 1700px auto;
+  background-position: center top;
+  background-repeat: repeat;
+}
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(17, 14, 11, 0.86), rgba(17, 14, 11, 0.95) 60%),
-    url('bg-ornament.jpg?v=5') center top / 1400px auto repeat;
+  background: radial-gradient(ellipse at 50% 28%, transparent 38%, rgba(6, 4, 2, 0.6) 100%);
+}
+@media (max-width: 640px) {
+  body { background-size: 1100px auto; }
 }
 
 /* ---------- Obere Leiste / Navigation ---------- */
