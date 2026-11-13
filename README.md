@@ -2,7 +2,7 @@
 
 Ein Lern-Trainer für **Madina Book 1** (Arabisch).
 
-> **Hinweis zum Zugriff:** Der Trainer ist ausschließlich für Teilnehmende des Kurses sowie weitere lizenzierte Nutzer bestimmt.
+> **Hinweis zum Zugriff:** Der Trainer ist frei online erreichbar und darf von allen genutzt werden.
 
 > 🚧 **Status: in Arbeit.** Der Kurs läuft noch, daher sind die Vokabeln und Lektionen noch nicht vollständig. Der Trainer wird fortlaufend mit dem Kursfortschritt erweitert.
 
@@ -38,4 +38,6 @@ Alle Inhalte orientieren sich durchgehend am **Buch (Madina Book 1)** und an den
 
 ## Lizenz & Nutzung
 
-Die Nutzung ist auf Kursteilnehmende und weitere lizenzierte Personen beschränkt. Eine Weitergabe oder Veröffentlichung der Inhalte ist ohne Zustimmung nicht gestattet.
+Der Vokabeltrainer darf frei genutzt und weitergeleitet werden – gerne an alle, denen er beim Lernen hilft.
+
+Wer ihn weiterleitet, teilt die Hasanat (Belohnung) mit mir. Und bitte vergesst nicht, Dua für mich und meine Familie zu machen. 🤲
