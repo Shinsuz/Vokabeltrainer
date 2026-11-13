@@ -42,4 +42,4 @@ Der Vokabeltrainer darf frei genutzt und weitergeleitet werden – gerne an alle
 
 Fasst beim Lernen und Weiterleiten bitte die Absicht (Niyyah), dass die Hasanat (Belohnung) auch mir und allen anderen Muslimen zugutekommen – damit sich die Belohnung immer weiter fortsetzt.
 
-Und bitte vergesst nicht, Dua für mich und meine Familie zu machen. 🤲
+Und bitte vergesst nicht, Dua für mich, meine Familie und meinen Hoca zu machen. 🤲
