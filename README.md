@@ -40,6 +40,6 @@ Alle Inhalte orientieren sich durchgehend am **Buch (Madina Book 1)** und an den
 
 Der Vokabeltrainer darf frei genutzt und weitergeleitet werden – gerne an alle, denen er beim Lernen hilft.
 
-Fasst beim Lernen und Weiterleiten bitte die Absicht (Niyyah), dass die Hasanat (Belohnung) auch mir und allen anderen Muslimen zugutekommen – damit sich die Belohnung immer weiter fortsetzt, so wie im Hadith: „Wer zu etwas Gutem hinführt, erhält den gleichen Lohn wie derjenige, der es tut.“ (Sahih Muslim)
+Fasst beim Lernen und Weiterleiten bitte die Absicht (Niyyah), dass die Hasanat (Belohnung) auch mir und allen anderen Muslimen zugutekommen – damit sich die Belohnung immer weiter fortsetzt.
 
 Und bitte vergesst nicht, Dua für mich und meine Familie zu machen. 🤲
