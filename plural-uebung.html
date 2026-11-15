@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=13">
+<link rel="stylesheet" href="theme.css?v=14">
 <script src="plural-saetze.js"></script>
 <style>
 .pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
@@ -198,10 +198,10 @@ let pluralRetry = [];            // [{word, after}] falsch beantwortete, kommen 
 let pluralLastKey = null;
 
 /* alle Plurale (jedes Wort nur einmal, auch wenn es in mehreren Lektionen steht) */
-/* Standard: nur Plurale, die im Buch vorkommen (ab Lektion 12). Die Plurale zu den
-   Wörtern aus Lektion 1–11 sind eine Ergänzung und lassen sich per Knopf dazuschalten. */
+/* Nur Plurale, die im Buch vorkommen (Lektion 12–14 oder pluralBook: true).
+   Selbst ergänzte Plurale zu Lektion 1–11 wurden auf Wunsch entfernt (nicht aus dem Buch). */
 const PLURAL_BOOK_LESSONS = ["12", "13", "14"];
-let pluralIncludeOld = false;
+const pluralIncludeOld = false;   // Zusatz-Plurale gibt es nicht mehr
 function pluralPoolAll(){
   const seen = new Set();
   return Object.entries(LESSONS)
@@ -230,7 +230,7 @@ function updatePluralStats(){
   const pct = sel.total ? Math.round(lv / (sel.total * PLURAL_MASTER) * 100) : 0;
   document.getElementById("plural-stats-box").innerHTML = `
     <div class="plural-progress"><div class="plural-progress-fill" style="width:${pct}%"></div></div>
-    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Buch-Plurale + Zusatz-Plurale (nicht aus dem Buch)" : "Nur Plurale aus dem Buch (Lektion 12–14 inkl. Übung 1)"}</small></div>
+    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>Plurale aus dem Buch</small></div>
     <div class="plural-chips">
       <span class="plural-chip gesund">Gesund ${g.mastered}/${g.total}</span>
       <span class="plural-chip gebrochen">Gebrochen ${b.mastered}/${b.total}</span>
@@ -246,15 +246,13 @@ function buildPluralFilters(){
     mk("gesund", "Gesund", pluralFilter === "gesund") +
     mk("gebrochen", "Gebrochen", pluralFilter === "gebrochen") +
     mk("pronomen", "Pronomen &amp; Verben", pluralFilter === "pronomen") +
-    `<button class="lesson-pill${pluralOnlyOpen ? " active" : ""}" data-pf="open">Nur offene</button>` +
-    `<button class="lesson-pill${pluralIncludeOld ? " active" : ""}" data-pf="old" title="Zusätzliche Pluralformen zu Wörtern aus Lektion 1–11 – stehen NICHT im Buch">+ Zusatz (nicht aus dem Buch)</button>` ;
+    `<button class="lesson-pill${pluralOnlyOpen ? " active" : ""}" data-pf="open">Nur offene</button>`;
   row.onclick = e => {
     const btn = e.target.closest("[data-pf]");
     if(!btn) return;
     Sound.click();
     const k = btn.dataset.pf;
     if(k === "open") pluralOnlyOpen = !pluralOnlyOpen;
-    else if(k === "old"){ pluralIncludeOld = !pluralIncludeOld; pluralRetry = []; }
     else { pluralFilter = k; pluralRetry = []; }
     buildPluralFilters();
     renderPluralView();
@@ -294,7 +292,7 @@ function renderPluralOverview(){
   if(pool.length === 0){
     const raw = document.getElementById("plural-search").value.trim().replace(/[&<>"]/g, "");
     ov.innerHTML = q
-      ? `<div class="glossary-empty big-empty">Nichts gefunden für „${raw}“.<br>Tipp: Filter oben auf „Alle“ stellen oder „+ Lektion 1–11“ dazuschalten.</div>`
+      ? `<div class="glossary-empty big-empty">Nichts gefunden für „${raw}“.<br>Tipp: Filter oben auf „Alle“ stellen.</div>`
       : `<div class="glossary-empty">Keine Plurale in dieser Auswahl.</div>`;
     return;
   }

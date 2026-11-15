@@ -894,9 +894,6 @@ header .head-row .head-toggle { position: absolute; right: 0; top: 50%; transfor
 }
 .plural-line.not-book { opacity: 0.8; }
 .plural-line .not-book-tag { font-size: 0.85em; }
-/* Zusatz-Plurale bewusst im Hintergrund: gestrichelt und gedämpft */
-#plural-filter-row [data-pf="old"] { border-style: dashed; color: var(--text-dim); font-weight: 500; }
-#plural-filter-row [data-pf="old"].active { color: var(--wrong); border-color: rgba(240, 143, 115, 0.6); background: rgba(240, 143, 115, 0.08); }
 
 /* Zweite Form (unbestimmt / mit ال) im Glossar */
 .alt-line { display: block; margin-top: 3px; font-size: 0.82em; color: var(--text-dim); }
