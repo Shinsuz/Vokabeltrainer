@@ -106,7 +106,9 @@
      Jedes Element mit data-tip="…" bekommt beim ersten Besuch einen Hinweis.
      Mit "Verstanden" verschwindet er dauerhaft (pro Seite gemerkt). */
   document.querySelectorAll("[data-tip]").forEach((el, i) => {
-    const key = "tip_seen_" + location.pathname.split("/").pop() + "_" + i;
+    /* Schlüssel enthält eine Prüfsumme des Textes: wird ein Tipp umformuliert, erscheint er einmal neu */
+    let h = 0; for(const ch of el.dataset.tip) h = (h * 31 + ch.charCodeAt(0)) | 0;
+    const key = "tip_seen_" + location.pathname.split("/").pop() + "_" + i + "_" + (h >>> 0).toString(36);
     try{ if(localStorage.getItem(key)) return; }catch(e){ return; }
     const tip = document.createElement("div");
     tip.className = "tip-box";

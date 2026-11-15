@@ -5,15 +5,15 @@
      Änderungen und neue Vokabeln sofort ankommen; ohne Verbindung aus dem Speicher.
    - Google Fonts: aus dem Speicher (ändern sich nie).
    Bei größeren Änderungen CACHE-Namen hochzählen, dann wird alles neu geladen. */
-const CACHE = "arabisch-trainer-v8";
+const CACHE = "arabisch-trainer-v9";
 const CORE = [
   "./",
   "./index.html",
   "./satzanalyse.html",
   "./plural-uebung.html",
   "./glossar.html",
-  "./theme.css?v=15",
-  "./ui.js?v=8",
+  "./theme.css?v=16",
+  "./ui.js?v=9",
   "./vocab.js",
   "./main.js",
   "./plural-saetze.js",

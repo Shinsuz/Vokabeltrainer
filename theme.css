@@ -59,7 +59,7 @@
   --radius:     14px;
   --radius-lg:  20px;
   --shadow:     0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 10px 30px rgba(0, 0, 0, 0.35);
-  --nav-h:      64px;   /* Höhe der Navigationsleiste unten (Handy) */
+  --nav-h:      70px;   /* Höhe der Navigationsleiste unten (Handy) */
   --tap:        44px;   /* Mindesthöhe für antippbare Elemente */
 
   color-scheme: dark;
@@ -170,7 +170,9 @@ body::before {
 .brand-text { font-weight: 700; font-size: 1rem; letter-spacing: 0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .brand-text small { display: block; font-weight: 500; font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.02em; }
 
-/* Handy: Navigation als feste Leiste unten — immer erreichbar, mit Daumen gut bedienbar */
+/* Handy: Navigation als feste Leiste unten — immer erreichbar, mit Daumen gut bedienbar.
+   Bewusst kräftig: goldene Symbole, helle Beschriftung, aktiver Bereich als goldene
+   "Pille" — damit niemand übersieht, dass es Grammatik, Plural und Glossar gibt. */
 .nav-links {
   position: fixed;
   left: 0; right: 0; bottom: 0;
@@ -179,9 +181,9 @@ body::before {
   grid-template-columns: repeat(4, 1fr);
   height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
   padding: 0 0.25rem env(safe-area-inset-bottom, 0px);
-  background: rgba(22, 18, 14, 0.97);
-  border-top: 1px solid var(--line);
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  background: #1e1813;
+  border-top: 1px solid var(--line-strong);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.55);
 }
 .nav-links a,
 .nav-links .nav-glossary {
@@ -189,34 +191,33 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
-  padding: 0.35rem 0.2rem;
+  padding: 0.3rem 0.1rem;
   border: 0;
   background: none;
-  color: var(--text-dim);
+  color: var(--cream);
   text-decoration: none;
   font-family: var(--font-main);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.76rem;
+  font-weight: 700;
   letter-spacing: 0.01em;
   cursor: pointer;
   position: relative;
   transition: color 0.15s ease;
 }
-.nav-links svg { width: 24px; height: 24px; flex-shrink: 0; }
-.nav-links a span, .nav-links .nav-glossary span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.nav-links a:hover, .nav-links .nav-glossary:hover { color: var(--cream); }
-.nav-links a.active { color: var(--gold-bright); }
-.nav-links a.active::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 50%;
-  width: 32px; height: 3px;
-  transform: translateX(-50%);
-  border-radius: 0 0 3px 3px;
-  background: var(--gold);
+.nav-links svg {
+  width: 24px; height: 24px; flex-shrink: 0;
+  box-sizing: content-box;
+  padding: 4px 16px;
+  border-radius: 999px;
+  color: var(--gold);
+  transition: background 0.15s ease, color 0.15s ease;
 }
+.nav-links a span, .nav-links .nav-glossary span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.nav-links a:hover svg, .nav-links .nav-glossary:hover svg { background: var(--gold-soft); }
+.nav-links a.active { color: var(--gold-bright); }
+.nav-links a.active svg { background: var(--gold); color: var(--gold-ink); }
 
 /* ---------- Seitenkopf (kompakt) ---------- */
 header {
@@ -1029,17 +1030,22 @@ body.has-overlay { overflow: hidden; }
     border: 0;
     box-shadow: none;
   }
+  /* PC: Bereiche als deutliche Knöpfe, der aktive in Gold */
+  .nav-links { gap: 0.4rem; }
   .nav-links a, .nav-links .nav-glossary {
     flex-direction: row;
     gap: 0.45rem;
-    padding: 0.5rem 0.85rem;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--line-strong);
     border-radius: 10px;
+    background: rgba(30, 24, 19, 0.85);
+    color: var(--cream);
     font-size: 0.95rem;
   }
-  .nav-links svg { width: 19px; height: 19px; }
-  .nav-links a:hover, .nav-links .nav-glossary:hover { background: var(--surface-2); }
-  .nav-links a.active { background: var(--gold-soft); }
-  .nav-links a.active::before { display: none; }
+  .nav-links svg { width: 19px; height: 19px; padding: 0; background: none !important; }
+  .nav-links a:hover, .nav-links .nav-glossary:hover { background: var(--surface-3); border-color: var(--gold); }
+  .nav-links a.active { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); }
+  .nav-links a.active svg { color: var(--gold-ink); }
 
   header { padding: 2rem 1.5rem 0.6rem; }
   h1 { font-size: 2.6rem; }
