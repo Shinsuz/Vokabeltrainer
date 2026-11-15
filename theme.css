@@ -273,9 +273,52 @@ html body.bb-trainer > main { display: block; position: relative; width: 100%; m
 .tool-row.stack > .picker-btn { flex-basis: 100%; }
 .tool-row > .toggle-pill { flex: 1 1 0; }
 
+/* ---------- Beschriftungen der Filtergruppen ---------- */
+.ctl-label {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gold); margin: 0.15rem 0.2rem 0.35rem;
+}
+.panel .ctl-label:not(:first-child) { margin-top: 0.7rem; }
+.panel .tip-box + .ctl-label { margin-top: 0.15rem; }
+.ctl-label-out { margin-left: 0.3rem; }
+.swipe-hint { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--text-dim); }
+/* Plural-Filter: am Handy umbrechen statt seitlich verstecken */
+.chip-wrap { flex-wrap: wrap; justify-content: flex-start !important; gap: 0.4rem; }
+
+/* ---------- "Du übst gerade: …" ---------- */
+.focus-line {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+  margin: 0 0 0.6rem; padding: 0.55rem 0.6rem 0.55rem 0.85rem;
+  background: var(--gold-soft); border: 1px solid var(--line-strong); border-radius: 12px;
+  font-size: 0.85rem; color: var(--text); line-height: 1.45;
+}
+.focus-label { color: var(--text-dim); }
+.focus-text b { color: var(--gold-bright); font-weight: 700; }
+.focus-change {
+  flex-shrink: 0; min-height: 36px; padding: 0.3rem 0.85rem;
+  background: var(--gold); color: var(--gold-ink); border: 0; border-radius: 10px;
+  font-weight: 700; font-size: 0.85rem; cursor: pointer;
+}
+.focus-change:hover { background: var(--gold-bright); }
+@keyframes panelFlash { 0%, 100% { box-shadow: var(--shadow); border-color: var(--line); } 30% { box-shadow: 0 0 0 3px var(--gold-soft), 0 0 28px rgba(212, 176, 114, 0.35); border-color: var(--gold); } }
+.panel.flash { animation: panelFlash 1.4s ease 0.3s 2; }
+
+/* ---------- Einmaliger Tipp ---------- */
+.tip-box {
+  display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap;
+  margin: 0 0 0.6rem; padding: 0.7rem 0.8rem;
+  background: rgba(212, 176, 114, 0.12); border: 1px dashed var(--gold); border-radius: 12px;
+  font-size: 0.88rem; color: var(--cream); line-height: 1.45;
+}
+.tip-icon { font-size: 1.1rem; line-height: 1.3; }
+.tip-text { flex: 1 1 200px; }
+.tip-text b { color: var(--gold-bright); }
+.tip-ok { margin-left: auto; min-height: 36px; padding: 0.3rem 0.9rem; border-radius: 10px; border: 1px solid var(--gold); background: transparent; color: var(--gold-bright); font-weight: 700; cursor: pointer; }
+.tip-ok:hover { background: var(--gold); color: var(--gold-ink); }
+
 /* Filter "Nomen: Beide / Unbestimmt / Mit ال" (Vokabeltrainer) */
 .form-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
-.form-row-label { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+.form-row-label { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
 .form-row .seg { flex: 1; min-width: 0; }
 .form-row .pill-btn { min-height: 36px; font-size: 0.85rem; }
 
@@ -894,6 +937,10 @@ header .head-row .head-toggle { position: absolute; right: 0; top: 50%; transfor
 }
 .plural-line.not-book { opacity: 0.8; }
 .plural-line .not-book-tag { font-size: 0.85em; }
+
+/* Wortart-Etiketten in der Glossar-Ansicht "Alle" */
+.cat-tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; margin-top: 4px; }
+.cat-tag { font-size: 0.7rem; font-weight: 600; color: var(--text-dim); border: 1px solid var(--line); border-radius: 999px; padding: 0 0.5em; line-height: 1.6; }
 
 /* Zweite Form (unbestimmt / mit ال) im Glossar */
 .alt-line { display: block; margin-top: 3px; font-size: 0.82em; color: var(--text-dim); }

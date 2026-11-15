@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=14">
+<link rel="stylesheet" href="theme.css?v=15">
 <script src="plural-saetze.js"></script>
 <style>
 .pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
@@ -100,7 +100,8 @@
   </header>
 
   <main>
-    <div class="pill-row">
+    <div class="ctl-label ctl-label-out">Bereich</div>
+    <div class="pill-row" data-tip="Oben wählst du den Bereich: <b>Üben</b> (Plurale abfragen), <b>Liste</b> (alle Plurale mit Suche) oder <b>Sätze</b>. Darunter kannst du nach Pluralart filtern.">
       <div class="pill-group seg" id="area-tabs" aria-label="Bereich">
         <button class="lesson-pill active" data-area="plurale"><span class="lbl-long">Plurale üben</span><span class="lbl-short">Üben</span></button>
         <button class="lesson-pill" data-area="liste"><span class="lbl-long">Plural-Liste</span><span class="lbl-short">Liste</span></button>
@@ -109,7 +110,8 @@
     </div>
     <div id="sec-plurale">
       <div id="plural-stats-box"></div>
-      <div class="pill-row chip-scroll" id="plural-filter-row"></div>
+      <div class="ctl-label ctl-label-out">Filter</div>
+      <div class="pill-row chip-wrap" id="plural-filter-row"></div>
       <div class="card-outer">
         <div class="card plural-card" id="plural-card"></div>
       </div>
@@ -734,6 +736,6 @@ document.getElementById("area-tabs").addEventListener("click", e => {
 let __area = "plurale"; try{ __area = localStorage.getItem("plural_area") || "plurale"; }catch(e){}
 showArea(["saetze", "liste"].includes(__area) ? __area : "plurale");
 </script>
-<script src="ui.js?v=4"></script>
+<script src="ui.js?v=8"></script>
 </body>
 </html>

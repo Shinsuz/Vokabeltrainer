@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=14">
+<link rel="stylesheet" href="theme.css?v=15">
 <script>if(location.hash === "#glossar") location.replace("glossar.html");  /* alte Links aufs Glossar */</script>
 <script src="vocab.js"></script>
 </head>
@@ -40,13 +40,15 @@
   </header>
 
   <main>
-    <section class="panel" aria-label="Einstellungen">
+    <section class="panel" id="settings-panel" aria-label="Einstellungen" data-tip="Hier stellst du ein, <b>was</b> du übst: Übungsart, Lektion, Richtung und die Form der Nomen. Ohne Auswahl übst du alle Lektionen gemischt.">
+      <div class="ctl-label">Übungsart</div>
       <div class="pill-group seg" id="tabs" aria-label="Übungsart">
         <button class="pill-btn" data-mode="flash"><span class="lbl-long">Karteikarten</span><span class="lbl-short">Karten</span></button>
         <button class="pill-btn" data-mode="mc"><span class="lbl-long">Multiple Choice</span><span class="lbl-short">Auswahl</span></button>
         <button class="pill-btn" data-mode="write">Schreiben</button>
         <button class="pill-btn" data-mode="mix"><span class="lbl-long">Gemischt</span><span class="lbl-short">Mix</span></button>
       </div>
+      <div class="ctl-label">Lektion &amp; Anzeige</div>
       <div class="tool-row stack">
         <div data-picker-for="lesson-tabs"></div>
         <button class="toggle-pill" id="dir-toggle" title="Abfragerichtung umschalten">
@@ -72,6 +74,10 @@
       <div class="pill-group" id="lesson-tabs" data-picker data-picker-label="Lektion" data-picker-title="Lektion wählen"></div>
     </section>
 
+    <div class="focus-line" id="focus-line" aria-live="polite">
+      <span class="focus-text"><span class="focus-label">Du übst gerade:</span> <span id="focus-value">…</span></span>
+      <button type="button" class="focus-change" id="focus-change">Ändern</button>
+    </div>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label">0 % gekonnt</div>
@@ -447,7 +453,19 @@ function buildLessonTabs(){
   };
 }
 
+/* Zeile "Du übst gerade: …" über der Karte — zeigt die aktuellen Einstellungen */
+function updateFocusLine(){
+  const el = document.getElementById("focus-value");
+  if(!el) return;
+  const lesson = selectedLesson === "alle" ? "Alle Lektionen" : ((typeof LESSON_LABELS !== "undefined" && LESSON_LABELS[selectedLesson]) || `Lektion ${selectedLesson}`);
+  const modes = { flash: "Karteikarten", mc: "Multiple Choice", write: "Schreiben", mix: "Gemischt" };
+  const dir = direction === "ar-de" ? "Arabisch → Deutsch" : "Deutsch → Arabisch";
+  const forms = { beide: "Nomen in beiden Formen", unbestimmt: "Nomen unbestimmt", "mit-al": "Nomen mit ال" };
+  el.innerHTML = [lesson, modes[mode], dir, forms[formFilter]].map(t => `<b>${t}</b>`).join(" · ");
+}
+
 function nextCard(){
+  updateFocusLine();
   clearTimeout(window.__vocabAdvanceTimer);
   cardEl.onclick = null; cardEl.style.cursor = "";
   const deck = currentDeck();
@@ -745,6 +763,6 @@ updateStats();
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
-<script src="ui.js?v=4"></script>
+<script src="ui.js?v=8"></script>
 </body>
 </html>

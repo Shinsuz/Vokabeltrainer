@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=14">
+<link rel="stylesheet" href="theme.css?v=15">
 <script src="main.js"></script>
 <style>
 .role-help{margin:10px 0 0;font-size:.92rem;opacity:.95}
@@ -47,14 +47,15 @@
   </header>
 
   <main>
-    <section class="panel" aria-label="Einstellungen">
+    <section class="panel" id="settings-panel" aria-label="Einstellungen" data-tip="Hier stellst du ein, <b>was</b> du übst: Sätze analysieren, Begriffe, Fragen oder alles gemischt – und welche Lektion.">
+      <div class="ctl-label">Übungsart</div>
       <div class="pill-group seg" id="mode-tabs" aria-label="Übungsart">
         <button class="pill-btn" data-mode="satzbau"><span class="lbl-long">Sätze analysieren</span><span class="lbl-short">Sätze</span></button>
         <button class="pill-btn" data-mode="concept">Begriffe</button>
         <button class="pill-btn" data-mode="fragen">Fragen</button>
         <button class="pill-btn" data-mode="mix"><span class="lbl-long">Alles gemischt</span><span class="lbl-short">Mix</span></button>
       </div>
-      <div class="tool-row">
+      <div class="tool-row" style="margin-top:0.7rem">
         <div data-picker-for="lesson-tabs"></div>
       </div>
       <div class="pill-group" id="lesson-tabs" data-picker data-picker-label="Lektion" data-picker-title="Lektion wählen"></div>
@@ -65,6 +66,10 @@
     </section>
     <div class="scope-hint" id="scope-hint"></div>
 
+    <div class="focus-line" id="focus-line" aria-live="polite">
+      <span class="focus-text"><span class="focus-label">Du übst gerade:</span> <span id="focus-value">…</span></span>
+      <button type="button" class="focus-change" id="focus-change">Ändern</button>
+    </div>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label">0 % gekonnt</div>
@@ -439,7 +444,17 @@ function buildLessonTabs(){
   };
 }
 
+/* Zeile "Du übst gerade: …" über der Karte */
+function updateFocusLine(){
+  const el = document.getElementById("focus-value");
+  if(!el) return;
+  const lesson = selectedLesson === "alle" ? "Alle Lektionen" : ((typeof SATZANALYSE_LABELS !== "undefined" && SATZANALYSE_LABELS[selectedLesson]) || `Lektion ${selectedLesson}`);
+  const modes = { satzbau: "Sätze analysieren", concept: "Begriffe", fragen: "Fragen", mix: "Alles gemischt" };
+  el.innerHTML = [lesson, modes[mode] || mode].map(t => `<b>${t}</b>`).join(" · ");
+}
+
 function nextCard(){
+  updateFocusLine();
   const deck = currentDeck();
   if(deck.length === 0){
     const label = selectedLesson === "alle" ? "Inhalte" : `Lektion ${selectedLesson}`;
@@ -998,6 +1013,6 @@ if (typeof SATZANALYSE === "undefined") {
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
-<script src="ui.js?v=4"></script>
+<script src="ui.js?v=8"></script>
 </body>
 </html>

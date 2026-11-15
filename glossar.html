@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=14">
+<link rel="stylesheet" href="theme.css?v=15">
 <script src="vocab.js"></script>
 </head>
 <body class="bb-trainer page-glossar">
@@ -43,11 +43,12 @@
   </header>
 
   <main>
-    <section class="panel glossary-tools" aria-label="Suche und Filter">
+    <section class="panel glossary-tools" aria-label="Suche und Filter" data-tip="Suche ein Wort auf Deutsch oder Arabisch – oder tippe unten auf eine <b>Wortart</b>, um nur z. B. Verben oder Präpositionen zu sehen.">
       <div class="glossary-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input type="search" id="glossary-search" placeholder="Suchen – Deutsch oder عربي" aria-label="Glossar durchsuchen" autocomplete="off" enterkeyhint="search">
       </div>
+      <div class="ctl-label">Wortart <span class="swipe-hint">– zur Seite wischen für mehr →</span></div>
       <div class="pill-row chip-scroll" id="glossary-cat-tabs" aria-label="Wortart"></div>
     </section>
 
@@ -79,10 +80,26 @@ function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","
 let glossaryFilter = "alle";
 let glossaryQuery = "";
 
+/* Jedes Wort genau einmal: Steht ein Wort in mehreren Lektionen, werden die Einträge
+   zusammengeführt (Wortarten vereinigt, abweichende Übersetzungen mit " / " verbunden). */
+let _vocabCache = null;
 function allVocabWords(){
-  return Object.entries(LESSONS)
+  if(_vocabCache) return _vocabCache;
+  const byKey = new Map();
+  Object.entries(LESSONS)
     .filter(([key]) => key !== "Grammatik")
-    .flatMap(([, words]) => words);
+    .flatMap(([, words]) => words)
+    .forEach(w => {
+      const k = w.arabic.trim();
+      const prev = byKey.get(k);
+      if(!prev){ byKey.set(k, { ...w, categories: [...(w.categories || [])] }); return; }
+      (w.categories || []).forEach(c => { if(!prev.categories.includes(c)) prev.categories.push(c); });
+      const g = w.german.trim();
+      if(!prev.german.toLowerCase().includes(g.toLowerCase())) prev.german += " / " + g;
+      if(!prev.plural && w.plural) prev.plural = w.plural;
+      if(!prev.alt && w.alt) prev.alt = w.alt;
+    });
+  return (_vocabCache = [...byKey.values()]);
 }
 /* Suche: Deutsch ohne Groß/Klein und Akzente, Arabisch ohne Haraket */
 function glossaryNorm(t){
@@ -101,9 +118,14 @@ function wordsOf(key){
     : (Array.isArray(w.categories) && w.categories.includes(key)));
 }
 
-function rowHtml(w){
+function catTags(w){
+  const cats = (w.categories || []).filter(c => CATEGORIES[c]);
+  if(!cats.length) return "";
+  return `<span class="cat-tags">${cats.map(c => `<span class="cat-tag">${CATEGORIES[c].de.replace(/\s*\(.*\)$/, "")}</span>`).join("")}</span>`;
+}
+function rowHtml(w, withTags){
   const alt = w.alt ? `<span class="alt-line"><bdi>${/^ال/.test(stripHarakat(w.alt.arabic)) ? "mit ال" : "ohne ال"}</bdi>: <bdi class="ar" dir="rtl">${displayArabic(w.alt.arabic)}</bdi> – ${w.alt.german}</span>` : "";
-  return `<div class="glossary-word-row"><span class="ar" lang="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${alt}${pluralHtml(w)}</span></div>`;
+  return `<div class="glossary-word-row"><span class="ar" lang="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${alt}${pluralHtml(w)}${withTags ? catTags(w) : ""}</span></div>`;
 }
 
 function buildTabs(){
@@ -130,15 +152,23 @@ function groupHtml(key, title, arTitle){
     `<section class="glossary-group"><h2 class="glossary-group-title">${title}${arTitle ? ` <span class="ar">${arTitle}</span>` : ""}<span class="count">0</span></h2><div class="glossary-empty">Noch keine Vokabeln zugeordnet.</div></section>`;
   return `<section class="glossary-group">
     <h2 class="glossary-group-title">${title}${arTitle ? ` <span class="ar">${arTitle}</span>` : ""}<span class="count">${words.length}</span></h2>
-    ${words.map(rowHtml).join("")}
+    ${words.map(w => rowHtml(w)).join("")}
   </section>`;
 }
 
 function render(){
   const listEl = document.getElementById("glossary-list");
-  const keys = glossaryFilter === "alle" ? Object.keys(CATEGORIES) : [glossaryFilter];
-  let html = keys.map(k => groupHtml(k, CATEGORIES[k].de, CATEGORIES[k].ar)).join("");
-  if(glossaryFilter === "alle" && wordsOf("_none").length) html += groupHtml("_none", "Nicht zugeordnet", "");
+  let html;
+  if(glossaryFilter === "alle"){
+    /* "Alle" = wirklich alle: eine Liste, jedes Wort genau einmal, mit seinen Wortarten */
+    const words = allVocabWords().filter(matchesQuery);
+    html = words.length ? `<section class="glossary-group">
+      <h2 class="glossary-group-title">Alle Vokabeln<span class="count">${words.length}</span></h2>
+      ${words.map(w => rowHtml(w, true)).join("")}
+    </section>` : "";
+  } else {
+    html = groupHtml(glossaryFilter, CATEGORIES[glossaryFilter].de, CATEGORIES[glossaryFilter].ar);
+  }
 
   const result = document.getElementById("glossary-result");
   if(glossaryQuery){
@@ -160,13 +190,13 @@ document.getElementById("harakat-checkbox").addEventListener("change", e => {
 });
 
 const total = allVocabWords().length;
-document.getElementById("glossary-count").textContent = `Alle ${total} Vokabeln nach Wortart – Verb, Präposition, Pronomen u. a.`;
+document.getElementById("glossary-count").textContent = `${total} Vokabeln, jede genau einmal. Viele Wörter gehören zu mehreren Wortarten (z. B. Präposition und Mabnī) und stehen dann unter jeder davon.`;
 /* Direktlink auf eine Kategorie möglich, z. B. glossar.html#fiil */
 const hashKey = decodeURIComponent(location.hash.slice(1));
 if(CATEGORIES[hashKey]) glossaryFilter = hashKey;
 buildTabs();
 render();
 </script>
-<script src="ui.js?v=4"></script>
+<script src="ui.js?v=8"></script>
 </body>
 </html>

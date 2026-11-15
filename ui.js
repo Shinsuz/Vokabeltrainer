@@ -102,6 +102,37 @@
   document.querySelectorAll(".end-overlay").forEach(watchOverlay);
   syncScrollLock();
 
+  /* ---------- Einmaliger Tipp: macht neue Nutzer auf die Filter aufmerksam ----------
+     Jedes Element mit data-tip="…" bekommt beim ersten Besuch einen Hinweis.
+     Mit "Verstanden" verschwindet er dauerhaft (pro Seite gemerkt). */
+  document.querySelectorAll("[data-tip]").forEach((el, i) => {
+    const key = "tip_seen_" + location.pathname.split("/").pop() + "_" + i;
+    try{ if(localStorage.getItem(key)) return; }catch(e){ return; }
+    const tip = document.createElement("div");
+    tip.className = "tip-box";
+    tip.setAttribute("role", "note");
+    tip.innerHTML = '<span class="tip-icon" aria-hidden="true">💡</span><span class="tip-text">' + el.dataset.tip + '</span><button type="button" class="tip-ok">Verstanden</button>';
+    /* in normale Panels hinein; vor klebende Leisten (Glossar-Suche), damit der Tipp beim Scrollen nicht den Bildschirm verdeckt */
+    if(el.classList.contains("panel") && getComputedStyle(el).position !== "sticky") el.insertBefore(tip, el.firstChild);
+    else if(el.classList.contains("panel")) el.parentNode.insertBefore(tip, el);
+    else el.parentNode.insertBefore(tip, el.previousElementSibling && el.previousElementSibling.classList.contains("ctl-label") ? el.previousElementSibling : el);
+    tip.querySelector(".tip-ok").addEventListener("click", () => {
+      try{ localStorage.setItem(key, "1"); }catch(e){}
+      tip.remove();
+    });
+  });
+
+  /* "Ändern" in der Zeile "Du übst gerade": zu den Einstellungen springen und sie kurz aufleuchten lassen */
+  const focusBtn = document.getElementById("focus-change");
+  const settings = document.getElementById("settings-panel");
+  if(focusBtn && settings){
+    focusBtn.addEventListener("click", () => {
+      const top = settings.getBoundingClientRect().top + window.scrollY - 12;
+      window.scrollTo(0, Math.max(0, top));   // direkter Sprung: sanftes Scrollen wird nicht überall zuverlässig ausgeführt
+      settings.classList.remove("flash"); void settings.offsetWidth; settings.classList.add("flash");
+    });
+  }
+
   /* ---------- Auto-Weiter ----------
      Nach einer Antwort geht es von selbst weiter. Der Weiter-Knopf füllt sich dabei
      sichtbar (Countdown); wer schneller will, tippt ihn einfach an.
