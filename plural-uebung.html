@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=12">
+<link rel="stylesheet" href="theme.css?v=13">
 <script src="plural-saetze.js"></script>
 <style>
 .pl-label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:14px 0 4px;text-align:center}
@@ -230,7 +230,7 @@ function updatePluralStats(){
   const pct = sel.total ? Math.round(lv / (sel.total * PLURAL_MASTER) * 100) : 0;
   document.getElementById("plural-stats-box").innerHTML = `
     <div class="plural-progress"><div class="plural-progress-fill" style="width:${pct}%"></div></div>
-    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Lektion 1–14" : "Plurale aus dem Buch (Lektion 12–14 inkl. Übung 1)"}</small></div>
+    <div class="plural-progress-label"><b>${sel.mastered}</b> von <b>${sel.total}</b> gekonnt · noch <b class="open">${sel.open}</b> offen<br><small>${pluralIncludeOld ? "Buch-Plurale + Zusatz-Plurale (nicht aus dem Buch)" : "Nur Plurale aus dem Buch (Lektion 12–14 inkl. Übung 1)"}</small></div>
     <div class="plural-chips">
       <span class="plural-chip gesund">Gesund ${g.mastered}/${g.total}</span>
       <span class="plural-chip gebrochen">Gebrochen ${b.mastered}/${b.total}</span>
@@ -247,7 +247,7 @@ function buildPluralFilters(){
     mk("gebrochen", "Gebrochen", pluralFilter === "gebrochen") +
     mk("pronomen", "Pronomen &amp; Verben", pluralFilter === "pronomen") +
     `<button class="lesson-pill${pluralOnlyOpen ? " active" : ""}" data-pf="open">Nur offene</button>` +
-    `<button class="lesson-pill${pluralIncludeOld ? " active" : ""}" data-pf="old" title="Zusätzlich die Plurale zu den Wörtern aus Lektion 1–11">+ Lektion 1–11</button>` ;
+    `<button class="lesson-pill${pluralIncludeOld ? " active" : ""}" data-pf="old" title="Zusätzliche Pluralformen zu Wörtern aus Lektion 1–11 – stehen NICHT im Buch">+ Zusatz (nicht aus dem Buch)</button>` ;
   row.onclick = e => {
     const btn = e.target.closest("[data-pf]");
     if(!btn) return;
@@ -309,7 +309,7 @@ function renderPluralOverview(){
       return `<div class="plural-ov-row ${st[0]}">
         <span class="st" title="${stLabel}" aria-label="${stLabel}">${st[1]}</span>
         <span class="ov-pair" lang="ar"><span class="ar">${displayArabic(w.arabic)}</span><span class="ov-arrow" aria-hidden="true">←</span><span class="ar pl">${displayArabic(w.plural)}</span></span>
-        <span class="de">${w.german.replace(/\s*\([^)]*\)/g, "").trim()}${wr ? ` <small title="so oft falsch">✗${wr}</small>` : ""}</span>
+        <span class="de">${w.german.replace(/\s*\([^)]*\)/g, "").trim()}${wr ? ` <small title="so oft falsch">✗${wr}</small>` : ""}${isBookPlural(w) ? "" : ' <span class="not-book-tag">nicht aus dem Buch</span>'}</span>
       </div>`;
     }).join("");
     return `<section class="ov-group"><h2 class="ov-group-title">${title} <span class="count">${c.mastered}/${c.total} gekonnt</span></h2><div class="ov-head" aria-hidden="true"><span></span><span class="ov-pair-head"><span>Singular</span><span>←</span><span>Plural</span></span><span>Deutsch</span></div>${rows}</section>`;
@@ -466,7 +466,8 @@ function selectPlural(choice, btn, correctPlural, word){
 
   const reveal = document.getElementById("plural-reveal");
   document.getElementById("plural-reveal-word").innerText = displayArabic(word.plural);
-  document.getElementById("plural-reveal-badge").innerHTML = badgeHtml;
+  document.getElementById("plural-reveal-badge").innerHTML = badgeHtml +
+    (isBookPlural(word) ? "" : ' <span class="not-book-tag" title="Diese Pluralform steht nicht im Buch">nicht aus dem Buch</span>');
   const left = Math.max(0, PLURAL_MASTER - e.streak);
   document.getElementById("plural-reveal-status").innerText =
     e.streak >= PLURAL_MASTER ? "✓ Gekonnt" : "Zuletzt falsch — kommt gleich nochmal";

@@ -273,6 +273,12 @@ html body.bb-trainer > main { display: block; position: relative; width: 100%; m
 .tool-row.stack > .picker-btn { flex-basis: 100%; }
 .tool-row > .toggle-pill { flex: 1 1 0; }
 
+/* Filter "Nomen: Beide / Unbestimmt / Mit ال" (Vokabeltrainer) */
+.form-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+.form-row-label { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+.form-row .seg { flex: 1; min-width: 0; }
+.form-row .pill-btn { min-height: 36px; font-size: 0.85rem; }
+
 /* Bereichs-Umschalter der Plural-Seite (gleiches Aussehen wie die Übungsart) */
 #area-tabs .lesson-pill { border: 0; background: transparent; border-radius: 10px; min-height: 42px; color: var(--text-dim); }
 #area-tabs .lesson-pill:hover { color: var(--cream); }
@@ -870,6 +876,31 @@ header .head-row .head-toggle { position: absolute; right: 0; top: 50%; transfor
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
+
+/* Plurale, die nicht im Buch stehen (Ergänzungen) */
+.not-book-tag {
+  display: inline-block;
+  padding: 0 0.45em;
+  border: 1px dashed rgba(240, 143, 115, 0.6);
+  border-radius: 999px;
+  color: var(--wrong);
+  font-family: var(--font-main);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.plural-line.not-book { opacity: 0.8; }
+.plural-line .not-book-tag { font-size: 0.85em; }
+/* Zusatz-Plurale bewusst im Hintergrund: gestrichelt und gedämpft */
+#plural-filter-row [data-pf="old"] { border-style: dashed; color: var(--text-dim); font-weight: 500; }
+#plural-filter-row [data-pf="old"].active { color: var(--wrong); border-color: rgba(240, 143, 115, 0.6); background: rgba(240, 143, 115, 0.08); }
+
+/* Zweite Form (unbestimmt / mit ال) im Glossar */
+.alt-line { display: block; margin-top: 3px; font-size: 0.82em; color: var(--text-dim); }
+.alt-line .ar { font-family: var(--font-arabic); font-size: 1.25em; color: var(--cream); }
 
 /* Plural-Zeile (Vokabeln/Glossar) */
 .plural-line { display: block; margin-top: 4px; font-size: 0.6em; color: var(--gold); font-family: var(--font-main); font-weight: 500; }

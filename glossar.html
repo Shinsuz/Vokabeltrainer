@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=12">
+<link rel="stylesheet" href="theme.css?v=13">
 <script src="vocab.js"></script>
 </head>
 <body class="bb-trainer page-glossar">
@@ -69,7 +69,10 @@ function stripHarakat(text){ return String(text || "").replace(HARAKAT_REGEX, ""
 let showHarakat = true;
 function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
 function pluralHtml(w){
-  return w && w.plural ? `<span class="plural-line">Plural: <span class="ar">${displayArabic(w.plural)}</span></span>` : "";
+  if(!w || !w.plural) return "";
+  /* Plurale, die nicht im Buch stehen (Ergänzungen, v. a. Lektion 1–11), deutlich markieren */
+  const extra = typeof isBookPlural === "function" && !isBookPlural(w);
+  return `<span class="plural-line${extra ? " not-book" : ""}">Plural${extra ? ' <small class="not-book-tag" title="Diese Pluralform steht nicht im Buch">nicht aus dem Buch</small>' : ""}: <bdi class="ar" dir="rtl">${displayArabic(w.plural)}</bdi></span>`;
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]); }
 
@@ -89,7 +92,8 @@ function matchesQuery(w){
   if(!glossaryQuery) return true;
   return glossaryNorm(w.arabic).includes(glossaryQuery)
       || glossaryNorm(w.german).includes(glossaryQuery)
-      || (w.plural && glossaryNorm(w.plural).includes(glossaryQuery));
+      || (w.plural && glossaryNorm(w.plural).includes(glossaryQuery))
+      || (w.alt && (glossaryNorm(w.alt.arabic).includes(glossaryQuery) || glossaryNorm(w.alt.german).includes(glossaryQuery)));
 }
 function wordsOf(key){
   return allVocabWords().filter(w => key === "_none"
@@ -98,7 +102,8 @@ function wordsOf(key){
 }
 
 function rowHtml(w){
-  return `<div class="glossary-word-row"><span class="ar" lang="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${pluralHtml(w)}</span></div>`;
+  const alt = w.alt ? `<span class="alt-line"><bdi>${/^ال/.test(stripHarakat(w.alt.arabic)) ? "mit ال" : "ohne ال"}</bdi>: <bdi class="ar" dir="rtl">${displayArabic(w.alt.arabic)}</bdi> – ${w.alt.german}</span>` : "";
+  return `<div class="glossary-word-row"><span class="ar" lang="ar">${displayArabic(w.arabic)}</span><span class="de">${w.german}${alt}${pluralHtml(w)}</span></div>`;
 }
 
 function buildTabs(){

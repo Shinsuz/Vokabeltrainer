@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=12">
+<link rel="stylesheet" href="theme.css?v=13">
 <script>if(location.hash === "#glossar") location.replace("glossar.html");  /* alte Links aufs Glossar */</script>
 <script src="vocab.js"></script>
 </head>
@@ -60,6 +60,14 @@
           </span>
           <b id="harakat-state" hidden>an</b>
         </label>
+      </div>
+      <div class="form-row">
+        <span class="form-row-label">Nomen</span>
+        <div class="pill-group seg" id="form-tabs" aria-label="Nomen-Form">
+          <button class="pill-btn" data-form="beide"><span class="lbl-long">Beide Formen</span><span class="lbl-short">Beide</span></button>
+          <button class="pill-btn" data-form="unbestimmt" title="z. B. بَيْتٌ – ein Haus"><span class="lbl-long">Unbestimmt (بَيْتٌ)</span><span class="lbl-short">ohne ال</span></button>
+          <button class="pill-btn" data-form="mit-al" title="z. B. الْبَيْتُ – das Haus"><span class="lbl-long">Mit ال (الْبَيْتُ)</span><span class="lbl-short">mit ال</span></button>
+        </div>
       </div>
       <div class="pill-group" id="lesson-tabs" data-picker data-picker-label="Lektion" data-picker-title="Lektion wählen"></div>
     </section>
@@ -119,7 +127,34 @@ let selectedLesson = "alle";
 function currentDeck(){
   const list = selectedLesson === "alle" ? Object.values(LESSONS).flat() : (LESSONS[selectedLesson] || []);
   const seen = new Set();
-  return list.filter(w => { const k = w.arabic.trim(); if(seen.has(k)) return false; seen.add(k); return true; });
+  return list
+    .flatMap(w => w.alt ? [w, altCard(w)] : [w])          // zweite Form (unbestimmt / mit ال) als eigene Karte
+    .filter(w => { const k = w.arabic.trim(); if(seen.has(k)) return false; seen.add(k); return true; })
+    .filter(matchesFormFilter);
+}
+
+/* ---------- Nomen-Formen: unbestimmt (بَيْتٌ – ein Haus) / mit ال (الْبَيْتُ – das Haus) ----------
+   In vocab.js steht bei einem Nomen die fehlende Gegenform im Feld "alt". Daraus wird
+   eine eigene Karte mit eigenem Lernfortschritt.
+   Filter: "beide" = alle Vokabeln; "unbestimmt" / "mit-al" = NUR Nomen in genau
+   dieser Form (Verben, Adjektive, Partikeln, Ländernamen usw. fallen dann weg). */
+const FORM_KEY = "vocab_form_filter";
+let formFilter = "beide";                 // beide | unbestimmt | mit-al
+try{ formFilter = localStorage.getItem(FORM_KEY) || "beide"; }catch(e){}
+const altCache = new Map();
+function altCard(w){
+  if(!altCache.has(w)) altCache.set(w, { arabic: w.alt.arabic, german: w.alt.german, categories: w.categories, isAltOf: w });
+  return altCache.get(w);
+}
+function nounForm(w){
+  const isNoun = w.alt || w.isAltOf ||
+    (Array.isArray(w.categories) && w.categories.includes("ism") && /^(ein|eine|der|die|das)\s/i.test(w.german.trim()));
+  if(!isNoun) return null;
+  return stripHarakat(w.arabic.trim()).startsWith("ال") ? "mit-al" : "unbestimmt";
+}
+function matchesFormFilter(w){
+  if(formFilter === "beide") return true;
+  return nounForm(w) === formFilter;
 }
 
 /* ---------- Sound-Engine ----------
@@ -427,7 +462,10 @@ function nextCard(){
 }
 
 function pluralHtml(word){
-  return word && word.plural ? `<span class="plural-line">Plural: <span class="ar">${displayArabic(word.plural)}</span></span>` : "";
+  if(!word || !word.plural) return "";
+  /* Plurale, die nicht im Buch stehen (Ergänzungen, v. a. Lektion 1–11), deutlich markieren */
+  const extra = typeof isBookPlural === "function" && !isBookPlural(word);
+  return `<span class="plural-line${extra ? " not-book" : ""}">Plural${extra ? ' <small class="not-book-tag" title="Diese Pluralform steht nicht im Buch">nicht aus dem Buch</small>' : ""}: <bdi class="ar" dir="rtl">${displayArabic(word.plural)}</bdi></span>`;
 }
 
 function frontBack(word){
@@ -681,6 +719,21 @@ harakatCheckbox.addEventListener("change", e => {
   Sound.click();
   nextCard();
 });
+
+/* Nomen-Form-Filter */
+const formTabs = document.getElementById("form-tabs");
+function refreshFormTabs(){ formTabs.querySelectorAll(".pill-btn").forEach(b => b.classList.toggle("active", b.dataset.form === formFilter)); }
+formTabs.addEventListener("click", e => {
+  const b = e.target.closest(".pill-btn"); if(!b) return;
+  Sound.click();
+  formFilter = b.dataset.form;
+  try{ localStorage.setItem(FORM_KEY, formFilter); }catch(err){}
+  refreshFormTabs();
+  window.__endShownFor = null;
+  updateStats();
+  nextCard();
+});
+refreshFormTabs();
 
 // Init
 buildLessonTabs();
