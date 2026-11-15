@@ -99,7 +99,7 @@
   }
 
   document.querySelectorAll("[data-picker]").forEach(makePicker);
-  document.querySelectorAll(".end-overlay").forEach(watchOverlay);
+  document.querySelectorAll(".end-overlay, .sheet-overlay").forEach(watchOverlay);
   syncScrollLock();
 
   /* ---------- Einmaliger Tipp: macht neue Nutzer auf die Filter aufmerksam ----------

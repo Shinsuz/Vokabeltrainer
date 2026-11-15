@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=17">
+<link rel="stylesheet" href="theme.css?v=18">
 <script>if(location.hash === "#glossar") location.replace("glossar.html");  /* alte Links aufs Glossar */</script>
 <script src="vocab.js"></script>
 </head>
@@ -76,7 +76,10 @@
 
     <div class="focus-line" id="focus-line" aria-live="polite">
       <span class="focus-text"><span class="focus-label">Du übst gerade:</span> <span id="focus-value">…</span></span>
-      <button type="button" class="focus-change" id="focus-change">Ändern</button>
+      <span class="focus-actions">
+        <button type="button" class="focus-list" id="focus-list" aria-haspopup="dialog" aria-controls="lesson-list-overlay" title="Alle Vokabeln dieser Lektion ansehen">Wörter</button>
+        <button type="button" class="focus-change" id="focus-change">Ändern</button>
+      </span>
     </div>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -107,6 +110,17 @@
       <button class="ghost-btn danger" id="reset-progress-btn">Fortschritt zurücksetzen</button>
     </div>
   </main>
+
+  <div class="sheet-overlay" id="lesson-list-overlay" aria-hidden="true">
+    <div class="sheet lesson-list-sheet" role="dialog" aria-modal="true" aria-labelledby="lesson-list-title">
+      <div class="sheet-header">
+        <h2 id="lesson-list-title">Wörter</h2>
+        <button type="button" class="icon-btn" data-sheet-close aria-label="Schließen">✕</button>
+      </div>
+      <p class="lesson-list-sub" id="lesson-list-sub"></p>
+      <div class="sheet-body" id="lesson-list-body"></div>
+    </div>
+  </div>
 
   <footer>
     <div class="made-by">made by <a href="https://boycott-buddy.com/" target="_blank" rel="noopener">boycott-buddy.com</a></div>
@@ -453,6 +467,63 @@ function buildLessonTabs(){
   };
 }
 
+/* ---------- Wortliste der gewählten Lektion ("Wörter" neben "Ändern") ----------
+   Zeigt alle Vokabeln der Lektion auf einen Blick: Arabisch, Deutsch, die andere
+   Nomenform (ein … / der …) und den Plural. ✓ = gekonnt. */
+function lessonListHtml(words){
+  return words.map(w => {
+    const forms = [w].concat(w.alt ? [altCard(w)] : []);
+    const done = forms.every(isMastered);
+    const some = !done && forms.some(isMastered);
+    const st = done ? '<span class="ll-st done" title="gekonnt">✓</span>'
+             : some ? '<span class="ll-st part" title="teilweise gekonnt">◐</span>'
+             : '<span class="ll-st" aria-hidden="true">·</span>';
+    const extra = [];
+    if(w.alt) extra.push(`<span class="ll-alt"><bdi dir="rtl" class="ar">${displayArabic(w.alt.arabic)}</bdi> ${escapeHtmlLL(w.alt.german)}</span>`);
+    if(w.plural) extra.push(`<span class="ll-pl">Plural: <bdi dir="rtl" class="ar">${displayArabic(w.plural)}</bdi></span>`);
+    return `<li class="ll-row${done ? " is-done" : ""}">${st}
+      <bdi dir="rtl" class="ll-ar ar">${displayArabic(w.arabic)}</bdi>
+      <span class="ll-de">${escapeHtmlLL(w.german)}${extra.length ? `<span class="ll-extra">${extra.join("")}</span>` : ""}</span></li>`;
+  }).join("");
+}
+function escapeHtmlLL(t){ return String(t).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c])); }
+function lessonName(key){ return (typeof LESSON_LABELS !== "undefined" && LESSON_LABELS[key]) || (key === "Grammatik" ? "Grammatik" : `Lektion ${key}`); }
+function openLessonList(){
+  const overlay = document.getElementById("lesson-list-overlay");
+  const body = document.getElementById("lesson-list-body");
+  const keys = selectedLesson === "alle"
+    ? Object.keys(LESSONS).filter(k => k !== "Grammatik" && (LESSONS[k] || []).length)
+    : [selectedLesson];
+  let total = 0, mastered = 0;
+  body.innerHTML = keys.map(k => {
+    const words = LESSONS[k] || [];
+    total += words.length;
+    mastered += words.filter(w => [w].concat(w.alt ? [altCard(w)] : []).every(isMastered)).length;
+    const list = `<ul class="ll-list">${lessonListHtml(words)}</ul>`;
+    return keys.length > 1
+      ? `<section class="ll-group"><h3 class="ll-group-title">${lessonName(k)} <span class="count">${words.length}</span></h3>${list}</section>`
+      : list;
+  }).join("") || '<p class="big-empty">Für diese Lektion sind noch keine Wörter eingetragen.</p>';
+  document.getElementById("lesson-list-title").textContent = selectedLesson === "alle" ? "Alle Wörter" : `Wörter · ${lessonName(selectedLesson)}`;
+  document.getElementById("lesson-list-sub").textContent = `${total} Einträge · ${mastered} gekonnt ✓`;
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+  body.scrollTop = 0;
+  overlay.querySelector("[data-sheet-close]").focus({ preventScroll: true });
+}
+function closeLessonList(){
+  const overlay = document.getElementById("lesson-list-overlay");
+  if(!overlay.classList.contains("show")) return;
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+  document.getElementById("focus-list").focus({ preventScroll: true });
+}
+document.getElementById("focus-list").addEventListener("click", openLessonList);
+document.getElementById("lesson-list-overlay").addEventListener("click", e => {
+  if(e.target.id === "lesson-list-overlay" || e.target.closest("[data-sheet-close]")) closeLessonList();
+});
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeLessonList(); });
+
 /* Zeile "Du übst gerade: …" über der Karte — zeigt die aktuellen Einstellungen */
 function updateFocusLine(){
   const el = document.getElementById("focus-value");
@@ -763,6 +834,6 @@ updateStats();
 // Absicherung: die Seite soll nie waagerecht verschoben sein
 window.addEventListener("scroll", () => { if(window.scrollX) window.scrollTo(0, window.scrollY); }, { passive: true });
 </script>
-<script src="ui.js?v=10"></script>
+<script src="ui.js?v=11"></script>
 </body>
 </html>

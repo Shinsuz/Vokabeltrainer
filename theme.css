@@ -301,6 +301,40 @@ html body.bb-trainer > main { display: block; position: relative; width: 100%; m
   font-weight: 700; font-size: 0.85rem; cursor: pointer;
 }
 .focus-change:hover { background: var(--gold-bright); }
+.focus-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+.focus-list {
+  flex-shrink: 0; min-height: 36px; padding: 0.3rem 0.8rem;
+  background: transparent; color: var(--gold-bright); border: 1px solid var(--gold); border-radius: 10px;
+  font-weight: 700; font-size: 0.85rem; cursor: pointer;
+}
+.focus-list:hover { background: var(--gold-soft); }
+
+/* ---------- Wortliste einer Lektion (Vokabeltrainer, Knopf "Wörter") ---------- */
+.lesson-list-sheet { max-width: 680px; }
+.lesson-list-sub { margin: -0.35rem 0 0.7rem; font-size: 0.85rem; color: var(--text-dim); flex-shrink: 0; }
+.ll-list { list-style: none; margin: 0; padding: 0; }
+.ll-row {
+  display: grid; grid-template-columns: 1.4rem 1fr; grid-template-areas: "st ar" "st de";
+  gap: 0.1rem 0.5rem; align-items: center;
+  padding: 0.55rem 0.2rem; border-bottom: 1px solid var(--line);
+}
+.ll-row:last-child { border-bottom: 0; }
+.ll-st { grid-area: st; text-align: center; color: var(--text-dim); font-weight: 700; }
+.ll-st.done { color: var(--ok); }
+.ll-st.part { color: var(--gold); }
+.ll-ar { grid-area: ar; font-family: var(--font-arabic); font-size: 1.35rem; color: var(--cream); line-height: 1.5; text-align: right; }
+.ll-de { grid-area: de; color: var(--text); font-size: 0.92rem; line-height: 1.4; }
+.ll-extra { display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; margin-top: 0.15rem; font-size: 0.82rem; color: var(--text-dim); }
+.ll-extra .ar { font-family: var(--font-arabic); font-size: 1.05rem; color: var(--gold); }
+.ll-group { margin-bottom: 0.9rem; }
+.ll-group-title {
+  display: flex; align-items: baseline; gap: 0.5rem; margin: 0; padding: 0.5rem 0 0.35rem;
+  font-size: 1rem; font-weight: 700; color: var(--gold-bright); border-bottom: 1px solid var(--line-strong);
+}
+.ll-group-title .count { margin-left: auto; font-size: 0.82rem; color: var(--text-dim); font-weight: 600; }
+@media (min-width: 760px) {
+  .ll-row { grid-template-columns: 1.4rem minmax(0, 0.9fr) minmax(0, 1.4fr); grid-template-areas: "st ar de"; gap: 0.8rem; }
+}
 @keyframes panelFlash { 0%, 100% { box-shadow: var(--shadow); border-color: var(--line); } 30% { box-shadow: 0 0 0 3px var(--gold-soft), 0 0 28px rgba(212, 176, 114, 0.35); border-color: var(--gold); } }
 .panel.flash { animation: panelFlash 1.4s ease 0.3s 2; }
 
