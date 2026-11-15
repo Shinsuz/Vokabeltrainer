@@ -62,11 +62,11 @@
         </label>
       </div>
       <div class="form-row">
-        <span class="form-row-label">Nomen</span>
-        <div class="pill-group seg" id="form-tabs" aria-label="Nomen-Form">
+        <span class="form-row-label">Nomenformen</span>
+        <div class="pill-group seg" id="form-tabs" aria-label="Nomenformen">
           <button class="pill-btn" data-form="beide"><span class="lbl-long">Beide Formen</span><span class="lbl-short">Beide</span></button>
-          <button class="pill-btn" data-form="unbestimmt" title="z. B. بَيْتٌ – ein Haus"><span class="lbl-long">Unbestimmt (بَيْتٌ)</span><span class="lbl-short">ohne ال</span></button>
-          <button class="pill-btn" data-form="mit-al" title="z. B. الْبَيْتُ – das Haus"><span class="lbl-long">Mit ال (الْبَيْتُ)</span><span class="lbl-short">mit ال</span></button>
+          <button class="pill-btn" data-form="unbestimmt" title="z. B. بَيْتٌ – ein Haus"><span class="lbl-long">Unbestimmt (<bdi dir="rtl">بَيْتٌ</bdi>)</span><span class="lbl-short">ohne <bdi dir="rtl">ال</bdi></span></button>
+          <button class="pill-btn" data-form="mit-al" title="z. B. الْبَيْتُ – das Haus"><span class="lbl-long">Mit <bdi dir="rtl">ال</bdi> (<bdi dir="rtl">الْبَيْتُ</bdi>)</span><span class="lbl-short">mit <bdi dir="rtl">ال</bdi></span></button>
         </div>
       </div>
       <div class="pill-group" id="lesson-tabs" data-picker data-picker-label="Lektion" data-picker-title="Lektion wählen"></div>
@@ -136,8 +136,9 @@ function currentDeck(){
 /* ---------- Nomen-Formen: unbestimmt (بَيْتٌ – ein Haus) / mit ال (الْبَيْتُ – das Haus) ----------
    In vocab.js steht bei einem Nomen die fehlende Gegenform im Feld "alt". Daraus wird
    eine eigene Karte mit eigenem Lernfortschritt.
-   Filter: "beide" = alle Vokabeln; "unbestimmt" / "mit-al" = NUR Nomen in genau
-   dieser Form (Verben, Adjektive, Partikeln, Ländernamen usw. fallen dann weg). */
+   Filter "Nomenformen": wirkt NUR auf Nomen. "unbestimmt" blendet die ال-Form der
+   Nomen aus, "mit-al" die unbestimmte. Adjektive, Verben, Partikeln usw. bleiben
+   immer dabei (Wunsch: die sollen trotzdem mitgelernt werden). */
 const FORM_KEY = "vocab_form_filter";
 let formFilter = "beide";                 // beide | unbestimmt | mit-al
 try{ formFilter = localStorage.getItem(FORM_KEY) || "beide"; }catch(e){}
@@ -154,7 +155,8 @@ function nounForm(w){
 }
 function matchesFormFilter(w){
   if(formFilter === "beide") return true;
-  return nounForm(w) === formFilter;
+  const f = nounForm(w);
+  return f === null || f === formFilter;   // Nicht-Nomen immer anzeigen
 }
 
 /* ---------- Sound-Engine ----------
