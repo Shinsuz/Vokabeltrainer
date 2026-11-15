@@ -852,7 +852,6 @@ kbd { background: var(--bg); border: 1px solid var(--line-strong); border-radius
 }
 .glossary-tools .glossary-search { margin-bottom: 0.5rem; }
 .glossary-tools .chip-scroll { margin: 0 -0.6rem; padding: 2px 0.6rem; scroll-padding: 0 0.6rem; }
-.page-glossar header .head-row { padding-right: 8.2rem; }
 header .head-row .head-toggle { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
 .chip-count { font-size: 0.78em; font-weight: 600; color: var(--text-dim); margin-left: 0.15rem; }
 .lesson-pill.active .chip-count { color: var(--gold); }

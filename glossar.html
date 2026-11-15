@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=16">
+<link rel="stylesheet" href="theme.css?v=17">
 <script src="vocab.js"></script>
 </head>
 <body class="bb-trainer page-glossar">
@@ -34,10 +34,6 @@
     <div class="head-row">
       <h1>Glossar</h1>
       <span class="ar-sub">المُعجَم</span>
-      <label class="toggle-pill head-toggle" title="Vokalzeichen (Haraket) anzeigen">
-        <span>Haraket</span>
-        <span class="switch"><input type="checkbox" id="harakat-checkbox" checked><span class="slider"></span></span>
-      </label>
     </div>
     <p class="subtitle" id="glossary-count">Alle Vokabeln nach Wortart</p>
   </header>
@@ -67,8 +63,8 @@
    Schlüssel enthält. Wörter ohne "categories" landen unter "Nicht zugeordnet". */
 const HARAKAT_REGEX = /[ً-ْٖ-ٰٟۖ-ۭ]/g;
 function stripHarakat(text){ return String(text || "").replace(HARAKAT_REGEX, ""); }
-let showHarakat = true;
-function displayArabic(text){ return showHarakat ? text : stripHarakat(text); }
+/* Im Glossar immer mit Haraket (kein Schalter). stripHarakat bleibt für die Suche. */
+function displayArabic(text){ return text; }
 function pluralHtml(w){
   if(!w || !w.plural) return "";
   /* Plurale, die nicht im Buch stehen (Ergänzungen, v. a. Lektion 1–11), deutlich markieren */
@@ -182,10 +178,6 @@ function render(){
 const glossarySearch = document.getElementById("glossary-search");
 glossarySearch.addEventListener("input", () => {
   glossaryQuery = glossaryNorm(glossarySearch.value);
-  render();
-});
-document.getElementById("harakat-checkbox").addEventListener("change", e => {
-  showHarakat = e.target.checked;
   render();
 });
 
