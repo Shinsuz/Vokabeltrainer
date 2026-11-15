@@ -5,7 +5,7 @@
      Änderungen und neue Vokabeln sofort ankommen; ohne Verbindung aus dem Speicher.
    - Google Fonts: aus dem Speicher (ändern sich nie).
    Bei größeren Änderungen CACHE-Namen hochzählen, dann wird alles neu geladen. */
-const CACHE = "arabisch-trainer-v6";
+const CACHE = "arabisch-trainer-v7";
 const CORE = [
   "./",
   "./index.html",
@@ -43,8 +43,12 @@ self.addEventListener("fetch", e => {
   /* eigene Dateien: zuerst aus dem Netz (neue Vokabeln/Änderungen kommen sofort an),
      ohne Verbindung aus dem Speicher */
   if(url.origin === self.location.origin){
+    /* cache: "no-cache" = beim Server nachfragen, ob es eine neuere Version gibt.
+       Sonst liefert der Browser bis zu 10 Minuten eine alte Fassung aus seinem
+       eigenen Zwischenspeicher (GitHub Pages: max-age=600). */
+    const fresh = fetch(url.href, { cache: "no-cache", credentials: "same-origin" });
     e.respondWith(
-      fetch(req)
+      fresh
         .then(res => {
           if(res && res.ok){ const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
           return res;
