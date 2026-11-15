@@ -160,7 +160,22 @@
 
   /* ---------- 3) Web-App installieren ---------- */
   if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")){
-    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+    /* Neue Version veröffentlicht? Dann übernimmt der neue Service Worker die Seite
+       ("controllerchange") — wir laden dann EINMAL neu, damit niemand eine alte,
+       zwischengespeicherte Fassung sieht. Beim allerersten Besuch (noch kein
+       Service Worker aktiv) wird nicht neu geladen. */
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloading = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if(!hadController || reloading) return;
+      reloading = true;
+      location.reload();
+    });
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
+        .then(reg => reg.update())        // gleich nach einer neuen Version schauen
+        .catch(() => {});
+    });
   }
 
   const DISMISS_KEY = "app_install_dismissed_at";
