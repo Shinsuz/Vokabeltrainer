@@ -435,12 +435,7 @@ const LESSONS = {
       /* ---- Wörter ---- */
       { arabic: "قَبْلَ", german: "vor (zeitlich; immer Mudâf, das folgende Substantiv steht im Genitiv: قَبْلَ الصَّلَاةِ)", categories: ["ism", "mudaf"] },
       { arabic: "بَعْدَ", german: "nach (zeitlich; immer Mudâf, das folgende Substantiv steht im Genitiv: بَعْدَ الدَّرْسِ)", categories: ["ism", "mudaf"] },
-      { arabic: "كَيْفَ", german: "wie?", categories: ["ismistifham", "mabni"] },
-      { arabic: "مَتَى", german: "wann?", categories: ["ismistifham", "mabni"] },
       { arabic: "الْأُسْبُوعُ", german: "die Woche", alt: { arabic: "أُسْبُوعٌ", german: "eine Woche" }, categories: ["ism"] },
-      { arabic: "الشَّهْرُ", german: "der Monat", alt: { arabic: "شَهْرٌ", german: "ein Monat" }, categories: ["ism"] },
-      { arabic: "الْأَذَانُ", german: "der Gebetsruf (Adhân)", alt: { arabic: "أَذَانٌ", german: "ein Gebetsruf" }, categories: ["ism"] },
-      { arabic: "الصَّلَاةُ", german: "das Gebet", alt: { arabic: "صَلَاةٌ", german: "ein Gebet" }, categories: ["ism"] },
       { arabic: "رَجَعَ", german: "er kehrte zurück", categories: ["fiil", "mabni"] },
       { arabic: "القَاهِرَةُ", german: "Kairo", categories: ["ism"] },
       { arabic: "الآنَ", german: "jetzt", categories: ["ism", "mabni"] },
