@@ -1051,7 +1051,7 @@ const SATZANALYSE = {
       },
       {
         term: "ـكُمْ — euer / eure",
-        explanation: "Der Plural von ـكَ ('dein') ist ـكُمْ ('euer/eure'): أَيْنَ بَيْتُكُمْ يَا إِخْوَانُ؟ (Brüder, wo ist euer Haus?)"
+        explanation: "Der Plural von ـكَ ('dein') ist ـكُمْ ('euer/eure'): أَيْنَ بَيْتُكُمْ يَا إِخْوَانُ؟ (Brüder, wo ist euer Haus?) — إِخْوَانٌ ist der Plural von أَخٌ im allgemeinen Gebrauch (z. B. als Anrede); für leibliche Brüder sagt man eher إِخْوَةٌ."
       },
       {
         term: "نَحْنُ — wir",

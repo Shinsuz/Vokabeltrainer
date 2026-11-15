@@ -314,7 +314,7 @@ const LESSONS = {
       { arabic: "جِبَالٌ", german: "Berge (Plural von جَبَلٌ)", categories: ["ism"] },
       { arabic: "تُجَّارٌ", german: "Händler (Plural von تَاجِرٌ)", categories: ["ism"] },
       { arabic: "أَقْلَامٌ", german: "Stifte (Plural von قَلَمٌ)", categories: ["ism"] },
-      { arabic: "إِخْوَةٌ", german: "Brüder (Plural von أَخٌ)", categories: ["ism"] },
+      { arabic: "إِخْوَةٌ", german: "Brüder (Plural von أَخٌ) — vor allem für leibliche Brüder (Blutsverwandte)", categories: ["ism"] },
       { arabic: "فِتْيَةٌ", german: "Jungen, junge Männer (Plural von فَتًى)", categories: ["ism"] },
       { arabic: "أَسْمَاءُ", german: "Namen (Plural von اسْمٌ)", categories: ["ism"] },
       { arabic: "طِوَالٌ", german: "groß, lang (Plural von طَوِيلٌ)", categories: ["ism"] },
@@ -418,7 +418,8 @@ const LESSONS = {
       { arabic: "النَّبِيُّ", german: "der Prophet", alt: { arabic: "نَبِيٌّ", german: "ein Prophet" }, categories: ["ism"] },
       { arabic: "الْيُونَانُ", german: "Griechenland", categories: ["ism"] },
       { arabic: "الدِّينُ", german: "die Religion", alt: { arabic: "دِينٌ", german: "eine Religion" }, categories: ["ism"] },
-      { arabic: "إِخْوَةٌ", german: "Brüder (Plural von أَخٌ)", categories: ["ism"] },
+      { arabic: "إِخْوَةٌ", german: "Brüder (Plural von أَخٌ) — vor allem für leibliche Brüder (Blutsverwandte)", categories: ["ism"] },
+      { arabic: "إِخْوَانٌ", german: "Brüder (Plural von أَخٌ) — im allgemeinen Gebrauch, z. B. als Anrede: يَا إِخْوَانُ (Brüder!); für leibliche Brüder eher إِخْوَةٌ", categories: ["ism"] },
     ],
 
   Grammatik: [
