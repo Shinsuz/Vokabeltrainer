@@ -446,8 +446,6 @@ const LESSONS = {
       { arabic: "الآنَ", german: "jetzt", categories: ["ism", "mabni"] },
       { arabic: "الِاخْتِبَارُ", german: "das Examen, die Prüfung", alt: { arabic: "اخْتِبَارٌ", german: "ein Examen, eine Prüfung" }, categories: ["ism"] },
       { arabic: "الدَّرْسُ", german: "die Lektion, die Unterrichtsstunde", alt: { arabic: "دَرْسٌ", german: "eine Lektion, eine Unterrichtsstunde" }, categories: ["ism"] },
-      { arabic: "سَيِّدَةٌ", german: "eine Dame", plural: "سَيِّدَاتٌ", alt: { arabic: "السَّيِّدَةُ", german: "die Dame" }, categories: ["ism"] },
-      { arabic: "سَيِّدَاتٌ", german: "Damen (Plural von سَيِّدَةٌ), z. B. يَا سَيِّدَاتُ ([meine] Damen!)", categories: ["ism"] },
     ],
 
   Grammatik: [
