@@ -22,7 +22,7 @@ Ein Lern-Trainer für **Madina Book 1** (Arabisch).
 
 Stand: November 2026 – wird mit dem Kursfortschritt erweitert.
 
-**Aktuell verfügbar: Lektion 1–14** · weitere folgen mit dem Kurs
+**Aktuell verfügbar: Lektion 1–15** · weitere folgen mit dem Kurs
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -31,6 +31,10 @@ Stand: November 2026 – wird mit dem Kursfortschritt erweitert.
 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+| 15 | | | | | | |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ✅ | | | | | | |
 
 ## Inhaltliche Grundlage
 

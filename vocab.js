@@ -288,7 +288,7 @@ const LESSONS = {
       { arabic: "عُلَمَاءُ", german: "Gelehrte (Plural von عَالِمٌ)", categories: ["ism"] },
       { arabic: "أَقْوِيَاءُ", german: "Starke (Plural von قَوِيٌّ)", categories: ["ism"] },
       { arabic: "ضِعَافٌ", german: "Schwache (Plural von ضَعِيفٌ)", categories: ["ism"] },
-      { arabic: "بَعْدَ", german: "nach (das folgende Substantiv steht im Genitiv)", categories: ["ism", "mudaf"] },
+      { arabic: "بَعْدَ", german: "nach (zeitlich; immer Mudâf, das folgende Substantiv steht im Genitiv: بَعْدَ الدَّرْسِ)", categories: ["ism", "mudaf"] },
       { arabic: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ", german: "das Königreich Saudi-Arabien", categories: ["ism"] },
     ],
     /* Lektion 13 = Teil A + Teil B + Teil C */
@@ -422,6 +422,34 @@ const LESSONS = {
       { arabic: "إِخْوَانٌ", german: "Brüder (Plural von أَخٌ) — im allgemeinen Gebrauch, z. B. als Anrede: يَا إِخْوَانُ (Brüder!); für leibliche Brüder eher إِخْوَةٌ", categories: ["ism"] },
     ],
 
+    /* Lektion 15 */
+    "15": [
+      /* ---- Pronomen & Endungen ---- */
+      { arabic: "أَنْتِ", german: "du (weiblich)", plural: "أَنْتُنَّ", pluralType: "pronomen", pluralBook: true, categories: ["pronomen", "mabni"] },
+      { arabic: "أَنْتُنَّ", german: "ihr (f. Pl.; Plural von أَنْتِ „du“, feminin), z. B. مَنْ أَنْتُنَّ يَا أَخَوَاتِي؟ (Wer seid ihr, meine Schwestern?)", categories: ["pronomen", "mabni"] },
+      { arabic: "ـكِ", german: "besitzanzeigende Endung 'dein' (f. s., z. B. بَيْتُكِ)", plural: "ـكُنَّ", pluralType: "pronomen", pluralBook: true, categories: ["pronomen", "mabni"] },
+      { arabic: "ـكُنَّ", german: "besitzanzeigende Endung 'euer/eure' (f. Pl.; Plural von ـكِ, z. B. بَيْتُكُنَّ)", categories: ["pronomen", "mabni"] },
+      { arabic: "ذَهَبْتِ", german: "du gingst (f.)", plural: "ذَهَبْتُنَّ", pluralType: "pronomen", pluralBook: true, categories: ["fiil", "mabni"] },
+      { arabic: "ذَهَبْتُنَّ", german: "ihr gingt, ihr seid gegangen (f. Pl.; Plural von ذَهَبْتِ „du gingst“, f. s.)", categories: ["fiil", "mabni"] },
+
+      /* ---- Wörter ---- */
+      { arabic: "قَبْلَ", german: "vor (zeitlich; immer Mudâf, das folgende Substantiv steht im Genitiv: قَبْلَ الصَّلَاةِ)", categories: ["ism", "mudaf"] },
+      { arabic: "بَعْدَ", german: "nach (zeitlich; immer Mudâf, das folgende Substantiv steht im Genitiv: بَعْدَ الدَّرْسِ)", categories: ["ism", "mudaf"] },
+      { arabic: "كَيْفَ", german: "wie?", categories: ["ismistifham", "mabni"] },
+      { arabic: "مَتَى", german: "wann?", categories: ["ismistifham", "mabni"] },
+      { arabic: "الْأُسْبُوعُ", german: "die Woche", alt: { arabic: "أُسْبُوعٌ", german: "eine Woche" }, categories: ["ism"] },
+      { arabic: "الشَّهْرُ", german: "der Monat", alt: { arabic: "شَهْرٌ", german: "ein Monat" }, categories: ["ism"] },
+      { arabic: "الْأَذَانُ", german: "der Gebetsruf (Adhân)", alt: { arabic: "أَذَانٌ", german: "ein Gebetsruf" }, categories: ["ism"] },
+      { arabic: "الصَّلَاةُ", german: "das Gebet", alt: { arabic: "صَلَاةٌ", german: "ein Gebet" }, categories: ["ism"] },
+      { arabic: "رَجَعَ", german: "er kehrte zurück", categories: ["fiil", "mabni"] },
+      { arabic: "القَاهِرَةُ", german: "Kairo", categories: ["ism"] },
+      { arabic: "الآنَ", german: "jetzt", categories: ["ism", "mabni"] },
+      { arabic: "الِاخْتِبَارُ", german: "das Examen, die Prüfung", alt: { arabic: "اخْتِبَارٌ", german: "ein Examen, eine Prüfung" }, categories: ["ism"] },
+      { arabic: "الدَّرْسُ", german: "die Lektion, die Unterrichtsstunde", alt: { arabic: "دَرْسٌ", german: "eine Lektion, eine Unterrichtsstunde" }, categories: ["ism"] },
+      { arabic: "سَيِّدَةٌ", german: "eine Dame", plural: "سَيِّدَاتٌ", alt: { arabic: "السَّيِّدَةُ", german: "die Dame" }, categories: ["ism"] },
+      { arabic: "سَيِّدَاتٌ", german: "Damen (Plural von سَيِّدَةٌ), z. B. يَا سَيِّدَاتُ ([meine] Damen!)", categories: ["ism"] },
+    ],
+
   Grammatik: [
     { arabic: "تَنْوِين", german: "die Unbestimmtheit (hinsichtlich der Wortform)"},
     { arabic: "نَكِرَة", german: "unbestimmt (hinsichtlich der Grammatik)"},
@@ -540,12 +568,12 @@ function getPluralType(word){
 }
 
 /* ---------- Plurale aus dem Buch vs. Ergänzungen ----------
-   Als "aus dem Buch" gelten alle Plurale der Lektionen 12–14 (dort wird der Plural
+   Als "aus dem Buch" gelten alle Plurale der Lektionen 12–15 (dort wird der Plural
    im Buch behandelt) sowie Einträge mit pluralBook: true.
    Selbst ergänzte Plurale (nicht aus dem Buch) wurden am 15.11.2026 entfernt.
    Neue Plurale zu Lektion 1–11 daher nur mit pluralBook: true eintragen, wenn sie
    im Buch/vom Lehrer kommen — sonst werden sie als "nicht aus dem Buch" markiert. */
-const BOOK_PLURAL_LESSONS = ["12", "13", "14"];
+const BOOK_PLURAL_LESSONS = ["12", "13", "14", "15"];
 const BOOK_PLURAL_WORDS = new Set(
   Object.entries(LESSONS).flatMap(([key, words]) =>
     words.filter(w => w.plural && (w.pluralBook || BOOK_PLURAL_LESSONS.includes(String(key))))

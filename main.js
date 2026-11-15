@@ -1213,6 +1213,91 @@ const SATZANALYSE = {
       { words: [{text:"أَنْتُمْ", tags:{1:"Mubtada"}}, {text:"مُدَرِّسُونَ", tags:{1:"Khabar"}}], translation: "Ihr seid Lehrer." },
       { words: [{text:"نَحْنُ", tags:{1:"Mubtada"}}, {text:"طُلَّابٌ", tags:{1:"Khabar"}}], translation: "Wir sind Studenten." }
     ]
+  },
+
+  "15": {
+    concepts: [
+      {
+        term: "أَنْتُنَّ — ihr (f. Pl.)",
+        explanation: "Der Plural von أَنْتِ ('du', feminin Singular) ist أَنْتُنَّ ('ihr', feminin Plural): مَنْ أَنْتُنَّ يَا أَخَوَاتِي؟ (Wer seid ihr, meine Schwestern?) — نَحْنُ بَنَاتُ الْإِمَامِ. (Wir sind die Töchter des Imam.)"
+      },
+      {
+        term: "ـكُنَّ — euer / eure (f. Pl.)",
+        explanation: "Der Plural von ـكِ ('dein', feminin Singular) ist ـكُنَّ ('euer/eure', feminin Plural): أَيْنَ بَيْتُكُنَّ يَا سَيِّدَاتُ؟ (Wo ist euer Haus, [meine] Damen?) — بَيْتُنَا قَرِيبٌ مِنَ الْمَسْجِدِ. (Unser Haus ist in der Nähe der Moschee.)"
+      },
+      {
+        term: "ذَهَبْتِ ← ذَهَبْتُنَّ",
+        explanation: "ذَهَبْتِ bedeutet 'du gingst' (f. s.). Der Plural davon ist ذَهَبْتُنَّ ('ihr gingt, ihr seid gegangen', f. pl.): أَيْنَ ذَهَبْتُنَّ يَا أَخَوَاتُ؟ (Wohin seid ihr gegangen, Schwestern?) — zum Vergleich maskulin: أَيْنَ ذَهَبْتُمْ يَا إِخْوَانُ؟ (Wohin seid ihr gegangen, Brüder?)"
+      },
+      {
+        term: "قَبْلَ und بَعْدَ",
+        explanation: "قَبْلَ bedeutet 'vor' (zeitlich), بَعْدَ bedeutet 'nach' (zeitlich). Sie sind immer Mudâf, und das Substantiv, das ihnen folgt, steht im Genitiv: بَعْدَ الدَّرْسِ (nach der Unterrichtsstunde), قَبْلَ الصَّلَاةِ (vor dem Gebet)."
+      },
+      {
+        term: "رَجَعَ — er kehrte zurück",
+        explanation: "أَرَجَعَ الْإِمَامُ مِنَ الْمَسْجِدِ؟ (Ist der Imam von der Moschee zurückgekommen?) — ذَهَبْتُ إِلَى الْمَسْجِدِ قَبْلَ الْأَذَانِ وَرَجَعْتُ بَعْدَ الصَّلَاةِ. (Ich bin vor dem Adhân zur Moschee gegangen und nach dem Gebet zurückgekommen.)"
+      }
+    ],
+    questions: [
+      {
+        type: "mc",
+        question: "Wie heißt der Plural von أَنْتِ („du“, feminin)?",
+        choices: ["<span class='ar'>أَنْتُمْ</span>", "<span class='ar'>أَنْتُنَّ</span>", "<span class='ar'>هُنَّ</span>", "<span class='ar'>نَحْنُ</span>"],
+        correct: "<span class='ar'>أَنْتُنَّ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „euer Haus“, wenn man mehrere Frauen anspricht?",
+        choices: ["<span class='ar'>بَيْتُكِ</span>", "<span class='ar'>بَيْتُكُمْ</span>", "<span class='ar'>بَيْتُكُنَّ</span>", "<span class='ar'>بَيْتُهُنَّ</span>"],
+        correct: "<span class='ar'>بَيْتُكُنَّ</span>"
+      },
+      {
+        type: "mc",
+        question: "Wie heißt „ihr gingt“ (f. Pl.) auf Arabisch?",
+        choices: ["<span class='ar'>ذَهَبْتُمْ</span>", "<span class='ar'>ذَهَبْتِ</span>", "<span class='ar'>ذَهَبْنَ</span>", "<span class='ar'>ذَهَبْتُنَّ</span>"],
+        correct: "<span class='ar'>ذَهَبْتُنَّ</span>"
+      },
+      {
+        type: "mc",
+        question: "Was bedeutet <span class='ar'>قَبْلَ الصَّلَاةِ</span>?",
+        choices: ["vor dem Gebet", "nach dem Gebet", "während des Gebets", "das Gebet"],
+        correct: "vor dem Gebet"
+      },
+      {
+        type: "tf",
+        statement: "Nach <span class='ar'>قَبْلَ</span> und <span class='ar'>بَعْدَ</span> steht das Substantiv im Genitiv.",
+        correct: true
+      },
+      {
+        type: "mc",
+        question: "Was bedeutet <span class='ar'>رَجَعَ</span>?",
+        choices: ["er ging hinaus", "er kehrte zurück", "er saß", "er ging"],
+        correct: "er kehrte zurück"
+      }
+    ],
+    sentences: [
+      { words: [{text:"مَنْ", tags:{1:"Khabar"}}, {text:"أَنْتُنَّ", tags:{1:"Mubtada"}, blank:{options:["أَنْتِ","أَنْتُنَّ","أَنْتُمْ","نَحْنُ"]}}, {text:"يَا", tags:{}}, {text:"أَخَوَاتِي", tags:{}}], translation: "Wer seid ihr, meine Schwestern?" },
+      { words: [{text:"نَحْنُ", tags:{1:"Mubtada"}}, {text:"بَنَاتُ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"الْإِمَامِ", tags:{1:"Khabar",2:"Mudaf ilaihi"}}], translation: "Wir sind die Töchter des Imam." },
+      { words: [{text:"أَيْنَ", tags:{1:"Khabar"}}, {text:"بَيْتُكُنَّ", tags:{1:"Mubtada"}, blank:{options:["بَيْتُكِ","بَيْتُكُنَّ","بَيْتُكُمْ","بَيْتُنَا"]}}, {text:"يَا", tags:{}}, {text:"سَيِّدَاتُ", tags:{}}], translation: "Wo ist euer Haus, [meine] Damen?" },
+      { words: [{text:"بَيْتُنَا", tags:{1:"Mubtada"}}, {text:"قَرِيبٌ", tags:{1:"Khabar"}}, {text:"مِنَ", tags:{2:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{2:"Majrur"}}], translation: "Unser Haus ist in der Nähe der Moschee." },
+      { words: [{text:"أَيْنَ", tags:{}}, {text:"ذَهَبْتُنَّ", tags:{1:"Fi'l"}, blank:{options:["ذَهَبْتِ","ذَهَبْتُنَّ","ذَهَبْتُمْ","ذَهَبْنَ"]}}, {text:"يَا", tags:{}}, {text:"أَخَوَاتُ", tags:{}}], translation: "Wohin seid ihr gegangen, Schwestern?" },
+      { words: [{text:"أَيْنَ", tags:{}}, {text:"ذَهَبْتُمْ", tags:{1:"Fi'l"}, blank:{options:["ذَهَبْتِ","ذَهَبْتُنَّ","ذَهَبْتُمْ","ذَهَبْنَا"]}}, {text:"يَا", tags:{}}, {text:"إِخْوَانُ", tags:{}}], translation: "Wohin seid ihr gegangen, Brüder?" },
+      { words: [{text:"أَيْنَ", tags:{}}, {text:"ذَهَبْتِ", tags:{1:"Fi'l"}, blank:{options:["ذَهَبْتَ","ذَهَبْتِ","ذَهَبْتُنَّ","ذَهَبْتُ"]}}, {text:"يَا", tags:{}}, {text:"أُخْتِي", tags:{}}], translation: "Wohin bist du gegangen, meine Schwester?" },
+      { words: [{text:"بَعْدَ", tags:{1:"Mudaf"}}, {text:"الدَّرْسِ", tags:{1:"Mudaf ilaihi"}}], translation: "Nach der Unterrichtsstunde." },
+      { words: [{text:"قَبْلَ", tags:{1:"Mudaf"}}, {text:"الصَّلَاةِ", tags:{1:"Mudaf ilaihi"}}], translation: "Vor dem Gebet." },
+      { words: [{text:"أَرَجَعَ", tags:{1:"Fi'l"}}, {text:"الْإِمَامُ", tags:{1:"Fa'il"}}, {text:"مِنَ", tags:{1:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Majrur"}}], translation: "Ist der Imam von der Moschee zurückgekommen?" },
+      { words: [{text:"ذَهَبْتُ", tags:{1:"Fi'l"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"الْمَسْجِدِ", tags:{1:"Majrur"}}, {text:"قَبْلَ", tags:{1:"Mudaf"}}, {text:"الْأَذَانِ", tags:{1:"Mudaf ilaihi"}}, {text:"وَرَجَعْتُ", tags:{1:"Fi'l"}}, {text:"بَعْدَ", tags:{1:"Mudaf"}}, {text:"الصَّلَاةِ", tags:{1:"Mudaf ilaihi"}}], translation: "Ich bin vor dem Adhân zur Moschee gegangen und nach dem Gebet zurückgekommen." },
+      { words: [{text:"ذَهَبَ", tags:{1:"Fi'l"}}, {text:"أَبِي", tags:{1:"Fa'il"}}, {text:"إِلَى", tags:{1:"Harful Jarr"}}, {text:"القَاهِرَةِ", tags:{1:"Majrur"}}, {text:"قَبْلَ", tags:{1:"Mudaf"}}, {text:"أُسْبُوعٍ", tags:{1:"Mudaf ilaihi"}}], translation: "Mein Vater ist vor einer Woche nach Kairo gegangen." },
+      { words: [{text:"خَرَجْتُ", tags:{1:"Fi'l"}}, {text:"بَعْدَ", tags:{1:"Mudaf"}}, {text:"الدَّرْسِ", tags:{1:"Mudaf ilaihi"}}], translation: "Ich bin nach der Unterrichtsstunde hinausgegangen." },
+      { words: [{text:"ذَهَبْتُ", tags:{1:"Fi'l"}}, {text:"قَبْلَ", tags:{1:"Mudaf"}}, {text:"الصَّلَاةِ", tags:{1:"Mudaf ilaihi"}}], translation: "Ich bin vor dem Gebet gegangen." },
+      { words: [{text:"مَتَى", tags:{1:"Khabar"}}, {text:"اخْتِبَارُكُنَّ", tags:{1:"Mubtada"}, blank:{options:["اخْتِبَارُكِ","اخْتِبَارُكُنَّ","اخْتِبَارُكُمْ","اخْتِبَارُنَا"]}}], translation: "Wann ist eure Prüfung? (f. Pl.)" },
+      { words: [{text:"اخْتِبَارُنَا", tags:{1:"Mubtada"}}, {text:"بَعْدَ", tags:{1:"Khabar",2:"Mudaf"}}, {text:"شَهْرٍ", tags:{1:"Khabar",2:"Mudaf ilaihi"}}], translation: "Unsere Prüfung ist in einem Monat." },
+      { words: [{text:"كَيْفَ", tags:{1:"Khabar"}}, {text:"حَالُكُنَّ", tags:{1:"Mubtada"}, blank:{options:["حَالُكِ","حَالُكُنَّ","حَالُكُمْ","حَالُهَا"]}}], translation: "Wie geht es euch? (f. Pl.)" },
+      { words: [{text:"أُمُّكُنَّ", tags:{1:"Mubtada"}}, {text:"أُسْتَاذَتِي", tags:{1:"Khabar"}}], translation: "Eure Mutter ist meine Lehrerin." },
+      { words: [{text:"أَنْتُنَّ", tags:{1:"Mubtada"}, blank:{options:["أَنْتِ","أَنْتُنَّ","أَنْتُمْ","هُنَّ"]}}, {text:"طَالِبَاتٌ", tags:{1:"Khabar"}}], translation: "Ihr seid Studentinnen." },
+      { words: [{text:"أَنْتِ", tags:{1:"Mubtada"}}, {text:"طَالِبَةٌ", tags:{1:"Khabar"}}], translation: "Du bist Studentin." },
+      { words: [{text:"ذَهَبْنَا", tags:{1:"Fi'l"}}, {text:"وَرَجَعْنَا", tags:{1:"Fi'l"}}], translation: "Wir sind gegangen und zurückgekommen." }
+    ]
   }
 
 };
@@ -1232,5 +1317,6 @@ const SATZANALYSE_LABELS = {
   "11": "Lektion 11",
   "12": "Lektion 12",
   "13": "Lektion 13",
-  "14": "Lektion 14"
+  "14": "Lektion 14",
+  "15": "Lektion 15"
 };
